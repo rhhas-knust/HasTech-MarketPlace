@@ -102,7 +102,13 @@ credit in the storefront footer.
 
 ## Database
 
-See `supabase/migrations/0001`–`0011` for the full, commented schema. Summary of the
+See `supabase/migrations/0001`–`0012` for the full, commented schema (`0012` is a
+hardening pass applied after running Supabase's security/performance advisors against
+the live project: pinned `search_path` on three functions, narrowed `EXECUTE` grants
+on trigger-only functions and RLS helpers to just the roles that need them, wrapped
+`auth.uid()` calls in RLS policies as `(select auth.uid())` so they evaluate once per
+query instead of once per row, added missing foreign-key-covering indexes, and merged
+5 tables' duplicate public/member SELECT policies into one). Summary of the
 core entities:
 
 - **Tenancy:** `profiles`, `stores`, `store_members`, `store_settings`,
@@ -127,11 +133,20 @@ service provider or a digital-goods seller can use the same schema (see
 2. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL`,
    `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` from
    Project Settings → API.
-3. Apply the migrations in order, either:
-   - via the Supabase SQL editor, pasting each file in `supabase/migrations/` in
-     numeric order, or
-   - via the Supabase CLI: `supabase link` then `supabase db push`, or
-   - via `psql "$DATABASE_URL" -f supabase/migrations/000N_....sql` for each file.
+3. Apply the migrations in order, via any of:
+   - the Supabase MCP server's `apply_migration` tool, one file at a time in numeric
+     order (this is how the reference deployment was actually applied — no local
+     Postgres wire-protocol access needed, works over the Supabase Management API),
+   - the Supabase SQL editor, pasting each file in `supabase/migrations/` in numeric
+     order,
+   - the Supabase CLI: `supabase link` then `supabase db push`, or
+   - `psql "$DATABASE_URL" -f supabase/migrations/000N_....sql` for each file.
+
+   After applying, run the Supabase advisors (`get_advisors` via MCP, or Dashboard →
+   Advisors) — `0012_security_performance_hardening.sql` exists precisely because that
+   check caught real issues (mutable `search_path`, over-broad `EXECUTE` grants,
+   per-row `auth.uid()` re-evaluation) that a syntactically-correct migration doesn't
+   surface on its own. Re-run it after any future schema change.
 4. `npm install`
 5. `npm run seed` — seeds one realistic dev store ("Amara Books") with real
    categories and products (see `scripts/seed.ts`). It does **not** seed fake
