@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+
+  --color-ink: #0f172a;
+  --color-ink-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f8fafc;
+
+  --color-brand: #4338ca;
+  --color-brand-hover: #3730a3;
+  --color-brand-subtle: #eef2ff;
+
+  --color-success: #15803d;
+  --color-success-subtle: #f0fdf4;
+  --color-warning: #b45309;
+  --color-warning-subtle: #fffbeb;
+  --color-danger: #b91c1c;
+  --color-danger-subtle: #fef2f2;
+
+  /* Default storefront accent; each store can override this at the
+     storefront layout root via an inline style from stores.theme. */
+  --store-accent: var(--color-brand);
+  --store-accent-hover: var(--color-brand-hover);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-border: var(--color-border);
+  --color-surface: var(--color-surface);
+  --color-surface-subtle: var(--color-surface-subtle);
+  --color-brand: var(--color-brand);
+  --color-brand-hover: var(--color-brand-hover);
+  --color-brand-subtle: var(--color-brand-subtle);
+  --color-success: var(--color-success);
+  --color-success-subtle: var(--color-success-subtle);
+  --color-warning: var(--color-warning);
+  --color-warning-subtle: var(--color-warning-subtle);
+  --color-danger: var(--color-danger);
+  --color-danger-subtle: var(--color-danger-subtle);
+  --color-store-accent: var(--store-accent);
+  --color-store-accent-hover: var(--store-accent-hover);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b0f19;
+    --foreground: #e2e8f0;
+    --color-ink: #e2e8f0;
+    --color-ink-muted: #94a3b8;
+    --color-border: #1e293b;
+    --color-surface: #0f172a;
+    --color-surface-subtle: #111827;
+    --color-brand-subtle: #1e1b4b;
+    --color-success-subtle: #052e16;
+    --color-warning-subtle: #451a03;
+    --color-danger-subtle: #450a0a;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+* {
+  border-color: var(--color-border);
+}
