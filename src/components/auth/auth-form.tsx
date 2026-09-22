@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import type { AuthFormState } from "@/app/(auth)/actions";
@@ -41,6 +42,15 @@ export function AuthForm({
       {state.error && (
         <p role="alert" className="rounded-lg bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
           {state.error}
+          {state.existingAccount && (
+            <>
+              {" "}
+              <Link href="/login" className="font-medium underline">
+                Sign in instead
+              </Link>
+              .
+            </>
+          )}
         </p>
       )}
       {state.info && (

@@ -8,6 +8,7 @@ import { getAppUrl } from "@/lib/app-url";
 export interface AuthFormState {
   error?: string;
   info?: string;
+  existingAccount?: boolean;
 }
 
 const credentialsSchema = z.object({
@@ -46,6 +47,19 @@ export async function signUpAction(
   });
 
   if (error) return { error: error.message };
+
+  // Supabase deliberately returns no error and sends no email when the address
+  // already belongs to a confirmed account -- it's an anti-enumeration measure,
+  // not a failure. The only client-visible signal is an empty `identities`
+  // array, which is how we distinguish "already registered" from "brand new
+  // signup" (identities has one entry) or "resend to an unconfirmed user"
+  // (also one entry, since resending is safe either way).
+  if (data.user && data.user.identities?.length === 0) {
+    return {
+      error: "An account with this email already exists.",
+      existingAccount: true,
+    };
+  }
 
   if (!data.session) {
     redirect(`/verify-email?email=${encodeURIComponent(parsed.data.email)}`);
