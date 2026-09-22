@@ -39,31 +39,34 @@ export async function createStoreAction(
   });
   if (!contact.success) return { error: contact.error.issues[0]?.message };
 
-  const { data: store, error } = await supabase
-    .from("stores")
-    .insert({
-      owner_id: user!.id,
-      name: businessInfo.data.name,
-      business_type: businessInfo.data.businessType,
-      description: businessInfo.data.description || null,
-      slug: slugResult.data,
-      contact_email: contact.data.contactEmail || user!.email,
-      contact_phone: contact.data.contactPhone || null,
-      whatsapp_number: contact.data.whatsappNumber || null,
-      address: contact.data.address || null,
-      city: contact.data.city || null,
-      region: contact.data.region || null,
-      country: DEFAULT_COUNTRY,
-      currency: DEFAULT_CURRENCY,
-      timezone: DEFAULT_TIMEZONE,
-    })
-    .select("slug")
-    .single();
+  // No .select() here: Postgres re-checks a SELECT policy against the row
+  // returned by INSERT ... RETURNING, and that happens before the
+  // on_store_created trigger's insert into store_members is visible (see
+  // 0003_profiles_and_stores.sql) -- so a plain owner, who isn't a member
+  // of anything yet, would fail RLS reading back the very row they just
+  // created. We already have the slug from the validated form input, so
+  // there's nothing to read back anyway.
+  const { error } = await supabase.from("stores").insert({
+    owner_id: user!.id,
+    name: businessInfo.data.name,
+    business_type: businessInfo.data.businessType,
+    description: businessInfo.data.description || null,
+    slug: slugResult.data,
+    contact_email: contact.data.contactEmail || user!.email,
+    contact_phone: contact.data.contactPhone || null,
+    whatsapp_number: contact.data.whatsappNumber || null,
+    address: contact.data.address || null,
+    city: contact.data.city || null,
+    region: contact.data.region || null,
+    country: DEFAULT_COUNTRY,
+    currency: DEFAULT_CURRENCY,
+    timezone: DEFAULT_TIMEZONE,
+  });
 
   if (error) {
     if (error.code === "23505") return { error: "That store URL is already taken. Try another." };
     return { error: "Something went wrong creating your store. Please try again." };
   }
 
-  redirect(`/dashboard/${store.slug}?welcome=1`);
+  redirect(`/dashboard/${slugResult.data}?welcome=1`);
 }
