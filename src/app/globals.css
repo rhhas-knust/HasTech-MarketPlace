@@ -75,3 +75,9 @@ body {
 * {
   border-color: var(--color-border);
 }
+
+.bg-hero-glow {
+  background-image:
+    radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--color-brand) 12%, transparent), transparent 55%),
+    radial-gradient(circle at 85% 20%, color-mix(in srgb, var(--color-brand) 8%, transparent), transparent 50%);
+}
