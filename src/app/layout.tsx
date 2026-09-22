@@ -20,6 +20,14 @@ export const metadata: Metadata = {
   },
   description:
     "Create and run a professional online store: products, orders, payments and analytics in one place.",
+  verification: {
+    // Confirms ownership of hastech-marketplace.vercel.app for Google
+    // Search Console. This renders the required
+    // <meta name="google-site-verification" content="..."> tag -- the
+    // correct method for a *.vercel.app subdomain, since we don't control
+    // vercel.app's own DNS to add a TXT record.
+    google: "P-7TuM-5UjdIaOBDV1_NwQ2y67_dlQB3Q4t6fii3Rr4",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
