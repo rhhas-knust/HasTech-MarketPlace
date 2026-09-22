@@ -48,6 +48,9 @@ export default function Home() {
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <span className="text-lg font-semibold text-(--color-ink)">{PLATFORM_NAME}</span>
           <nav className="flex items-center gap-4 text-sm">
+            <Link href="/sell" className="hidden text-(--color-ink-muted) hover:text-(--color-ink) sm:inline">
+              For sellers
+            </Link>
             <Link href="/login" className="text-(--color-ink-muted) hover:text-(--color-ink)">
               Sign in
             </Link>
