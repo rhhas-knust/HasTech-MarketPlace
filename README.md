@@ -190,6 +190,48 @@ npm run build         # Production build
   browser flows (signup → publish → checkout → webhook), image upload, and the full
   onboarding wizard. These were exercised manually; see below.
 
+## Authentication setup (manual dashboard steps)
+
+Sign-up supports three paths: a confirmation link, a 6-digit code typed into
+`/verify-email`, and "Continue with Google." The code for all three is in this repo, but
+each one also needs a one-time setting in a dashboard that no CLI/MCP tool can reach —
+these have to be done by hand, once, per Supabase project:
+
+1. **Fix the confirmation link's destination (required — this is the localhost:3000 bug).**
+   Supabase Dashboard → your project → Authentication → URL Configuration:
+   - **Site URL:** your real deployed URL, e.g. `https://hastech-marketplace.vercel.app`
+   - **Redirect URLs:** add `https://hastech-marketplace.vercel.app/auth/callback`
+     (and, if you use a custom domain instead, that domain's `/auth/callback`).
+
+   The app itself already passes an explicit `emailRedirectTo` on `signUp`/`resend`
+   (`src/app/(auth)/actions.ts`, via `src/lib/app-url.ts`) so the link's target no longer
+   depends on the Site URL default — but Supabase still refuses to redirect anywhere that
+   isn't on this allow-list, so the URL must be added here regardless.
+
+2. **Show the 6-digit code in the confirmation email (required for the code-entry flow).**
+   Supabase always generates a `{{ .Token }}` for signup, but the default "Confirm signup"
+   template only renders the link. Dashboard → Authentication → Email Templates →
+   "Confirm signup" → add somewhere in the body, e.g.:
+   ```html
+   <p>Your confirmation code is: <strong>{{ .Token }}</strong></p>
+   <p>Or click <a href="{{ .ConfirmationURL }}">this link</a> to confirm instead.</p>
+   ```
+   Until this is edited, `/verify-email`'s code field has nothing valid to accept — tell
+   users to use the link in the meantime.
+
+3. **Enable Google sign-in (optional — only if you want the Google button to work).**
+   - Google Cloud Console → APIs & Services → Credentials → Create OAuth client ID
+     (type: Web application). Add this exact authorized redirect URI:
+     `https://qslivegdfanutnsblnlo.supabase.co/auth/v1/callback` (replace the subdomain
+     with your own project ref if different).
+   - Supabase Dashboard → Authentication → Providers → Google → enable it, paste in the
+     Client ID and Client Secret from the step above, and save.
+   - Until this is done, the button shows "Google sign-in isn't set up for this store
+     yet." instead of failing silently — see `src/components/auth/google-button.tsx`.
+
+No code change is needed for any of the above; they're dashboard/console-only settings
+that don't live in this repository.
+
 ## Deployment
 
 - **App:** Vercel (or any Next.js host). Set the same env vars as `.env.local` in the
