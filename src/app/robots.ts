@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { getAppUrl } from "@/lib/app-url";
 
-export default function robots(): MetadataRoute.Robots {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const appUrl = await getAppUrl();
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow: ["/dashboard", "/onboarding", "/api", "/auth"] },
