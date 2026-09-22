@@ -64,15 +64,15 @@ export default function SellPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-(--color-border) px-4 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <Link href="/" className="text-lg font-semibold text-(--color-ink)">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <Link href="/" className="shrink-0 text-lg font-semibold text-(--color-ink)">
             <PlatformLogo />
           </Link>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/login" className="text-(--color-ink-muted) hover:text-(--color-ink)">
+          <nav className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
+            <Link href="/login" className="whitespace-nowrap text-(--color-ink-muted) hover:text-(--color-ink)">
               Sign in
             </Link>
-            <LinkButton href="/signup" size="sm">
+            <LinkButton href="/signup" size="sm" className="whitespace-nowrap">
               Create your store
             </LinkButton>
             <ThemeToggle />

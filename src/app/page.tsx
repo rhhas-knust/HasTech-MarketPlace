@@ -47,18 +47,18 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-(--color-border) px-4 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <span className="text-lg font-semibold text-(--color-ink)">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <span className="shrink-0 text-lg font-semibold text-(--color-ink)">
             <PlatformLogo />
           </span>
-          <nav className="flex items-center gap-4 text-sm">
+          <nav className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
             <Link href="/sell" className="hidden text-(--color-ink-muted) hover:text-(--color-ink) sm:inline">
               For sellers
             </Link>
-            <Link href="/login" className="text-(--color-ink-muted) hover:text-(--color-ink)">
+            <Link href="/login" className="whitespace-nowrap text-(--color-ink-muted) hover:text-(--color-ink)">
               Sign in
             </Link>
-            <LinkButton href="/signup" size="sm">
+            <LinkButton href="/signup" size="sm" className="whitespace-nowrap">
               Start selling
             </LinkButton>
             <ThemeToggle />
@@ -80,11 +80,11 @@ export default function Home() {
               and visitors in one dashboard. Built for Ghanaian businesses, from bookshops to
               barbers.
             </p>
-            <div className="mt-8 flex items-center justify-center gap-3">
-              <LinkButton href="/signup" size="lg">
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <LinkButton href="/signup" size="lg" className="w-full sm:w-auto">
                 Create your store
               </LinkButton>
-              <LinkButton href="/login" size="lg" variant="outline">
+              <LinkButton href="/login" size="lg" variant="outline" className="w-full sm:w-auto">
                 Sign in
               </LinkButton>
             </div>
