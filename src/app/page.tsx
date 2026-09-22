@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LinkButton } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { PlatformLogo } from "@/components/platform-logo";
 import { PLATFORM_NAME } from "@/lib/constants";
 
 const FEATURES = [
@@ -47,7 +48,9 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-(--color-border) px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <span className="text-lg font-semibold text-(--color-ink)">{PLATFORM_NAME}</span>
+          <span className="text-lg font-semibold text-(--color-ink)">
+            <PlatformLogo />
+          </span>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/sell" className="hidden text-(--color-ink-muted) hover:text-(--color-ink) sm:inline">
               For sellers

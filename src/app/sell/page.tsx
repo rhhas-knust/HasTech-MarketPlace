@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { LinkButton } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { PlatformLogo } from "@/components/platform-logo";
 import { PLATFORM_NAME, BUSINESS_TYPE_OPTIONS } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -65,7 +66,7 @@ export default function SellPage() {
       <header className="border-b border-(--color-border) px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/" className="text-lg font-semibold text-(--color-ink)">
-            {PLATFORM_NAME}
+            <PlatformLogo />
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/login" className="text-(--color-ink-muted) hover:text-(--color-ink)">

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { PLATFORM_NAME } from "@/lib/constants";
+import { PlatformLogo } from "@/components/platform-logo";
 
 export function DashboardShell({
   storeSlug,
@@ -22,7 +22,9 @@ export function DashboardShell({
   return (
     <div className="min-h-screen lg:flex">
       <div className="flex items-center justify-between border-b border-(--color-border) bg-(--color-surface) px-4 py-3 lg:hidden">
-        <span className="text-sm font-semibold text-(--color-ink)">{PLATFORM_NAME}</span>
+        <span className="text-sm font-semibold text-(--color-ink)">
+          <PlatformLogo iconSize={20} />
+        </span>
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <button
@@ -46,7 +48,7 @@ export function DashboardShell({
       <aside className="hidden w-64 shrink-0 border-r border-(--color-border) bg-(--color-surface) p-4 lg:block">
         <div className="mb-4 flex items-center justify-between px-2">
           <p className="text-xs font-medium uppercase tracking-wide text-(--color-ink-muted)">
-            {PLATFORM_NAME}
+            <PlatformLogo iconSize={16} />
           </p>
           <ThemeToggle />
         </div>

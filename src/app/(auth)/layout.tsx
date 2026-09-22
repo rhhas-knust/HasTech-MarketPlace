@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { PLATFORM_NAME } from "@/lib/constants";
+import { PlatformLogo } from "@/components/platform-logo";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +8,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="w-full max-w-sm">
         <div className="mb-8 flex items-center justify-center gap-3">
           <Link href="/" className="text-center text-lg font-semibold text-(--color-ink)">
-            {PLATFORM_NAME}
+            <PlatformLogo />
           </Link>
           <ThemeToggle />
         </div>
