@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  calculateCommission,
   computeOrderTotals,
   formatCurrency,
   fromMinorUnits,
@@ -84,6 +85,20 @@ describe("resolveDeliveryFee", () => {
 describe("isBelowFreeDeliveryThreshold", () => {
   it("returns true when there is no threshold at all", () => {
     expect(isBelowFreeDeliveryThreshold(1_000_000, null)).toBe(true);
+  });
+});
+
+describe("calculateCommission", () => {
+  it("computes a straightforward percentage", () => {
+    expect(calculateCommission(100, 5)).toBe(5);
+  });
+
+  it("avoids floating point drift on awkward totals", () => {
+    expect(calculateCommission(19.99, 5)).toBe(1);
+  });
+
+  it("returns zero for a zero-value order", () => {
+    expect(calculateCommission(0, 5)).toBe(0);
   });
 });
 

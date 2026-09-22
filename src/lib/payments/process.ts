@@ -1,6 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPaymentProviderForStore } from "@/lib/payments";
+import { recordCommissionForOrder } from "@/lib/payments/platform";
 import { fromMinorUnits, toMinorUnits } from "@/lib/money";
 
 export interface PaymentVerificationResult {
@@ -135,6 +136,8 @@ export async function verifyAndProcessPayment(
     .from("orders")
     .update({ payment_status: "paid", payment_reference: reference, fulfilment_status: "confirmed" })
     .eq("id", payment.order_id);
+
+  await recordCommissionForOrder(storeId, payment.order_id, payment.amount);
 
   // Recorded here (not on the success page) so it fires exactly once no
   // matter whether the webhook or the customer's browser redirect wins the

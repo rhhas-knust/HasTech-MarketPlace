@@ -57,6 +57,15 @@ export function computeOrderTotals(
   };
 }
 
+/**
+ * The platform's cut of a sale, computed in minor units so a rate like
+ * 5.00% never drifts against a total like 19.99 the way plain
+ * floating-point multiplication (0.05 * 19.99) can.
+ */
+export function calculateCommission(orderTotal: number, ratePercent: number): number {
+  return fromMinorUnits(Math.round(toMinorUnits(orderTotal) * (ratePercent / 100)));
+}
+
 export function isBelowFreeDeliveryThreshold(
   subtotal: number,
   freeDeliveryThreshold: number | null,
