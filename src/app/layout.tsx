@@ -30,12 +30,34 @@ export const metadata: Metadata = {
   },
 };
 
+const THEME_INIT_SCRIPT = `
+(function () {
+  try {
+    var stored = localStorage.getItem("hastech-theme");
+    if (stored === "light" || stored === "dark") {
+      document.documentElement.setAttribute("data-theme", stored);
+    }
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // The theme-init script below sets data-theme on this element before
+      // React hydrates, deliberately diverging from the server-rendered
+      // markup (which can't know the visitor's saved preference) --
+      // suppressHydrationWarning tells React this specific, expected
+      // mismatch is fine rather than logging it as a bug.
+      suppressHydrationWarning
     >
+      <head>
+        {/* Applies a previously-saved theme choice before first paint, so
+            there's no flash of the wrong theme while React hydrates. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-(--color-surface-subtle)">{children}</body>
     </html>
   );

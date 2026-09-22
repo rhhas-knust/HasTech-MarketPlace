@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { PLATFORM_NAME } from "@/lib/constants";
 
 export function DashboardShell({
@@ -22,15 +23,18 @@ export function DashboardShell({
     <div className="min-h-screen lg:flex">
       <div className="flex items-center justify-between border-b border-(--color-border) bg-(--color-surface) px-4 py-3 lg:hidden">
         <span className="text-sm font-semibold text-(--color-ink)">{PLATFORM_NAME}</span>
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--color-border)"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--color-border)"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -40,9 +44,12 @@ export function DashboardShell({
       )}
 
       <aside className="hidden w-64 shrink-0 border-r border-(--color-border) bg-(--color-surface) p-4 lg:block">
-        <p className="mb-4 px-2 text-xs font-medium uppercase tracking-wide text-(--color-ink-muted)">
-          {PLATFORM_NAME}
-        </p>
+        <div className="mb-4 flex items-center justify-between px-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-(--color-ink-muted)">
+            {PLATFORM_NAME}
+          </p>
+          <ThemeToggle />
+        </div>
         <DashboardSidebar storeSlug={storeSlug} storeName={storeName} />
         <form action="/auth/signout" method="post" className="mt-8 border-t border-(--color-border) pt-4">
           <p className="mb-2 truncate px-2 text-xs text-(--color-ink-muted)">{userEmail}</p>

@@ -51,25 +51,53 @@
   --color-store-accent-hover: var(--store-accent-hover);
 }
 
+/* Dark mode applies automatically from OS preference, unless the user has
+   explicitly picked a theme (ThemeToggle sets data-theme and persists it to
+   localStorage) -- an explicit choice always wins over the OS setting. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b0f19;
+  :root:not([data-theme="light"]) {
+    --background: #0a0e17;
     --foreground: #e2e8f0;
     --color-ink: #e2e8f0;
     --color-ink-muted: #94a3b8;
-    --color-border: #1e293b;
-    --color-surface: #0f172a;
-    --color-surface-subtle: #111827;
+    --color-border: #263148;
+    --color-surface: #161d2f;
+    --color-surface-subtle: #0a0e17;
+    --color-brand: #6366f1;
+    --color-brand-hover: #818cf8;
     --color-brand-subtle: #1e1b4b;
+    --color-success: #4ade80;
     --color-success-subtle: #052e16;
+    --color-warning: #fbbf24;
     --color-warning-subtle: #451a03;
+    --color-danger: #f87171;
     --color-danger-subtle: #450a0a;
   }
+}
+
+:root[data-theme="dark"] {
+  --background: #0a0e17;
+  --foreground: #e2e8f0;
+  --color-ink: #e2e8f0;
+  --color-ink-muted: #94a3b8;
+  --color-border: #263148;
+  --color-surface: #161d2f;
+  --color-surface-subtle: #0a0e17;
+  --color-brand: #6366f1;
+  --color-brand-hover: #818cf8;
+  --color-brand-subtle: #1e1b4b;
+  --color-success: #4ade80;
+  --color-success-subtle: #052e16;
+  --color-warning: #fbbf24;
+  --color-warning-subtle: #451a03;
+  --color-danger: #f87171;
+  --color-danger-subtle: #450a0a;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 * {

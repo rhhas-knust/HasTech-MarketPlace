@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LinkButton } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { PLATFORM_NAME, BUSINESS_TYPE_OPTIONS } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -73,6 +74,7 @@ export default function SellPage() {
             <LinkButton href="/signup" size="sm">
               Create your store
             </LinkButton>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
@@ -131,7 +133,7 @@ export default function SellPage() {
               {BUSINESS_TYPE_OPTIONS.filter((o) => o.value !== "other").map((option) => (
                 <span
                   key={option.value}
-                  className="rounded-full border border-(--color-border) bg-(--color-surface-subtle) px-3.5 py-1.5 text-sm text-(--color-ink)"
+                  className="rounded-full border border-(--color-border) bg-(--color-surface-subtle) px-3.5 py-1.5 text-sm text-(--color-ink) transition-colors duration-150 hover:border-(--color-brand) hover:text-(--color-brand)"
                 >
                   {option.label}
                 </span>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LinkButton } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { PLATFORM_NAME } from "@/lib/constants";
 
 const FEATURES = [
@@ -57,6 +58,7 @@ export default function Home() {
             <LinkButton href="/signup" size="sm">
               Start selling
             </LinkButton>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
@@ -91,7 +93,7 @@ export default function Home() {
             {FEATURES.map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6"
+                className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5"
               >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-(--color-brand-subtle) text-(--color-brand)">
                   <svg
