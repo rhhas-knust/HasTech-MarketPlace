@@ -154,6 +154,24 @@ $$;
 reset request.jwt.claims;
 set role anon;
 
+-- Regression test: 0012 once revoked EXECUTE on is_store_member() from anon
+-- while, in the same migration, folding it into the `to public` policy on
+-- `stores` -- a self-contradiction that surfaced in production (Postgres 17)
+-- as "permission denied for function is_store_member" on exactly this query
+-- (see 0013_fix_public_execute_grants.sql), confirmed directly against the
+-- live database. Note: this specific failure did not reproduce against local
+-- Postgres 16 even with the grant removed -- its planner evidently
+-- short-circuits this OR differently than Supabase's Postgres 17 does, and
+-- Postgres gives no guarantee either way. That gap is exactly why this
+-- assertion exists: don't rely on the products/categories checks below (or
+-- on this local harness at all) to catch a missing grant reached through an
+-- OR clause -- assert directly, and confirm against the real project after
+-- any change to what these functions are granted to.
+select _assert(
+  'anon can read the published store row directly (no permission error)',
+  exists (select 1 from stores where slug = 'amara-books')
+);
+
 select _assert(
   'anon sees published products from both stores',
   (select count(*) from products where id in (
