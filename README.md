@@ -96,13 +96,23 @@ This is the part of the spec marked "extremely important," so it gets its own se
 ### Storefront vs. dashboard
 
 Both share the same design tokens (`src/app/globals.css`) but the storefront takes on
-each seller's own accent colour (`stores.theme.accentColor`) so it feels like the
-seller's brand, not HASTECH's — the platform name only appears as a subtle "Powered by"
-credit in the storefront footer.
+each seller's own accent colour (`stores.theme.accentColor`, set from
+Dashboard → Settings → Branding) so it feels like the seller's brand, not HASTECH's —
+the platform name only appears as a subtle "Powered by" credit in the storefront footer.
+A seller with no logo uploaded gets a plain circular avatar in their own accent colour
+showing their store's initial (`src/components/storefront/store-header.tsx`), rather than
+a generic placeholder image.
+
+### Feedback
+
+Dashboard → Feedback lets a signed-in seller report a bug, request a feature, or ask a
+question — written to `platform_feedback` (see below), visible only to that seller and to
+platform admins (`is_platform_admin()`). This is feedback *about the platform*, sent to
+the HASTECH team; it is not a customer-support inbox for a store's own shoppers.
 
 ## Database
 
-See `supabase/migrations/0001`–`0012` for the full, commented schema (`0012` is a
+See `supabase/migrations/0001`–`0015` for the full, commented schema (`0012` is a
 hardening pass applied after running Supabase's security/performance advisors against
 the live project: pinned `search_path` on three functions, narrowed `EXECUTE` grants
 on trigger-only functions and RLS helpers to just the roles that need them, wrapped
@@ -120,7 +130,8 @@ core entities:
 - **Payments:** `payments`, `payment_events` (idempotency log)
 - **Analytics:** `analytics_events` (generic event stream), `product_views`
   (deduplicated, privacy-conscious — anonymous `visitor_id`, no PII)
-- **Ops:** `notifications`, `audit_logs`
+- **Ops:** `notifications`, `audit_logs`, `platform_feedback` (seller bug reports/feature
+  requests, scoped to their own submissions plus platform admins)
 
 Deliberate naming: there is no `books` or `sashes` table anywhere. "Products",
 "categories" and "product_variants" are generic on purpose so a clothing seller, a

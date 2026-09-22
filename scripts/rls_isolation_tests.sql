@@ -267,6 +267,54 @@ select _assert(
 reset request.jwt.claims;
 reset role;
 
+-- ---------------------------------------------------------------------------
+-- platform_feedback: sellers can file and read their own feedback about the
+-- platform, but never someone else's -- and can't resolve their own report
+-- (only a platform admin's UPDATE policy can transition status).
+-- ---------------------------------------------------------------------------
+set role authenticated;
+set request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000a"}';
+
+insert into platform_feedback (user_id, store_id, category, message)
+values ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-0000000000aa', 'bug', 'Seller A feedback');
+
+reset request.jwt.claims;
+reset role;
+
+set role authenticated;
+set request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000b"}';
+
+insert into platform_feedback (user_id, store_id, category, message)
+values ('00000000-0000-0000-0000-00000000000b', '00000000-0000-0000-0000-0000000000bb', 'other', 'Seller B feedback');
+
+select _assert(
+  'seller B sees only own feedback, not seller A''s',
+  (select count(*) from platform_feedback) = 1
+  and exists (select 1 from platform_feedback where message = 'Seller B feedback')
+);
+
+update platform_feedback set status = 'resolved' where message = 'Seller B feedback';
+select _assert(
+  'non-admin seller cannot resolve their own feedback (UPDATE silently affected 0 rows)',
+  (select status from platform_feedback where message = 'Seller B feedback') = 'open'
+);
+
+reset request.jwt.claims;
+reset role;
+
+set role authenticated;
+set request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000a"}';
+
+select _assert(
+  'seller A sees only own feedback, not seller B''s',
+  (select count(*) from platform_feedback) = 1
+  and exists (select 1 from platform_feedback where message = 'Seller A feedback')
+  and not exists (select 1 from platform_feedback where message = 'Seller B feedback')
+);
+
+reset request.jwt.claims;
+reset role;
+
 drop function _assert(text, boolean);
 
 \echo ''

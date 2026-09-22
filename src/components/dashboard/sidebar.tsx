@@ -12,6 +12,7 @@ import {
   Settings,
   Store,
   ExternalLink,
+  MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -27,6 +28,7 @@ export function DashboardSidebar({ storeSlug, storeName }: { storeSlug: string; 
     { href: `${base}/customers`, label: "Customers", icon: Users },
     { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
     { href: `${base}/settings`, label: "Settings", icon: Settings },
+    { href: `${base}/feedback`, label: "Feedback", icon: MessageSquare },
   ];
 
   return (

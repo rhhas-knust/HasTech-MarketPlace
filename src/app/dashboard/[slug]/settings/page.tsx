@@ -6,7 +6,9 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { StoreInfoForm } from "@/components/dashboard/store-info-form";
 import { DeliverySettingsForm } from "@/components/dashboard/delivery-settings-form";
-import { updateStoreInfoAction, updateDeliverySettingsAction } from "./actions";
+import { BrandingForm } from "@/components/dashboard/branding-form";
+import { updateStoreInfoAction, updateDeliverySettingsAction, updateStoreBrandingAction } from "./actions";
+import { uploadStoreLogo, removeStoreLogo } from "@/lib/store-logo";
 
 export const metadata: Metadata = { title: "Store settings" };
 
@@ -30,6 +32,26 @@ export default async function SettingsPage({ params }: { params: Promise<{ slug:
           Payment settings →
         </Link>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Branding</CardTitle>
+        </CardHeader>
+        <CardBody>
+          <BrandingForm
+            storeName={membership.store.name}
+            logoUrl={membership.store.logo_url}
+            accentColor={
+              typeof membership.store.theme?.accentColor === "string"
+                ? membership.store.theme.accentColor
+                : "#4338CA"
+            }
+            colorAction={updateStoreBrandingAction.bind(null, slug)}
+            logoAction={uploadStoreLogo.bind(null, slug)}
+            removeLogoAction={removeStoreLogo.bind(null, slug)}
+          />
+        </CardBody>
+      </Card>
 
       <Card>
         <CardHeader>

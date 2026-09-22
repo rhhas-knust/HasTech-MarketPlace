@@ -248,6 +248,20 @@ export interface Payment {
   updated_at: string;
 }
 
+export type FeedbackCategory = "bug" | "feature_request" | "question" | "other";
+export type FeedbackStatus = "open" | "in_progress" | "resolved";
+
+export interface PlatformFeedback {
+  id: string;
+  user_id: string;
+  store_id: string | null;
+  category: FeedbackCategory;
+  message: string;
+  status: FeedbackStatus;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface AnalyticsEvent {
   id: string;
   store_id: string;

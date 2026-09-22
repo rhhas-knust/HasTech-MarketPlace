@@ -45,6 +45,13 @@ export const storeSettingsSchema = z.object({
   lowStockThreshold: z.number().int().min(0),
 });
 
+export const storeBrandingSchema = z.object({
+  accentColor: z
+    .string()
+    .trim()
+    .regex(/^#[0-9a-fA-F]{6}$/, "Enter a valid hex colour, like #4338CA"),
+});
+
 export const paystackCredentialsSchema = z.object({
   publicKey: z.string().trim().min(10, "That doesn't look like a valid Paystack public key"),
   secretKey: z.string().trim().min(10, "That doesn't look like a valid Paystack secret key"),

@@ -4,7 +4,13 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireStoreAccess } from "@/lib/auth/session";
-import { storeBusinessInfoSchema, storeContactSchema, storeSettingsSchema, paystackCredentialsSchema } from "@/lib/validation/store";
+import {
+  storeBusinessInfoSchema,
+  storeContactSchema,
+  storeSettingsSchema,
+  storeBrandingSchema,
+  paystackCredentialsSchema,
+} from "@/lib/validation/store";
 import { logAudit } from "@/lib/audit";
 
 export interface SettingsFormState {
@@ -98,6 +104,28 @@ export async function updateDeliverySettingsAction(
 
   await logAudit(membership.store.id, membership.store.owner_id, "store.settings_changed", "store_settings", membership.store.id);
   revalidatePath(`/dashboard/${storeSlug}/settings`);
+  return { success: true };
+}
+
+export async function updateStoreBrandingAction(
+  storeSlug: string,
+  _prevState: SettingsFormState,
+  formData: FormData,
+): Promise<SettingsFormState> {
+  const membership = await requireStoreAccess(storeSlug);
+  if (!membership) return { error: "Not authorized" };
+
+  const parsed = storeBrandingSchema.safeParse({ accentColor: formData.get("accentColor") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message };
+
+  const supabase = await createClient();
+  const nextTheme = { ...membership.store.theme, accentColor: parsed.data.accentColor };
+  const { error } = await supabase.from("stores").update({ theme: nextTheme }).eq("id", membership.store.id);
+  if (error) return { error: "Could not save changes." };
+
+  await logAudit(membership.store.id, membership.store.owner_id, "store.branding_changed", "store", membership.store.id);
+  revalidatePath(`/dashboard/${storeSlug}/settings`);
+  revalidatePath(`/store/${storeSlug}`, "layout");
   return { success: true };
 }
 
