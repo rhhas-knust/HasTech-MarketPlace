@@ -30,12 +30,12 @@ export async function createStoreAction(
   if (!slugResult.success) return { error: slugResult.error.issues[0]?.message };
 
   const contact = storeContactSchema.safeParse({
-    contactEmail: formData.get("contactEmail"),
-    contactPhone: formData.get("contactPhone"),
-    whatsappNumber: formData.get("whatsappNumber"),
-    address: formData.get("address"),
-    city: formData.get("city"),
-    region: formData.get("region"),
+    contactEmail: formData.get("contactEmail") ?? "",
+    contactPhone: formData.get("contactPhone") ?? "",
+    whatsappNumber: formData.get("whatsappNumber") ?? "",
+    address: formData.get("address") ?? "",
+    city: formData.get("city") ?? "",
+    region: formData.get("region") ?? "",
   });
   if (!contact.success) return { error: contact.error.issues[0]?.message };
 

@@ -123,3 +123,46 @@ export async function resendVerificationCodeAction(email: string): Promise<Verif
   if (error) return { error: "Couldn't resend the code. Please try again in a moment." };
   return { info: "A new code has been sent." };
 }
+
+const emailSchema = z.object({ email: z.string().trim().email("Enter a valid email address") });
+
+export async function requestPasswordResetAction(
+  _prevState: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const parsed = emailSchema.safeParse({ email: formData.get("email") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+
+  const supabase = await createClient();
+  const appUrl = await getAppUrl();
+  await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: `${appUrl}/auth/callback?next=/reset-password`,
+  });
+
+  // Never reveal whether the email is registered -- same anti-enumeration
+  // reasoning as signUpAction, so the response is identical either way.
+  return { info: "If an account exists for that email, a reset link has been sent." };
+}
+
+const newPasswordSchema = z.object({
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+export async function updatePasswordAction(
+  _prevState: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const parsed = newPasswordSchema.safeParse({ password: formData.get("password") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Your reset link has expired. Request a new one." };
+
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+  if (error) return { error: error.message };
+
+  redirect("/dashboard");
+}

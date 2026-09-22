@@ -28,7 +28,16 @@ export function AuthForm({
         <Input id="email" name="email" type="email" required autoComplete="email" />
       </div>
       <div>
-        <Label htmlFor="password">Password</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password" className="mb-0">
+            Password
+          </Label>
+          {mode === "login" && (
+            <Link href="/forgot-password" className="mb-1.5 text-xs font-medium text-(--color-brand)">
+              Forgot password?
+            </Link>
+          )}
+        </div>
         <Input
           id="password"
           name="password"
