@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { getStoreBySlug } from "@/lib/store-data";
 import { getOrderForTracking } from "@/lib/orders";
+import { getDigitalDownloadsForOrder } from "@/lib/digital-downloads";
 import { FULFILMENT_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/lib/constants";
 import { formatCurrency } from "@/lib/money";
 
@@ -14,7 +15,7 @@ export interface OrderLookupState {
     fulfilmentStatusLabel: string;
     total: string;
     createdAt: string;
-    items: { name: string; quantity: number }[];
+    items: { name: string; quantity: number; downloadUrl?: string }[];
   };
 }
 
@@ -42,6 +43,10 @@ export async function lookupOrderAction(
     return { error: "We couldn't find an order matching that order number and email." };
   }
 
+  const downloads =
+    order.payment_status === "paid" ? await getDigitalDownloadsForOrder(order.id) : [];
+  const downloadsByItemId = new Map(downloads.map((d) => [d.orderItemId, d.url]));
+
   return {
     order: {
       orderNumber: order.order_number,
@@ -53,9 +58,10 @@ export async function lookupOrderAction(
         month: "short",
         year: "numeric",
       }),
-      items: (order.order_items as { product_name: string; quantity: number }[]).map((item) => ({
+      items: (order.order_items as { id: string; product_name: string; quantity: number }[]).map((item) => ({
         name: item.product_name,
         quantity: item.quantity,
+        downloadUrl: downloadsByItemId.get(item.id),
       })),
     },
   };

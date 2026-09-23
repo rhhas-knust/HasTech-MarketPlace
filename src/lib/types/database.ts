@@ -127,6 +127,9 @@ export interface Product {
   featured: boolean;
   is_preorder: boolean;
   preorder_note: string | null;
+  digital_file_path: string | null;
+  digital_file_name: string | null;
+  digital_file_size: number | null;
   view_count: number;
   add_to_cart_count: number;
   purchase_count: number;
@@ -233,6 +236,8 @@ export interface OrderItem {
   quantity: number;
   line_total: number;
   is_preorder: boolean;
+  digital_file_path: string | null;
+  digital_file_name: string | null;
   created_at: string;
 }
 

@@ -5,10 +5,12 @@ import { getStoreCategories } from "@/lib/store-data";
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "@/components/dashboard/product-form";
 import { ImageManager } from "@/components/dashboard/image-manager";
+import { DigitalFileManager } from "@/components/dashboard/digital-file-manager";
 import { DeleteProductButton } from "@/components/dashboard/delete-product-button";
 import type { ProductImage } from "@/lib/types/database";
 import { updateProductAction, deleteProductAction } from "../actions";
 import { uploadProductImage, deleteProductImage, setPrimaryProductImage } from "@/lib/product-images";
+import { uploadDigitalFile, removeDigitalFile } from "@/lib/product-files";
 
 export const metadata: Metadata = { title: "Edit product" };
 
@@ -35,6 +37,8 @@ export default async function EditProductPage({
   const boundUpload = uploadProductImage.bind(null, slug, productId);
   const boundDeleteImage = deleteProductImage.bind(null, slug);
   const boundSetPrimary = setPrimaryProductImage.bind(null, slug, productId);
+  const boundUploadFile = uploadDigitalFile.bind(null, slug, productId);
+  const boundRemoveFile = removeDigitalFile.bind(null, slug, productId);
 
   return (
     <div className="max-w-2xl space-y-8">
@@ -50,6 +54,19 @@ export default async function EditProductPage({
           onUpload={boundUpload}
           onDelete={boundDeleteImage}
           onSetPrimary={boundSetPrimary}
+        />
+      </section>
+
+      <section>
+        <h2 className="mb-1 text-sm font-medium text-(--color-ink)">Digital file (optional)</h2>
+        <p className="mb-3 text-sm text-(--color-ink-muted)">
+          Attach a file and customers get a download link once their order is paid.
+        </p>
+        <DigitalFileManager
+          fileName={product.digital_file_name}
+          fileSize={product.digital_file_size}
+          onUpload={boundUploadFile}
+          onRemove={boundRemoveFile}
         />
       </section>
 

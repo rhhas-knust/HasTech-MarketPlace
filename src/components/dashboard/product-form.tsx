@@ -28,6 +28,16 @@ export function ProductForm({
       </div>
 
       <div>
+        <Label htmlFor="productType">Product type</Label>
+        <Select id="productType" name="productType" defaultValue={product?.product_type ?? "physical"}>
+          <option value="physical">Physical product</option>
+          <option value="digital">Digital product (ebook, design file, etc.)</option>
+          <option value="service">Service</option>
+        </Select>
+        <FieldHint>Digital and service products skip delivery/pickup at checkout.</FieldHint>
+      </div>
+
+      <div>
         <Label htmlFor="description">Description</Label>
         <Textarea id="description" name="description" defaultValue={product?.description ?? ""} />
       </div>

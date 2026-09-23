@@ -3,6 +3,7 @@ import { z } from "zod";
 export const productSchema = z
   .object({
     name: z.string().trim().min(2).max(200),
+    productType: z.enum(["physical", "service", "digital"]),
     description: z.string().trim().max(5000).optional().or(z.literal("")),
     categoryId: z.string().uuid().nullable().optional(),
     sku: z.string().trim().max(64).optional().or(z.literal("")),

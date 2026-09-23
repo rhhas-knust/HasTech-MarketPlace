@@ -26,6 +26,11 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
 
   const boundAction = submitCheckoutAction.bind(null, store.slug);
 
+  // A cart of only digital/service items needs no physical fulfillment at
+  // all -- collapse the delivery-method chooser away entirely rather than
+  // asking someone buying an ebook whether they want delivery or pickup.
+  const cartNeedsDelivery = cart.items.some((item) => (item.product?.product_type ?? "physical") === "physical");
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
       <h1 className="mb-6 text-xl font-semibold text-(--color-ink)">Checkout</h1>
@@ -33,8 +38,8 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
         <div className="lg:col-span-2">
           <CheckoutForm
             action={boundAction}
-            deliveryEnabled={settings?.delivery_enabled ?? true}
-            pickupEnabled={settings?.pickup_enabled ?? true}
+            deliveryEnabled={cartNeedsDelivery ? (settings?.delivery_enabled ?? true) : false}
+            pickupEnabled={cartNeedsDelivery ? (settings?.pickup_enabled ?? true) : true}
           />
         </div>
         <aside className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">

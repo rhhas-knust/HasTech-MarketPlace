@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -56,8 +57,18 @@ export function OrderLookupForm({
           </div>
           <ul className="mt-4 space-y-1 text-sm text-(--color-ink-muted)">
             {state.order.items.map((item, i) => (
-              <li key={i}>
-                {item.name} × {item.quantity}
+              <li key={i} className="flex items-center justify-between gap-2">
+                <span>
+                  {item.name} × {item.quantity}
+                </span>
+                {item.downloadUrl && (
+                  <a
+                    href={item.downloadUrl}
+                    className="flex shrink-0 items-center gap-1 text-(--color-brand) hover:underline"
+                  >
+                    <Download className="h-3.5 w-3.5" /> Download
+                  </a>
+                )}
               </li>
             ))}
           </ul>

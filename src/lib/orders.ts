@@ -125,6 +125,8 @@ export async function createOrderFromCart(
     quantity: item.quantity,
     line_total: Math.round(item.unit_price * item.quantity * 100) / 100,
     is_preorder: item.product?.is_preorder ?? false,
+    digital_file_path: item.product?.digital_file_path ?? null,
+    digital_file_name: item.product?.digital_file_name ?? null,
   }));
   await admin.from("order_items").insert(orderItems);
 

@@ -15,6 +15,7 @@ export interface ProductFormState {
 function parseProductForm(formData: FormData) {
   return productSchema.safeParse({
     name: formData.get("name"),
+    productType: formData.get("productType"),
     description: formData.get("description"),
     categoryId: formData.get("categoryId") || null,
     sku: formData.get("sku"),
@@ -55,6 +56,7 @@ export async function createProductAction(
       .insert({
         store_id: membership.store.id,
         name: parsed.data.name,
+        product_type: parsed.data.productType,
         slug,
         description: parsed.data.description || null,
         category_id: parsed.data.categoryId || null,
@@ -119,6 +121,7 @@ export async function updateProductAction(
     .from("products")
     .update({
       name: parsed.data.name,
+      product_type: parsed.data.productType,
       description: parsed.data.description || null,
       category_id: parsed.data.categoryId || null,
       sku: parsed.data.sku || null,
