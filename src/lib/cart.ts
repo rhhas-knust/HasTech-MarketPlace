@@ -118,11 +118,12 @@ export async function addToCart(
     .maybeSingle();
 
   const desiredQuantity = (existing?.quantity ?? 0) + quantity;
-  const cappedQuantity = product.track_inventory
+  const capsToStock = product.track_inventory && !product.is_preorder;
+  const cappedQuantity = capsToStock
     ? Math.min(desiredQuantity, Math.max(product.stock_quantity, 0))
     : desiredQuantity;
 
-  if (product.track_inventory && cappedQuantity <= (existing?.quantity ?? 0)) {
+  if (capsToStock && cappedQuantity <= (existing?.quantity ?? 0)) {
     return { error: "Not enough stock available for this product." };
   }
 
@@ -159,16 +160,21 @@ export async function updateCartItemQuantity(
 
   const { data: item } = await admin
     .from("cart_items")
-    .select("id, product:products(stock_quantity, track_inventory)")
+    .select("id, product:products(stock_quantity, track_inventory, is_preorder)")
     .eq("id", cartItemId)
     .maybeSingle();
 
   if (!item) return { error: "Item not found in cart." };
 
-  const product = item.product as unknown as { stock_quantity: number; track_inventory: boolean } | null;
-  const cappedQuantity = product?.track_inventory
-    ? Math.min(quantity, Math.max(product.stock_quantity, 0))
-    : quantity;
+  const product = item.product as unknown as {
+    stock_quantity: number;
+    track_inventory: boolean;
+    is_preorder: boolean;
+  } | null;
+  const cappedQuantity =
+    product?.track_inventory && !product.is_preorder
+      ? Math.min(quantity, Math.max(product.stock_quantity, 0))
+      : quantity;
 
   await admin.from("cart_items").update({ quantity: cappedQuantity }).eq("id", cartItemId);
   revalidatePath(`/store/${storeSlug}`, "layout");

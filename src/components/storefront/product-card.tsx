@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { formatCurrency } from "@/lib/money";
+import { isOutOfStock } from "@/lib/inventory";
 import { primaryImage, type ProductWithImages } from "@/lib/store-data";
 import { Badge } from "@/components/ui/badge";
 
 export function ProductCard({ storeSlug, product }: { storeSlug: string; product: ProductWithImages }) {
   const image = primaryImage(product);
   const onSale = product.sale_price != null && product.sale_price < product.price;
-  const outOfStock = product.track_inventory && product.stock_quantity <= 0;
+  const outOfStock = isOutOfStock(product);
 
   return (
     <Link
@@ -27,15 +28,20 @@ export function ProductCard({ storeSlug, product }: { storeSlug: string; product
             No image
           </div>
         )}
-        {outOfStock && (
+        {product.is_preorder ? (
+          <span className="absolute left-2 top-2">
+            <Badge tone="brand">Pre-order</Badge>
+          </span>
+        ) : outOfStock ? (
           <span className="absolute left-2 top-2">
             <Badge tone="neutral">Out of stock</Badge>
           </span>
-        )}
-        {product.featured && !outOfStock && (
-          <span className="absolute left-2 top-2">
-            <Badge tone="brand">Featured</Badge>
-          </span>
+        ) : (
+          product.featured && (
+            <span className="absolute left-2 top-2">
+              <Badge tone="brand">Featured</Badge>
+            </span>
+          )
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">

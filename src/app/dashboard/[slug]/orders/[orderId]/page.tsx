@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/money";
 import { FULFILMENT_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/lib/constants";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { StatusSelect } from "@/components/dashboard/status-select";
 import { updateFulfilmentStatusAction, updatePaymentStatusAction } from "../actions";
 
@@ -89,16 +90,24 @@ export default async function OrderDetailPage({
         </CardHeader>
         <CardBody>
           <ul className="divide-y divide-(--color-border)">
-            {(order.order_items as { id: string; product_name: string; quantity: number; unit_price: number; line_total: number }[]).map(
-              (item) => (
-                <li key={item.id} className="flex items-center justify-between py-2 text-sm">
-                  <span className="text-(--color-ink)">
-                    {item.product_name} × {item.quantity}
-                  </span>
-                  <span className="text-(--color-ink-muted)">{formatCurrency(item.line_total, order.currency)}</span>
-                </li>
-              ),
-            )}
+            {(
+              order.order_items as {
+                id: string;
+                product_name: string;
+                quantity: number;
+                unit_price: number;
+                line_total: number;
+                is_preorder: boolean;
+              }[]
+            ).map((item) => (
+              <li key={item.id} className="flex items-center justify-between py-2 text-sm">
+                <span className="flex items-center gap-2 text-(--color-ink)">
+                  {item.product_name} × {item.quantity}
+                  {item.is_preorder && <Badge tone="brand">Pre-order</Badge>}
+                </span>
+                <span className="text-(--color-ink-muted)">{formatCurrency(item.line_total, order.currency)}</span>
+              </li>
+            ))}
           </ul>
           <div className="mt-4 space-y-1 border-t border-(--color-border) pt-3 text-sm">
             <div className="flex justify-between text-(--color-ink-muted)">

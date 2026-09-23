@@ -97,7 +97,16 @@ export default async function ProductsPage({
             <tbody className="divide-y divide-(--color-border)">
               {products.map((product) => (
                 <tr key={product.id}>
-                  <td className="max-w-[220px] truncate px-4 py-3 font-medium text-(--color-ink)">{product.name}</td>
+                  <td className="max-w-[220px] px-4 py-3 font-medium text-(--color-ink)">
+                    <div className="flex items-center gap-2">
+                      <span className="truncate">{product.name}</span>
+                      {product.is_preorder && (
+                        <span className="shrink-0">
+                          <Badge tone="brand">Pre-order</Badge>
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-(--color-ink)">{formatCurrency(product.price, product.currency)}</td>
                   <td className="px-4 py-3">
                     {product.track_inventory ? (

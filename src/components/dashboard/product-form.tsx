@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea, FieldHint } from "@/components/ui/input";
 import type { Category, Product } from "@/lib/types/database";
@@ -18,6 +18,7 @@ export function ProductForm({
   submitLabel: string;
 }) {
   const [state, formAction, pending] = useActionState<ProductFormState, FormData>(action, {});
+  const [isPreorder, setIsPreorder] = useState(product?.is_preorder ?? false);
 
   return (
     <form action={formAction} className="space-y-5">
@@ -102,6 +103,37 @@ export function ProductForm({
         <Label htmlFor="featured" className="mb-0">
           Feature on storefront homepage
         </Label>
+      </div>
+
+      <div className="rounded-lg border border-(--color-border) p-3">
+        <div className="flex items-center gap-2">
+          <input
+            id="isPreorder"
+            name="isPreorder"
+            type="checkbox"
+            defaultChecked={product?.is_preorder ?? false}
+            onChange={(e) => setIsPreorder(e.target.checked)}
+          />
+          <Label htmlFor="isPreorder" className="mb-0">
+            Available for pre-order
+          </Label>
+        </div>
+        <FieldHint>
+          Customers can order this even while stock is 0 — the &quot;Add to cart&quot; button becomes
+          &quot;Pre-order&quot; on your storefront.
+        </FieldHint>
+        {isPreorder && (
+          <div className="mt-3">
+            <Label htmlFor="preorderNote">Pre-order note (optional)</Label>
+            <Input
+              id="preorderNote"
+              name="preorderNote"
+              placeholder="e.g. Ships in 2-3 weeks"
+              defaultValue={product?.preorder_note ?? ""}
+              maxLength={280}
+            />
+          </div>
+        )}
       </div>
 
       <div>

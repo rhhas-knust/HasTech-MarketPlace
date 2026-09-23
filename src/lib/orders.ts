@@ -51,7 +51,11 @@ export async function createOrderFromCart(
   // the last unit are a known, documented limitation; see README).
   for (const item of cart.items) {
     if (!item.product) throw new StockUnavailableError("A product in your cart");
-    if (item.product.track_inventory && item.product.stock_quantity < item.quantity) {
+    if (
+      item.product.track_inventory &&
+      !item.product.is_preorder &&
+      item.product.stock_quantity < item.quantity
+    ) {
       throw new StockUnavailableError(item.product.name);
     }
   }
@@ -120,6 +124,7 @@ export async function createOrderFromCart(
     unit_price: item.unit_price,
     quantity: item.quantity,
     line_total: Math.round(item.unit_price * item.quantity * 100) / 100,
+    is_preorder: item.product?.is_preorder ?? false,
   }));
   await admin.from("order_items").insert(orderItems);
 

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProductBySlug, getRelatedProducts, getStoreBySlug, primaryImage } from "@/lib/store-data";
 import { formatCurrency } from "@/lib/money";
+import { isOutOfStock } from "@/lib/inventory";
 import { ctaLabelForBusinessType } from "@/lib/constants";
 import { trackProductView } from "@/lib/analytics/track";
 import { AddToCartForm } from "@/components/storefront/add-to-cart-form";
@@ -58,9 +59,10 @@ export default async function ProductPage({
   const related = await getRelatedProducts(store.id, product.category_id, product.id);
   const image = primaryImage(product);
   const onSale = product.sale_price != null && product.sale_price < product.price;
-  const outOfStock = product.track_inventory && product.stock_quantity <= 0;
-  const maxQuantity = product.track_inventory ? Math.max(product.stock_quantity, 0) : 99;
-  const cta = ctaLabelForBusinessType(store.business_type);
+  const outOfStock = isOutOfStock(product);
+  const maxQuantity =
+    product.track_inventory && !product.is_preorder ? Math.max(product.stock_quantity, 0) : 99;
+  const cta = product.is_preorder ? "Pre-order" : ctaLabelForBusinessType(store.business_type);
   const boundAddToCart = addToCartAction.bind(null, store.id, store.slug, product.id);
 
   const productUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/store/${store.slug}/product/${product.slug}`;
@@ -74,9 +76,11 @@ export default async function ProductPage({
       "@type": "Offer",
       priceCurrency: product.currency,
       price: onSale ? product.sale_price : product.price,
-      availability: outOfStock
-        ? "https://schema.org/OutOfStock"
-        : "https://schema.org/InStock",
+      availability: product.is_preorder
+        ? "https://schema.org/PreOrder"
+        : outOfStock
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock",
       url: productUrl,
     },
   };
@@ -109,7 +113,9 @@ export default async function ProductPage({
           </div>
 
           <div className="mt-3 flex items-center gap-2">
-            {outOfStock ? (
+            {product.is_preorder ? (
+              <Badge tone="brand">Pre-order</Badge>
+            ) : outOfStock ? (
               <Badge tone="neutral">Out of stock</Badge>
             ) : product.track_inventory && product.stock_quantity <= 5 ? (
               <Badge tone="warning">Only {product.stock_quantity} left</Badge>
@@ -120,6 +126,10 @@ export default async function ProductPage({
               {product.view_count} {product.view_count === 1 ? "person has" : "people have"} viewed this
             </span>
           </div>
+
+          {product.is_preorder && product.preorder_note && (
+            <p className="mt-2 text-sm text-(--color-ink-muted)">{product.preorder_note}</p>
+          )}
 
           {product.description && (
             <p className="mt-5 whitespace-pre-line text-(--color-ink-muted)">{product.description}</p>

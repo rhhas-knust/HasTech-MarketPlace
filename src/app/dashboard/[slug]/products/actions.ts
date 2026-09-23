@@ -25,6 +25,8 @@ function parseProductForm(formData: FormData) {
     lowStockThreshold: formData.get("lowStockThreshold") ? Number(formData.get("lowStockThreshold")) : null,
     status: formData.get("status"),
     featured: formData.get("featured") === "on",
+    isPreorder: formData.get("isPreorder") === "on",
+    preorderNote: formData.get("preorderNote"),
   });
 }
 
@@ -64,6 +66,8 @@ export async function createProductAction(
         low_stock_threshold: parsed.data.lowStockThreshold,
         status: parsed.data.status,
         featured: parsed.data.featured,
+        is_preorder: parsed.data.isPreorder,
+        preorder_note: parsed.data.isPreorder ? parsed.data.preorderNote || null : null,
         published_at: parsed.data.status === "published" ? new Date().toISOString() : null,
       })
       .select("id")
@@ -125,6 +129,8 @@ export async function updateProductAction(
       low_stock_threshold: parsed.data.lowStockThreshold,
       status: parsed.data.status,
       featured: parsed.data.featured,
+      is_preorder: parsed.data.isPreorder,
+      preorder_note: parsed.data.isPreorder ? parsed.data.preorderNote || null : null,
       published_at: nowPublishing ? new Date().toISOString() : current?.published_at,
     })
     .eq("id", productId)
@@ -179,6 +185,8 @@ export async function duplicateProductAction(storeSlug: string, productId: strin
     low_stock_threshold: original.low_stock_threshold,
     status: "draft",
     featured: false,
+    is_preorder: original.is_preorder,
+    preorder_note: original.preorder_note,
   });
 
   await logAudit(membership.store.id, membership.store.owner_id, "product.duplicated", "product", productId);

@@ -125,6 +125,8 @@ export interface Product {
   low_stock_threshold: number | null;
   status: ProductStatus;
   featured: boolean;
+  is_preorder: boolean;
+  preorder_note: string | null;
   view_count: number;
   add_to_cart_count: number;
   purchase_count: number;
@@ -230,6 +232,7 @@ export interface OrderItem {
   unit_price: number;
   quantity: number;
   line_total: number;
+  is_preorder: boolean;
   created_at: string;
 }
 
