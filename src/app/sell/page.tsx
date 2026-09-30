@@ -212,9 +212,14 @@ export default function SellPage() {
       </main>
 
       <footer className="border-t border-(--color-border) px-4 py-6 text-center text-sm text-(--color-ink-muted)">
-        <Link href="/" className="hover:text-(--color-ink)">
-          &larr; Back to {PLATFORM_NAME}
-        </Link>
+        <div className="flex items-center justify-center gap-4">
+          <Link href="/" className="hover:text-(--color-ink)">
+            &larr; Back to {PLATFORM_NAME}
+          </Link>
+          <Link href="/contact" className="hover:text-(--color-ink)">
+            Talk to us
+          </Link>
+        </div>
       </footer>
     </div>
   );

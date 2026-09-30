@@ -135,9 +135,14 @@ export default function Home() {
 
       <footer className="border-t border-(--color-border) px-4 py-6 text-center text-sm text-(--color-ink-muted)">
         <p>{PLATFORM_NAME} &mdash; storefronts, orders and payments for small businesses.</p>
-        <Link href="/sell" className="mt-1 inline-block hover:text-(--color-ink)">
-          For sellers
-        </Link>
+        <div className="mt-1 flex items-center justify-center gap-4">
+          <Link href="/sell" className="hover:text-(--color-ink)">
+            For sellers
+          </Link>
+          <Link href="/contact" className="hover:text-(--color-ink)">
+            Talk to us
+          </Link>
+        </div>
       </footer>
     </div>
   );

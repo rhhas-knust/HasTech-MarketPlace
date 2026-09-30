@@ -1,4 +1,5 @@
 import "server-only";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile, Store, StoreMemberRole } from "@/lib/types/database";
 
@@ -56,4 +57,20 @@ export async function getUserStores(): Promise<StoreMembership[]> {
 export async function requireStoreAccess(storeSlug: string): Promise<StoreMembership | null> {
   const memberships = await getUserStores();
   return memberships.find((m) => m.store.slug === storeSlug) ?? null;
+}
+
+export async function isPlatformAdmin(): Promise<boolean> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const { data } = await supabase.from("platform_admins").select("user_id").eq("user_id", user.id).maybeSingle();
+  return Boolean(data);
+}
+
+/** Redirects non-admins to the dashboard rather than letting them see an RLS error. */
+export async function requirePlatformAdmin(): Promise<void> {
+  if (!(await isPlatformAdmin())) redirect("/dashboard");
 }
