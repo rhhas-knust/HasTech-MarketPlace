@@ -2,6 +2,7 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPaymentProviderForStore } from "@/lib/payments";
 import { recordCommissionForOrder } from "@/lib/payments/platform";
+import { sendOrderPaidEmails } from "@/lib/order-emails";
 import { fromMinorUnits, toMinorUnits } from "@/lib/money";
 
 export interface PaymentVerificationResult {
@@ -148,6 +149,15 @@ export async function verifyAndProcessPayment(
     order_id: payment.order_id,
     metadata: { amount: payment.amount, currency: payment.currency },
   });
+
+  // Best-effort: sendOrderPaidEmails/sendEmail never throw, but a defensive
+  // catch here means even an unexpected bug in the email path can't turn
+  // into a failed payment verification for something that already succeeded.
+  try {
+    await sendOrderPaidEmails(storeId, payment.order_id);
+  } catch (err) {
+    console.error("[email] sendOrderPaidEmails failed", err);
+  }
 
   return { orderId: payment.order_id, orderNumber: order?.order_number ?? null, status: "paid" };
 }
