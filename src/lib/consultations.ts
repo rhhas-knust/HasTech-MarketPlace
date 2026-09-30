@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { requirePlatformAdmin } from "@/lib/auth/session";
 import { consultationSchema } from "@/lib/validation/consultation";
 
@@ -63,11 +64,16 @@ export interface ConsultationRequestRow {
   created_at: string;
 }
 
-/** Admin-only: requirePlatformAdmin() throws/redirects for anyone else. */
+/**
+ * Admin-only: requirePlatformAdmin() redirects anyone else before the query
+ * even runs. The read itself goes through the regular client -- RLS
+ * (consultation_requests_admin_select) grants it, so this is real
+ * server-enforced authorization, not just an app-level gate.
+ */
 export async function getConsultationRequests(): Promise<ConsultationRequestRow[]> {
   await requirePlatformAdmin();
-  const admin = createAdminClient();
-  const { data } = await admin
+  const supabase = await createClient();
+  const { data } = await supabase
     .from("consultation_requests")
     .select("*")
     .order("created_at", { ascending: false });
@@ -79,7 +85,7 @@ export async function updateConsultationStatus(
   status: ConsultationRequestRow["status"],
 ): Promise<void> {
   await requirePlatformAdmin();
-  const admin = createAdminClient();
-  await admin.from("consultation_requests").update({ status }).eq("id", requestId);
+  const supabase = await createClient();
+  await supabase.from("consultation_requests").update({ status }).eq("id", requestId);
   revalidatePath("/admin/consultations");
 }
