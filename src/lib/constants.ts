@@ -6,6 +6,12 @@ export const DEFAULT_TIMEZONE = "Africa/Accra";
 
 export const PLATFORM_NAME = "HASTECH Commerce";
 
+// Must match the threshold in assign_platform_billing()
+// (0019_founding_member_limit_and_consultations.sql).
+export const FOUNDING_MEMBER_LIMIT = 10;
+export const COMMISSION_RATE_PERCENT = 5;
+export const SUBSCRIPTION_PRICE_GHS = 100;
+
 export const BUSINESS_TYPE_OPTIONS: {
   value: BusinessType;
   label: string;

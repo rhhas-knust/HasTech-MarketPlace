@@ -1,9 +1,17 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { storeBusinessInfoSchema, storeContactSchema, storeSlugSchema } from "@/lib/validation/store";
+import {
+  storeBrandingSchema,
+  storeBusinessInfoSchema,
+  storeContactSchema,
+  storeSlugSchema,
+} from "@/lib/validation/store";
 import { DEFAULT_COUNTRY, DEFAULT_CURRENCY, DEFAULT_TIMEZONE } from "@/lib/constants";
+import { slugify } from "@/lib/slug";
+import type { BusinessType, ProductType } from "@/lib/types/database";
 
 export interface OnboardingFormState {
   error?: string;
@@ -39,6 +47,8 @@ export async function createStoreAction(
   });
   if (!contact.success) return { error: contact.error.issues[0]?.message };
 
+  const branding = storeBrandingSchema.safeParse({ accentColor: formData.get("accentColor") ?? "" });
+
   // No .select() here: Postgres re-checks a SELECT policy against the row
   // returned by INSERT ... RETURNING, and that happens before the
   // on_store_created trigger's insert into store_members is visible (see
@@ -61,6 +71,7 @@ export async function createStoreAction(
     country: DEFAULT_COUNTRY,
     currency: DEFAULT_CURRENCY,
     timezone: DEFAULT_TIMEZONE,
+    ...(branding.success ? { theme: { accentColor: branding.data.accentColor } } : {}),
   });
 
   if (error) {
@@ -68,5 +79,53 @@ export async function createStoreAction(
     return { error: "Something went wrong creating your store. Please try again." };
   }
 
+  await createFirstProductFromDraft(supabase, slugResult.data, businessInfo.data.businessType, formData);
+
   redirect(`/dashboard/${slugResult.data}?welcome=1`);
+}
+
+const PRODUCT_TYPE_FOR_BUSINESS: Partial<Record<BusinessType, ProductType>> = {
+  service: "service",
+  professional_service: "service",
+  digital_product: "digital",
+};
+
+const draftProductSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  price: z.coerce.number().min(0).max(1_000_000),
+});
+
+/**
+ * Best-effort: the store already exists at this point, so a failure here
+ * must never block onboarding -- the seller can always add the product
+ * from their dashboard instead.
+ */
+async function createFirstProductFromDraft(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  storeSlug: string,
+  businessType: BusinessType,
+  formData: FormData,
+) {
+  const parsed = draftProductSchema.safeParse({
+    name: formData.get("productName") ?? "",
+    price: formData.get("productPrice") || undefined,
+  });
+  if (!parsed.success) return;
+
+  // A separate read (not INSERT ... RETURNING) so the on_store_created
+  // trigger's store_members row is visible to the SELECT policy by now.
+  const { data: store } = await supabase.from("stores").select("id").eq("slug", storeSlug).maybeSingle();
+  if (!store) return;
+
+  const { error } = await supabase.from("products").insert({
+    store_id: store.id,
+    name: parsed.data.name,
+    slug: slugify(parsed.data.name) || "first-product",
+    product_type: PRODUCT_TYPE_FOR_BUSINESS[businessType] ?? "physical",
+    price: parsed.data.price,
+    track_inventory: false,
+    status: "published",
+    published_at: new Date().toISOString(),
+  });
+  if (error) console.error("[onboarding] first product from draft failed", error);
 }

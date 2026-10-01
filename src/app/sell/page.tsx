@@ -3,7 +3,13 @@ import type { Metadata } from "next";
 import { LinkButton } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PlatformLogo } from "@/components/platform-logo";
-import { PLATFORM_NAME, BUSINESS_TYPE_OPTIONS } from "@/lib/constants";
+import {
+  PLATFORM_NAME,
+  BUSINESS_TYPE_OPTIONS,
+  COMMISSION_RATE_PERCENT,
+  FOUNDING_MEMBER_LIMIT,
+  SUBSCRIPTION_PRICE_GHS,
+} from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Sell on HASTECH Commerce",
@@ -52,7 +58,7 @@ const FAQS = [
   },
   {
     q: "Is there a monthly fee?",
-    a: "Not right now — there are no subscription tiers or fees while we're onboarding early sellers. If that changes in future, existing sellers will be told in advance.",
+    a: `Not unless you want one. By default you pay nothing upfront and ${COMMISSION_RATE_PERCENT}% only when you make a sale. If you'd rather pay a flat fee, there's a GHS ${SUBSCRIPTION_PRICE_GHS}/month plan with no cut of your sales. The first ${FOUNDING_MEMBER_LIMIT} stores pay no fees at all for their first month as founding members.`,
   },
   {
     q: "How long does setup actually take?",
@@ -72,7 +78,7 @@ export default function SellPage() {
             <Link href="/login" className="whitespace-nowrap text-(--color-ink-muted) hover:text-(--color-ink)">
               Sign in
             </Link>
-            <LinkButton href="/signup" size="sm" className="whitespace-nowrap">
+            <LinkButton href="/start" size="sm" className="whitespace-nowrap">
               Create your store
             </LinkButton>
             <ThemeToggle />
@@ -94,7 +100,7 @@ export default function SellPage() {
               downloads — you can have a real storefront and be taking payments today.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <LinkButton href="/signup" size="lg">
+              <LinkButton href="/start" size="lg">
                 Create your free store
               </LinkButton>
               <LinkButton href="#how-it-works" size="lg" variant="outline">
@@ -205,7 +211,7 @@ export default function SellPage() {
           <p className="mx-auto mt-2 max-w-md text-sm text-(--color-ink-muted)">
             It takes a few minutes to set up your store and start adding products or services.
           </p>
-          <LinkButton href="/signup" size="lg" className="mt-6">
+          <LinkButton href="/start" size="lg" className="mt-6">
             Create your free store
           </LinkButton>
         </div>

@@ -10,20 +10,33 @@ import { RevenueChart, ViewsChart } from "@/components/dashboard/charts";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PublishToggle } from "@/components/dashboard/publish-toggle";
+import { WelcomeGift } from "@/components/dashboard/welcome-gift";
+import { getPlatformBilling } from "@/lib/payments/platform";
+import { getAppUrl } from "@/lib/app-url";
 import { publishStoreAction, unpublishStoreAction } from "./actions";
 
-export default async function StoreOverviewPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function StoreOverviewPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ welcome?: string }>;
+}) {
   const { slug } = await params;
+  const { welcome } = await searchParams;
   const membership = await requireStoreAccess(slug);
   if (!membership) redirect("/dashboard");
   const { store } = membership;
+  const showWelcome = welcome === "1";
 
-  const [stats, revenueSeries, viewsSeries, activity, paymentConfigured] = await Promise.all([
+  const [stats, revenueSeries, viewsSeries, activity, paymentConfigured, billing, appUrl] = await Promise.all([
     getOverviewStats(store.id),
     getRevenueOverTime(store.id),
     getViewsOverTime(store.id),
     getRecentActivity(store.id, 10),
     isPaymentProviderConfigured(store.id),
+    showWelcome ? getPlatformBilling(store.id) : Promise.resolve(null),
+    getAppUrl(),
   ]);
 
   const conversionRate = stats.totalViews > 0 ? (stats.purchaseCount / stats.totalViews) * 100 : 0;
@@ -49,6 +62,15 @@ export default async function StoreOverviewPage({ params }: { params: Promise<{ 
           onUnpublish={unpublishStoreAction.bind(null, slug)}
         />
       </div>
+
+      {showWelcome && (
+        <WelcomeGift
+          storeName={store.name}
+          storeUrl={`${appUrl}/store/${store.slug}`}
+          foundingUntil={billing?.isFoundingMember ? billing.foundingMemberUntil : null}
+          isPublished={isPublished}
+        />
+      )}
 
       {incomplete.length > 0 && (
         <Card>

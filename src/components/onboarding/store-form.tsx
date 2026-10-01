@@ -1,10 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea, FieldHint } from "@/components/ui/input";
 import { BUSINESS_TYPE_OPTIONS } from "@/lib/constants";
 import { slugify } from "@/lib/slug";
+import { loadStoreDraft } from "@/lib/store-draft";
+import type { BusinessType } from "@/lib/types/database";
 import { createStoreAction, type OnboardingFormState } from "@/app/onboarding/actions";
 
 export function StoreForm() {
@@ -15,9 +17,45 @@ export function StoreForm() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [businessType, setBusinessType] = useState<BusinessType>("retail");
+  const [description, setDescription] = useState("");
+  const [accentColor, setAccentColor] = useState("");
+  const [productName, setProductName] = useState("");
+  const [productPrice, setProductPrice] = useState("");
+  const [fromDraft, setFromDraft] = useState(false);
+
+  useEffect(() => {
+    const draft = loadStoreDraft();
+    if (!draft?.name.trim()) return;
+    /* eslint-disable react-hooks/set-state-in-effect -- localStorage is only readable after mount */
+    setName(draft.name);
+    setSlug(slugify(draft.name));
+    setBusinessType(draft.businessType);
+    setDescription(draft.tagline);
+    setAccentColor(draft.accentColor);
+    setProductName(draft.productName);
+    setProductPrice(draft.productPrice);
+    setFromDraft(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
 
   return (
     <form action={formAction} className="space-y-5">
+      {fromDraft && (
+        <div className="flex items-center gap-3 rounded-lg border border-(--color-brand) bg-(--color-brand-subtle) px-3 py-2.5 text-sm text-(--color-ink)">
+          {accentColor && (
+            <span className="h-6 w-6 shrink-0 rounded-full" style={{ backgroundColor: accentColor }} aria-hidden />
+          )}
+          <span>
+            We brought over the store you designed
+            {productName.trim() ? `, including “${productName.trim()}”` : ""}. Just check the details below.
+          </span>
+        </div>
+      )}
+      <input type="hidden" name="accentColor" value={accentColor} />
+      <input type="hidden" name="productName" value={productName} />
+      <input type="hidden" name="productPrice" value={productPrice} />
+
       <div>
         <Label htmlFor="name">Business name</Label>
         <Input
@@ -54,7 +92,13 @@ export function StoreForm() {
 
       <div>
         <Label htmlFor="businessType">Business type</Label>
-        <Select id="businessType" name="businessType" required defaultValue="retail">
+        <Select
+          id="businessType"
+          name="businessType"
+          required
+          value={businessType}
+          onChange={(e) => setBusinessType(e.target.value as BusinessType)}
+        >
           {BUSINESS_TYPE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -66,7 +110,13 @@ export function StoreForm() {
 
       <div>
         <Label htmlFor="description">Short description (optional)</Label>
-        <Textarea id="description" name="description" placeholder="What do you sell?" />
+        <Textarea
+          id="description"
+          name="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="What do you sell?"
+        />
       </div>
 
       <fieldset className="space-y-4 border-t border-(--color-border) pt-4">
@@ -92,7 +142,7 @@ export function StoreForm() {
       )}
 
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Creating your store…" : "Create my store"}
+        {pending ? "Creating your store…" : "Create my store & open my gift 🎁"}
       </Button>
     </form>
   );

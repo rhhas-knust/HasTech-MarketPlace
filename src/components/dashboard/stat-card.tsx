@@ -1,5 +1,6 @@
 import { cn } from "@/lib/cn";
 import type { ReactNode } from "react";
+import { RollingDigits } from "@/components/rolling-digits";
 
 export function StatCard({
   label,
@@ -20,7 +21,9 @@ export function StatCard({
         <p className="text-sm text-(--color-ink-muted)">{label}</p>
         {icon && <span className="text-(--color-ink-muted)">{icon}</span>}
       </div>
-      <p className="mt-2 text-2xl font-semibold text-(--color-ink)">{value}</p>
+      <p className="mt-2 text-2xl font-semibold text-(--color-ink)">
+        <RollingDigits text={value} />
+      </p>
       {hint && <p className="mt-1 text-xs text-(--color-ink-muted)">{hint}</p>}
     </div>
   );

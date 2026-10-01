@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getCurrentUser, getUserStores } from "@/lib/auth/session";
 import { StoreForm } from "@/components/onboarding/store-form";
+import { SignupProgress } from "@/components/signup-progress";
 import { PLATFORM_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Create your store" };
@@ -15,10 +16,11 @@ export default async function OnboardingPage() {
 
   return (
     <div className="mx-auto min-h-screen max-w-xl px-4 py-12">
-      <p className="mb-1 text-sm font-medium text-(--color-brand)">{PLATFORM_NAME}</p>
-      <h1 className="mb-1 text-2xl font-semibold text-(--color-ink)">Tell us about your business</h1>
+      <p className="mb-4 text-sm font-medium text-(--color-brand)">{PLATFORM_NAME}</p>
+      <SignupProgress current={3} percent={85} />
+      <h1 className="mb-1 text-2xl font-semibold text-(--color-ink)">Last step: your store details</h1>
       <p className="mb-8 text-sm text-(--color-ink-muted)">
-        This becomes your storefront. You can add products and payments next.
+        This becomes your storefront. Your welcome gift opens as soon as it&apos;s created.
       </p>
       <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6 shadow-sm">
         <StoreForm />
