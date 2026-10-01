@@ -25,7 +25,7 @@ export function DigitalFileManager({
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
+    <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-4">
       {fileName ? (
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2 text-sm text-(--color-ink)">

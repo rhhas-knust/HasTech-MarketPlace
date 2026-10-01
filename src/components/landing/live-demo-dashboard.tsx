@@ -54,9 +54,16 @@ export function LiveDemoDashboard() {
   const conversion = ((orders / visitors) * 100).toFixed(1);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-(--color-border) bg-(--color-surface) shadow-xl shadow-black/5">
-      <div className="flex items-center justify-between border-b border-(--color-border) px-5 py-3">
-        <span className="text-sm font-medium text-(--color-ink)">Your dashboard</span>
+    <div className="overflow-hidden rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-lift">
+      <div className="flex items-center justify-between border-b border-(--color-border)/70 px-6 py-4">
+        <span className="flex items-center gap-2 text-sm font-semibold text-(--color-ink)">
+          <span className="flex gap-1.5" aria-hidden>
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+          </span>
+          Your dashboard
+        </span>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-(--color-success-subtle) px-2.5 py-0.5 text-xs font-medium text-(--color-success)">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-(--color-success) opacity-60 motion-reduce:animate-none" />
@@ -66,14 +73,14 @@ export function LiveDemoDashboard() {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-px bg-(--color-border)">
+      <div className="grid grid-cols-2 gap-3 p-4">
         {[
           { label: "Revenue", text: formatGhs(revenue) },
           { label: "Orders", text: String(orders) },
           { label: "Visitors", text: visitors.toLocaleString("en-GH") },
           { label: "Conversion", text: `${conversion}%` },
         ].map((stat) => (
-          <div key={stat.label} className="bg-(--color-surface) px-4 py-4">
+          <div key={stat.label} className="rounded-2xl bg-(--color-surface-subtle) px-4 py-4 ring-1 ring-(--color-border)/60">
             <p className="text-[11px] font-medium uppercase tracking-wider text-(--color-ink-muted)">
               {stat.label}
             </p>
@@ -84,11 +91,11 @@ export function LiveDemoDashboard() {
         ))}
       </div>
 
-      <ul className="divide-y divide-(--color-border) border-t border-(--color-border)">
+      <ul className="space-y-2 px-4 pb-4">
         {feed.map((item) => (
           <li
             key={item.id}
-            className="flex items-center justify-between gap-3 px-5 py-3 text-sm motion-safe:animate-[feed-in_400ms_ease-out]"
+            className="flex items-center justify-between gap-3 rounded-2xl border border-(--color-border)/60 px-4 py-3 text-sm motion-safe:animate-[feed-in_400ms_ease-out]"
           >
             <span className="min-w-0 truncate text-(--color-ink)">
               <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-(--color-success-subtle) text-[11px] text-(--color-success)">
@@ -102,7 +109,7 @@ export function LiveDemoDashboard() {
           </li>
         ))}
       </ul>
-      <p className="border-t border-(--color-border) bg-(--color-surface-subtle) px-5 py-2 text-center text-[11px] text-(--color-ink-muted)">
+      <p className="border-t border-(--color-border)/70 bg-(--color-surface-subtle)/60 px-5 py-2.5 text-center text-[11px] text-(--color-ink-muted)">
         Example data — this is what your real dashboard looks like once orders come in.
       </p>
     </div>

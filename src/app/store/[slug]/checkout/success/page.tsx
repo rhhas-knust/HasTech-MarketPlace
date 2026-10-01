@@ -56,7 +56,7 @@ export default async function CheckoutSuccessPage({
       )}
 
       {downloads.length > 0 && (
-        <div className="mt-6 rounded-xl border border-(--color-border) bg-(--color-surface) p-4 text-left">
+        <div className="mt-6 rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-4 text-left">
           <p className="mb-3 text-sm font-medium text-(--color-ink)">Your downloads</p>
           <ul className="space-y-2">
             {downloads.map((download) => (

@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Sign in" };
 export default function LoginPage() {
   return (
     <div>
-      <h1 className="mb-1 text-xl font-semibold text-(--color-ink)">Welcome back</h1>
+      <h1 className="mb-1 text-2xl font-bold tracking-tight text-(--color-ink)">Welcome back</h1>
       <p className="mb-6 text-sm text-(--color-ink-muted)">Sign in to manage your store.</p>
       <GoogleButton />
       <OrDivider />

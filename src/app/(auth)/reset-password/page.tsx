@@ -15,7 +15,7 @@ export default async function ResetPasswordPage() {
 
   return (
     <div>
-      <h1 className="mb-1 text-xl font-semibold text-(--color-ink)">Choose a new password</h1>
+      <h1 className="mb-1 text-2xl font-bold tracking-tight text-(--color-ink)">Choose a new password</h1>
       <p className="mb-6 text-sm text-(--color-ink-muted)">
         Enter a new password for your account.
       </p>

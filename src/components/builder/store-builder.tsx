@@ -40,7 +40,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_340px] lg:items-start">
-      <div className="rounded-2xl border border-(--color-border) bg-(--color-surface) p-6 shadow-lg shadow-black/5">
+      <div className="rounded-[2rem] border border-(--color-border)/70 bg-(--color-surface) p-6 shadow-lift sm:p-8">
         <SignupProgress current={0} percent={10 + Math.min(step, 4) * 6} />
 
         {!done ? (
@@ -53,7 +53,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
             <p className="font-mono text-xs text-(--color-ink-muted)">
               Step {step + 1} of {STEP_TITLES.length}
             </p>
-            <h1 className="mt-1 text-2xl font-semibold text-(--color-ink)">{STEP_TITLES[step]}</h1>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">{STEP_TITLES[step]}</h1>
 
             <div className="mt-6 min-h-[180px]">
               {step === 0 && (
@@ -90,9 +90,9 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                       type="button"
                       onClick={() => update({ businessType: opt.value })}
                       className={cn(
-                        "rounded-xl border p-3 text-left transition-colors",
+                        "rounded-2xl border p-4 text-left transition-all duration-200 hover:-translate-y-0.5",
                         draft.businessType === opt.value
-                          ? "border-(--color-brand) bg-(--color-brand-subtle)"
+                          ? "border-(--color-brand) bg-(--color-brand-subtle) shadow-soft ring-2 ring-(--color-brand)/20"
                           : "border-(--color-border) hover:border-(--color-brand)",
                       )}
                     >
@@ -113,7 +113,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                         aria-label={`Use colour ${color}`}
                         onClick={() => update({ accentColor: color })}
                         className={cn(
-                          "h-12 w-12 rounded-full transition-transform hover:scale-110",
+                          "h-12 w-12 rounded-full shadow-soft transition-transform hover:scale-110",
                           draft.accentColor === color && "ring-4 ring-(--color-brand) ring-offset-2 ring-offset-(--color-surface)",
                         )}
                         style={{ backgroundColor: color }}
@@ -185,7 +185,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
           </form>
         ) : (
           <div>
-            <h1 className="text-2xl font-semibold text-(--color-ink)">
+            <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">
               🎉 {draft.name.trim() || "Your store"} is ready to go live
             </h1>
             <p className="mt-2 text-sm text-(--color-ink-muted)">

@@ -24,7 +24,7 @@ export function GiftBox({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group flex w-full flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-(--color-brand) bg-(--color-brand-subtle) px-4 py-6 text-center transition-transform hover:scale-[1.02] active:scale-[0.98]"
+        className="group flex w-full flex-col items-center gap-2 rounded-3xl border-2 border-dashed border-(--color-brand)/50 bg-(--color-brand-subtle) px-4 py-7 text-center shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.98]"
       >
         <span className="text-5xl motion-safe:animate-[gift-wiggle_2.4s_ease-in-out_infinite]" aria-hidden>
           🎁
@@ -35,7 +35,7 @@ export function GiftBox({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border-2 border-(--color-brand) bg-(--color-surface) p-5 motion-safe:animate-[gift-pop_500ms_ease-out]">
+    <div className="relative overflow-hidden rounded-3xl border border-(--color-brand)/40 bg-(--color-surface) p-6 shadow-lift motion-safe:animate-[gift-pop_500ms_ease-out]">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-0" aria-hidden>
         {Array.from({ length: 18 }).map((_, i) => (
           <span

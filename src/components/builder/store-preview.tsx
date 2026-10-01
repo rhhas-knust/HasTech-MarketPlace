@@ -25,8 +25,8 @@ export function StorePreview({ draft }: { draft: StoreDraft }) {
   const emoji = TYPE_EMOJI[draft.businessType] ?? "✨";
 
   return (
-    <div className="mx-auto w-full max-w-[300px] rounded-[2rem] border-[6px] border-(--color-ink) bg-(--color-surface) p-0 shadow-2xl shadow-black/20">
-      <div className="overflow-hidden rounded-[1.6rem]">
+    <div className="mx-auto w-full max-w-[300px] rounded-[2.4rem] border-[7px] border-(--color-ink) bg-(--color-surface) p-0 shadow-lift ring-1 ring-black/5 motion-safe:animate-[float-slow_7s_ease-in-out_infinite]">
+      <div className="overflow-hidden rounded-[1.9rem]">
         <div className="truncate bg-(--color-surface-subtle) px-4 py-1.5 text-center font-mono text-[10px] text-(--color-ink-muted)">
           /store/{slug}
         </div>
@@ -42,8 +42,8 @@ export function StorePreview({ draft }: { draft: StoreDraft }) {
           </p>
         </div>
         <div className="space-y-3 p-4">
-          <div className="rounded-xl border border-(--color-border) p-3">
-            <div className="flex h-24 items-center justify-center rounded-lg bg-(--color-surface-subtle) text-4xl">
+          <div className="rounded-2xl border border-(--color-border)/70 p-3 shadow-soft">
+            <div className="flex h-24 items-center justify-center rounded-xl bg-(--color-surface-subtle) text-4xl">
               {emoji}
             </div>
             <p className="mt-2 truncate text-sm font-medium text-(--color-ink)">
@@ -51,7 +51,7 @@ export function StorePreview({ draft }: { draft: StoreDraft }) {
             </p>
             <p className="font-mono text-sm text-(--color-ink-muted) tabular-nums">{formatPrice(draft.productPrice)}</p>
             <span
-              className="mt-2 block rounded-md py-1.5 text-center text-xs font-medium text-white transition-colors duration-300"
+              className="mt-2 block rounded-full py-1.5 text-center text-xs font-medium text-white transition-colors duration-300"
               style={{ backgroundColor: draft.accentColor }}
             >
               {ctaLabelForBusinessType(draft.businessType)}

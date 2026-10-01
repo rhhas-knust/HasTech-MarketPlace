@@ -44,7 +44,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       }}
       className={
         className ??
-        "flex h-9 w-9 items-center justify-center rounded-lg border border-(--color-border) text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-subtle) hover:text-(--color-ink)"
+        "flex h-9 w-9 items-center justify-center rounded-full border border-(--color-border) bg-(--color-surface) text-(--color-ink-muted) shadow-soft transition-all hover:-translate-y-0.5 hover:text-(--color-ink)"
       }
     >
       {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

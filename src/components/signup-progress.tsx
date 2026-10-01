@@ -12,9 +12,9 @@ export function SignupProgress({ current, percent }: { current: number; percent:
   return (
     <div className="mb-6" aria-label={`Setup progress: ${Math.round(clamped)}%`}>
       <div className="flex items-center gap-3">
-        <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-(--color-border)">
+        <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-(--color-surface-subtle) ring-1 ring-inset ring-(--color-border)">
           <div
-            className="h-full rounded-full bg-(--color-brand) transition-[width] duration-700 ease-out"
+            className="h-full rounded-full bg-brand-gradient shadow-glow transition-[width] duration-700 ease-out"
             style={{ width: `${clamped}%` }}
           />
         </div>

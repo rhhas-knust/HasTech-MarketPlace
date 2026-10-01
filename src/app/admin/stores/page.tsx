@@ -29,7 +29,7 @@ export default async function AdminStoresPage() {
         <p className="text-sm text-(--color-ink-muted)">Every seller on the platform, newest first.</p>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface)">
+      <div className="overflow-x-auto rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
         <table className="w-full text-sm">
           <thead className="border-b border-(--color-border) text-left text-(--color-ink-muted)">
             <tr>

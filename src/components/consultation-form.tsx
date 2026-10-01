@@ -14,7 +14,7 @@ export function ConsultationForm({
 
   if (state.success) {
     return (
-      <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6 text-center">
+      <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-6 text-center">
         <p className="text-base font-medium text-(--color-ink)">Thanks — we&apos;ve got your message.</p>
         <p className="mt-1 text-sm text-(--color-ink-muted)">We&apos;ll get back to you by email soon.</p>
       </div>

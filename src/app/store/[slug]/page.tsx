@@ -38,13 +38,17 @@ export default async function StoreHomePage({
   return (
     <div>
       {!q && !category && (
-        <section className="border-b border-(--color-border) bg-(--color-surface-subtle)">
-          <div className="mx-auto max-w-6xl px-4 py-14 text-center">
-            <h1 className="text-3xl font-semibold text-(--color-ink) sm:text-4xl">{store.name}</h1>
+        <section className="px-4 pt-6">
+          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-(--store-accent) px-6 py-14 text-center shadow-lift sm:py-16">
+            <div aria-hidden className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/15 blur-2xl" />
+            <div aria-hidden className="absolute -bottom-24 -left-10 h-64 w-64 rounded-full bg-black/10 blur-2xl" />
+            <h1 className="relative text-3xl font-bold tracking-tight text-white sm:text-5xl">{store.name}</h1>
             {store.description && (
-              <p className="mx-auto mt-3 max-w-xl text-(--color-ink-muted)">{store.description}</p>
+              <p className="relative mx-auto mt-3 max-w-xl text-white/85">{store.description}</p>
             )}
-            <p className="mt-4 text-sm font-medium text-(--store-accent)">{cta} on any product below</p>
+            <p className="relative mx-auto mt-6 w-fit rounded-full bg-white/15 px-4 py-1.5 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur">
+              {cta} on any product below
+            </p>
           </div>
         </section>
       )}

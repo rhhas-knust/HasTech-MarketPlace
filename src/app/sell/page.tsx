@@ -175,7 +175,7 @@ export default function SellPage() {
                 ))}
               </ul>
             </div>
-            <div className="rounded-xl border border-(--color-border) bg-(--color-surface-subtle) p-6">
+            <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface-subtle) p-6">
               <p className="text-sm font-medium text-(--color-ink)">See it live: Amara Books</p>
               <p className="mt-1.5 text-sm text-(--color-ink-muted)">
                 A real bookshop selling books and graduation sashes, running on the exact same
@@ -193,7 +193,7 @@ export default function SellPage() {
             <h2 className="text-center text-2xl font-semibold text-(--color-ink)">
               Questions from new sellers
             </h2>
-            <div className="mt-8 divide-y divide-(--color-border) rounded-xl border border-(--color-border) bg-(--color-surface)">
+            <div className="mt-8 divide-y divide-(--color-border) rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
               {FAQS.map((faq) => (
                 <details key={faq.q} className="group px-5 py-4 open:pb-4">
                   <summary className="cursor-pointer list-none text-sm font-medium text-(--color-ink) marker:content-none">

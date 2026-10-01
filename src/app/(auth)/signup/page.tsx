@@ -19,10 +19,10 @@ export default async function SignupPage() {
   return (
     <div>
       <SignupProgress current={1} percent={40} />
-      <h1 className="mb-1 text-xl font-semibold text-(--color-ink)">Create your account</h1>
+      <h1 className="mb-1 text-2xl font-bold tracking-tight text-(--color-ink)">Create your account</h1>
       <p className="mb-4 text-sm text-(--color-ink-muted)">You&apos;re 2 quick steps from your own store.</p>
       <DraftClaimBanner />
-      <div className="mb-5 flex items-start gap-3 rounded-xl border border-dashed border-(--color-brand) bg-(--color-brand-subtle) px-3 py-2.5">
+      <div className="mb-5 flex items-start gap-3 rounded-2xl border border-dashed border-(--color-brand)/50 bg-(--color-brand-subtle) px-4 py-3">
         <span className="text-2xl motion-safe:animate-[gift-wiggle_3s_ease-in-out_infinite]" aria-hidden>
           🎁
         </span>

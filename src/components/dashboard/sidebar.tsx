@@ -33,8 +33,8 @@ export function DashboardSidebar({ storeSlug, storeName }: { storeSlug: string; 
 
   return (
     <nav className="space-y-1">
-      <div className="mb-4 flex items-center gap-2 px-2">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-(--color-brand-subtle) text-(--color-brand)">
+      <div className="mb-5 flex items-center gap-3 rounded-2xl bg-(--color-surface-subtle) p-2.5">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-gradient text-white shadow-glow">
           <Store className="h-4 w-4" />
         </span>
         <span className="truncate text-sm font-semibold text-(--color-ink)">{storeName}</span>
@@ -47,10 +47,10 @@ export function DashboardSidebar({ storeSlug, storeName }: { storeSlug: string; 
             key={href}
             href={href}
             className={cn(
-              "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium",
+              "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200",
               active
-                ? "bg-(--color-brand-subtle) text-(--color-brand)"
-                : "text-(--color-ink-muted) hover:bg-(--color-surface-subtle) hover:text-(--color-ink)",
+                ? "bg-brand-gradient text-white shadow-glow"
+                : "text-(--color-ink-muted) hover:translate-x-0.5 hover:bg-(--color-surface-subtle) hover:text-(--color-ink)",
             )}
           >
             <Icon className="h-4 w-4" />
@@ -63,7 +63,7 @@ export function DashboardSidebar({ storeSlug, storeName }: { storeSlug: string; 
         href={`/store/${storeSlug}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-(--color-ink-muted) hover:bg-(--color-surface-subtle) hover:text-(--color-ink)"
+        className="mt-4 flex items-center gap-3 rounded-xl border border-dashed border-(--color-border) px-3.5 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:border-(--color-brand)/40 hover:text-(--color-brand)"
       >
         <ExternalLink className="h-4 w-4" />
         View storefront

@@ -95,7 +95,7 @@ export default async function AdminOverviewPage() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-(--color-ink-muted)">
           Recent signups
         </h2>
-        <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface)">
+        <div className="overflow-x-auto rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
           <table className="w-full text-sm">
             <thead className="border-b border-(--color-border) text-left text-(--color-ink-muted)">
               <tr>

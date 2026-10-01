@@ -70,7 +70,7 @@ export default async function EditProductPage({
         />
       </section>
 
-      <section className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
+      <section className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-6">
         <ProductForm action={boundUpdate} categories={categories} product={product} submitLabel="Save changes" />
       </section>
     </div>

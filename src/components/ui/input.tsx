@@ -2,14 +2,14 @@ import { cn } from "@/lib/cn";
 import type { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, LabelHTMLAttributes } from "react";
 
 const fieldBase =
-  "w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3 py-2 text-sm text-(--color-ink) placeholder:text-(--color-ink-muted) focus:outline-2 focus:outline-offset-1 focus:outline-(--color-brand) disabled:opacity-50";
+  "w-full rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft px-4 py-2.5 text-sm text-(--color-ink) shadow-[inset_0_1px_2px_rgb(15_23_42/0.04)] transition-[border-color,box-shadow] placeholder:text-(--color-ink-muted)/80 hover:border-(--color-brand)/30 focus:border-(--color-brand) focus:outline-none focus:ring-4 focus:ring-(--color-brand)/15 disabled:opacity-50";
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(fieldBase, className)} {...props} />;
 }
 
 export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea className={cn(fieldBase, "min-h-24", className)} {...props} />;
+  return <textarea className={cn(fieldBase, "min-h-28", className)} {...props} />;
 }
 
 export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {

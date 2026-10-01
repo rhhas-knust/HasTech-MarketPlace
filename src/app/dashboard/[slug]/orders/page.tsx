@@ -31,7 +31,7 @@ export default async function OrdersPage({ params }: { params: Promise<{ slug: s
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold text-(--color-ink)">Orders</h1>
-      <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface)">
+      <div className="overflow-x-auto rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
         <table className="w-full text-sm">
           <thead className="border-b border-(--color-border) text-left text-(--color-ink-muted)">
             <tr>

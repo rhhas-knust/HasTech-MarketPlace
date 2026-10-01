@@ -38,7 +38,7 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
     <div className="mx-auto max-w-3xl px-4 py-10">
       <h1 className="mb-6 text-xl font-semibold text-(--color-ink)">Your cart</h1>
 
-      <ul className="divide-y divide-(--color-border) rounded-xl border border-(--color-border) bg-(--color-surface)">
+      <ul className="divide-y divide-(--color-border) rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
         {items.map((item) => {
           const image = item.product ? primaryImage(item.product as never) : null;
           return (
@@ -90,7 +90,7 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
         })}
       </ul>
 
-      <div className="mt-6 flex items-center justify-between rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
+      <div className="mt-6 flex items-center justify-between rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-4">
         <span className="text-(--color-ink-muted)">Subtotal</span>
         <span className="text-lg font-semibold text-(--color-ink)">{formatCurrency(subtotal, store.currency)}</span>
       </div>
