@@ -19,6 +19,7 @@ import { LiveDemoDashboard } from "@/components/landing/live-demo-dashboard";
 import { getFoundingSpotsLeft } from "@/lib/founding";
 import {
   COMMISSION_RATE_PERCENT,
+  FOUNDING_FREE_MONTHS,
   FOUNDING_MEMBER_LIMIT,
   PLATFORM_NAME,
   SUBSCRIPTION_PRICE_GHS,
@@ -121,7 +122,7 @@ export default async function Home() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-(--color-brand) opacity-60 motion-reduce:animate-none" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-(--color-brand)" />
                 </span>
-                🎁 {spotsLeft} of {FOUNDING_MEMBER_LIMIT} founding spots left · no fees this month
+                🎁 {spotsLeft} of {FOUNDING_MEMBER_LIMIT} founding spots left · {FOUNDING_FREE_MONTHS} months free
               </span>
             ) : (
               <span className="glass inline-flex items-center gap-2 rounded-full border border-(--color-border) px-4 py-1.5 text-xs font-medium text-(--color-ink-muted) shadow-soft">
@@ -320,7 +321,7 @@ export default async function Home() {
             </div>
             {hasFoundingSpots && (
               <p className="mx-auto mt-10 w-fit rounded-full border border-dashed border-(--color-brand)/50 bg-(--color-brand-subtle) px-5 py-2.5 text-center text-sm text-(--color-ink)">
-                🎁 <strong>Founding members pay nothing this month.</strong> {spotsLeft} of{" "}
+                🎁 <strong>Founding members pay nothing for {FOUNDING_FREE_MONTHS} months.</strong> {spotsLeft} of{" "}
                 {FOUNDING_MEMBER_LIMIT} spots left.
               </p>
             )}

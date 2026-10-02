@@ -58,7 +58,10 @@ export function WelcomeGift({
                 No platform fees until{" "}
                 {new Date(foundingUntil).toLocaleDateString("en-GH", { day: "numeric", month: "long" })}
               </p>
-              <p className="text-sm text-(--color-ink-muted)">Every cedi you make this month is yours.</p>
+              <p className="text-sm text-(--color-ink-muted)">
+                Every cedi you make until then is yours. As a founding partner, your feedback
+                directly shapes how HASTECH works, so tell us what to fix or add.
+              </p>
             </div>
           )}
           <div className={foundingUntil ? "border-t border-(--color-border) pt-4" : undefined}>

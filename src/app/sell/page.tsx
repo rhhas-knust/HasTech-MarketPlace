@@ -7,6 +7,7 @@ import {
   PLATFORM_NAME,
   BUSINESS_TYPE_OPTIONS,
   COMMISSION_RATE_PERCENT,
+  FOUNDING_FREE_MONTHS,
   FOUNDING_MEMBER_LIMIT,
   SUBSCRIPTION_PRICE_GHS,
 } from "@/lib/constants";
@@ -58,7 +59,7 @@ const FAQS = [
   },
   {
     q: "Is there a monthly fee?",
-    a: `Not unless you want one. By default you pay nothing upfront and ${COMMISSION_RATE_PERCENT}% only when you make a sale. If you'd rather pay a flat fee, there's a GHS ${SUBSCRIPTION_PRICE_GHS}/month plan with no cut of your sales. The first ${FOUNDING_MEMBER_LIMIT} stores pay no fees at all for their first month as founding members.`,
+    a: `Not unless you want one. By default you pay nothing upfront and ${COMMISSION_RATE_PERCENT}% only when you make a sale. If you'd rather pay a flat fee, there's a GHS ${SUBSCRIPTION_PRICE_GHS}/month plan with no cut of your sales. The first ${FOUNDING_MEMBER_LIMIT} stores pay no fees at all for their first ${FOUNDING_FREE_MONTHS} months as founding members.`,
   },
   {
     q: "How long does setup actually take?",

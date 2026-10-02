@@ -7,7 +7,7 @@ import { SignupProgress } from "@/components/signup-progress";
 import { DraftClaimBanner } from "@/components/builder/draft-claim-banner";
 import { signUpAction } from "@/app/(auth)/actions";
 import { getFoundingSpotsLeft } from "@/lib/founding";
-import { FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
+import { FOUNDING_FREE_MONTHS, FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Create your account" };
 
@@ -29,7 +29,7 @@ export default async function SignupPage() {
         <p className="text-xs text-(--color-ink)">
           <strong className="block text-sm">A welcome gift is waiting at the finish line.</strong>
           {spotsLeft !== null && spotsLeft > 0
-            ? `Founding members pay no fees this month. ${spotsLeft} of ${FOUNDING_MEMBER_LIMIT} spots left.`
+            ? `Founding members pay no fees for ${FOUNDING_FREE_MONTHS} months. ${spotsLeft} of ${FOUNDING_MEMBER_LIMIT} spots left.`
             : "Launch your store to unlock it."}
         </p>
       </div>

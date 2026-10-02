@@ -16,7 +16,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { getCurrentProfile, requireStoreAccess } from "@/lib/auth/session";
+import { getCurrentProfile, getCurrentUser, requireStoreAccess } from "@/lib/auth/session";
 import {
   getAttentionCounts,
   getOverviewStats,
@@ -35,6 +35,7 @@ import { RevenueChart, ViewsChart } from "@/components/dashboard/charts";
 import { CardHeading, InitialsAvatar, KpiTile, Meter, timeAgo } from "@/components/console/ui";
 import { PublishToggle } from "@/components/dashboard/publish-toggle";
 import { WelcomeGift } from "@/components/dashboard/welcome-gift";
+import { FoundingPartnerBanner } from "@/components/dashboard/founding-partner-banner";
 import { getPlatformBilling } from "@/lib/payments/platform";
 import { getAppUrl } from "@/lib/app-url";
 import { cn } from "@/lib/cn";
@@ -72,6 +73,7 @@ export default async function StoreOverviewPage({
   const showWelcome = welcome === "1";
 
   const [
+    user,
     profile,
     stats,
     weekly,
@@ -85,6 +87,7 @@ export default async function StoreOverviewPage({
     billing,
     appUrl,
   ] = await Promise.all([
+    getCurrentUser(),
     getCurrentProfile(),
     getOverviewStats(store.id),
     getWeeklyHighlights(store.id),
@@ -95,7 +98,7 @@ export default async function StoreOverviewPage({
     getRecentOrders(store.id, 6),
     getTopSellingProducts(store.id, 5),
     isPaymentProviderConfigured(store.id),
-    showWelcome ? getPlatformBilling(store.id) : Promise.resolve(null),
+    getPlatformBilling(store.id),
     getAppUrl(),
   ]);
 
@@ -123,6 +126,14 @@ export default async function StoreOverviewPage({
           storeUrl={storeUrl}
           foundingUntil={billing?.isFoundingMember ? billing.foundingMemberUntil : null}
           isPublished={isPublished}
+        />
+      )}
+
+      {!showWelcome && billing?.isFoundingMember && billing.foundingMemberUntil && (
+        <FoundingPartnerBanner
+          storeSlug={slug}
+          foundingUntil={billing.foundingMemberUntil}
+          signInKey={user?.last_sign_in_at ?? "session"}
         />
       )}
 

@@ -19,7 +19,7 @@ const FAQS = [
   },
   {
     q: "What does it cost?",
-    a: "Most sellers are currently on our commission plan — 5% of each sale, only when you actually sell something. A flat monthly subscription is also available if you'd prefer that instead. The first sellers to join get every fee waived for a limited time as founding members.",
+    a: "Most sellers are currently on our commission plan — 5% of each sale, only when you actually sell something. A flat monthly subscription is also available if you'd prefer that instead. The first sellers to join get every fee waived for their first 2 months as founding members.",
   },
   {
     q: "Do I need my own website first?",

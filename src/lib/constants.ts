@@ -9,6 +9,8 @@ export const PLATFORM_NAME = "HASTECH Commerce";
 // Must match the threshold in assign_platform_billing()
 // (0019_founding_member_limit_and_consultations.sql).
 export const FOUNDING_MEMBER_LIMIT = 10;
+// Must match the interval in assign_platform_billing() (0020_founding_two_months.sql).
+export const FOUNDING_FREE_MONTHS = 2;
 export const COMMISSION_RATE_PERCENT = 5;
 export const SUBSCRIPTION_PRICE_GHS = 100;
 

@@ -6,7 +6,7 @@ import { Input, Label } from "@/components/ui/input";
 import { SignupProgress } from "@/components/signup-progress";
 import { GiftBox } from "@/components/gift-box";
 import { StorePreview } from "@/components/builder/store-preview";
-import { BUSINESS_TYPE_OPTIONS, FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
+import { BUSINESS_TYPE_OPTIONS, FOUNDING_FREE_MONTHS, FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
 import { ACCENT_SWATCHES, EMPTY_DRAFT, loadStoreDraft, saveStoreDraft, type StoreDraft } from "@/lib/store-draft";
 import { cn } from "@/lib/cn";
 
@@ -201,7 +201,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                       Founding member gift
                     </p>
                     <p className="mt-1 text-lg font-semibold text-(--color-ink)">
-                      No platform fees for the rest of this month
+                      No platform fees for your first {FOUNDING_FREE_MONTHS} months
                     </p>
                     <p className="mt-1 text-sm text-(--color-ink-muted)">
                       Only {spotsLeft} of {FOUNDING_MEMBER_LIMIT} founding spots are left. Claim your
