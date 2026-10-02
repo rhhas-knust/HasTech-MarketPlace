@@ -17,7 +17,7 @@ export default async function NewProductPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-6 text-xl font-semibold text-(--color-ink)">New product</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">New product</h1>
       <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-6">
         <ProductForm action={boundAction} categories={categories} submitLabel="Create product" />
       </div>

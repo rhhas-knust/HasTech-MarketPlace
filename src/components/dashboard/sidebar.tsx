@@ -16,15 +16,25 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-export function DashboardSidebar({ storeSlug, storeName }: { storeSlug: string; storeName: string }) {
+export function DashboardSidebar({
+  storeSlug,
+  storeName,
+  ordersToFulfil = 0,
+  stockAlerts = 0,
+}: {
+  storeSlug: string;
+  storeName: string;
+  ordersToFulfil?: number;
+  stockAlerts?: number;
+}) {
   const pathname = usePathname();
   const base = `/dashboard/${storeSlug}`;
 
   const links = [
     { href: base, label: "Overview", icon: LayoutDashboard, exact: true },
-    { href: `${base}/products`, label: "Products", icon: Package },
+    { href: `${base}/products`, label: "Products", icon: Package, count: stockAlerts, countTone: "warning" as const },
     { href: `${base}/categories`, label: "Categories", icon: Tag },
-    { href: `${base}/orders`, label: "Orders", icon: ShoppingBag },
+    { href: `${base}/orders`, label: "Orders", icon: ShoppingBag, count: ordersToFulfil, countTone: "danger" as const },
     { href: `${base}/customers`, label: "Customers", icon: Users },
     { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
     { href: `${base}/settings`, label: "Settings", icon: Settings },
@@ -40,7 +50,7 @@ export function DashboardSidebar({ storeSlug, storeName }: { storeSlug: string; 
         <span className="truncate text-sm font-semibold text-(--color-ink)">{storeName}</span>
       </div>
 
-      {links.map(({ href, label, icon: Icon, exact }) => {
+      {links.map(({ href, label, icon: Icon, exact, count, countTone }) => {
         const active = exact ? pathname === href : pathname.startsWith(href);
         return (
           <Link
@@ -54,7 +64,21 @@ export function DashboardSidebar({ storeSlug, storeName }: { storeSlug: string; 
             )}
           >
             <Icon className="h-4 w-4" />
-            {label}
+            <span className="flex-1">{label}</span>
+            {count ? (
+              <span
+                className={cn(
+                  "min-w-6 rounded-full px-2 py-0.5 text-center text-xs font-semibold",
+                  active
+                    ? "bg-white/25 text-white"
+                    : countTone === "warning"
+                      ? "bg-(--color-warning) text-white"
+                      : "bg-(--color-danger) text-white",
+                )}
+              >
+                {count}
+              </span>
+            ) : null}
           </Link>
         );
       })}

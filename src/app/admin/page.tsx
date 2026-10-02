@@ -4,7 +4,7 @@ import { ArrowRight, Crown, Inbox, MessageSquareWarning, Receipt, Store, Trophy,
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { RollingDigits } from "@/components/rolling-digits";
-import { CardHeading, InitialsAvatar, KpiTile, Meter, timeAgo } from "@/components/admin/ui";
+import { CardHeading, InitialsAvatar, KpiTile, Meter, timeAgo } from "@/components/console/ui";
 import { formatCurrency } from "@/lib/money";
 import { FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
 

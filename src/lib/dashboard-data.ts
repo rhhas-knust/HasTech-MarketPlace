@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
-import type { Product, ProductStatus } from "@/lib/types/database";
+import type { Product } from "@/lib/types/database";
+import { isLowStock, isOutOfStock } from "@/lib/inventory";
 
 function daysAgo(n: number): string {
   const d = new Date();
@@ -211,14 +212,108 @@ export async function getStoreCustomers(storeId: string) {
   return data ?? [];
 }
 
-export async function getStoreProducts(
-  storeId: string,
-  options: { status?: ProductStatus; search?: string } = {},
-): Promise<Product[]> {
+export type DashboardProduct = Product & { product_images: { url: string; is_primary: boolean; sort_order: number }[] };
+
+/** All of a store's products (filtering by status/stock happens in the page so tab counts stay accurate). */
+export async function getStoreProducts(storeId: string, options: { search?: string } = {}) {
   const supabase = await createClient();
-  let query = supabase.from("products").select("*").eq("store_id", storeId);
-  if (options.status) query = query.eq("status", options.status);
+  let query = supabase.from("products").select("*, product_images(url, is_primary, sort_order)").eq("store_id", storeId);
   if (options.search) query = query.ilike("name", `%${options.search}%`);
-  const { data } = await query.order("created_at", { ascending: false });
+  const [{ data }, lowStockThreshold] = await Promise.all([
+    query.order("created_at", { ascending: false }),
+    getStoreLowStockThreshold(storeId),
+  ]);
+  return { products: (data as DashboardProduct[]) ?? [], lowStockThreshold };
+}
+
+// Fulfilment states that still need the seller to do something.
+export const OPEN_FULFILMENT_STATUSES = ["pending", "confirmed", "processing"] as const;
+
+async function getStoreLowStockThreshold(storeId: string): Promise<number> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("store_settings").select("low_stock_threshold").eq("store_id", storeId).maybeSingle();
+  return data?.low_stock_threshold ?? 5;
+}
+
+export interface AttentionCounts {
+  ordersToFulfil: number;
+  lowStock: number;
+  outOfStock: number;
+}
+
+/** Paid orders still waiting to be fulfilled, and products running low or out. */
+export async function getAttentionCounts(storeId: string): Promise<AttentionCounts> {
+  const supabase = await createClient();
+  const [{ count: ordersToFulfil }, { data: stocked }, threshold] = await Promise.all([
+    supabase
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .eq("store_id", storeId)
+      .eq("payment_status", "paid")
+      .in("fulfilment_status", [...OPEN_FULFILMENT_STATUSES]),
+    supabase
+      .from("products")
+      .select("track_inventory, stock_quantity, low_stock_threshold, is_preorder")
+      .eq("store_id", storeId)
+      .neq("status", "archived")
+      .eq("track_inventory", true),
+    getStoreLowStockThreshold(storeId),
+  ]);
+
+  const products = stocked ?? [];
+  return {
+    ordersToFulfil: ordersToFulfil ?? 0,
+    lowStock: products.filter((p) => isLowStock(p, threshold)).length,
+    outOfStock: products.filter((p) => isOutOfStock(p)).length,
+  };
+}
+
+export interface WeeklyHighlights {
+  ordersThisWeek: number;
+  revenueThisWeek: number;
+  customersThisWeek: number;
+}
+
+export async function getWeeklyHighlights(storeId: string): Promise<WeeklyHighlights> {
+  const supabase = await createClient();
+  const weekAgo = daysAgo(7);
+  const [{ data: paid }, { count: ordersThisWeek }, { count: customersThisWeek }] = await Promise.all([
+    supabase
+      .from("orders")
+      .select("total")
+      .eq("store_id", storeId)
+      .eq("payment_status", "paid")
+      .gte("created_at", weekAgo),
+    supabase.from("orders").select("id", { count: "exact", head: true }).eq("store_id", storeId).gte("created_at", weekAgo),
+    supabase.from("customers").select("id", { count: "exact", head: true }).eq("store_id", storeId).gte("created_at", weekAgo),
+  ]);
+  return {
+    ordersThisWeek: ordersThisWeek ?? 0,
+    revenueThisWeek: (paid ?? []).reduce((sum, o) => sum + Number(o.total), 0),
+    customersThisWeek: customersThisWeek ?? 0,
+  };
+}
+
+export async function getTopSellingProducts(storeId: string, limit = 5) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("products")
+    .select("id, name, price, currency, purchase_count, view_count")
+    .eq("store_id", storeId)
+    .neq("status", "archived")
+    .order("purchase_count", { ascending: false })
+    .order("view_count", { ascending: false })
+    .limit(limit);
+  return data ?? [];
+}
+
+export async function getRecentOrders(storeId: string, limit = 6) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("orders")
+    .select("id, order_number, total, currency, payment_status, fulfilment_status, created_at, customers(first_name, last_name, email)")
+    .eq("store_id", storeId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
   return data ?? [];
 }

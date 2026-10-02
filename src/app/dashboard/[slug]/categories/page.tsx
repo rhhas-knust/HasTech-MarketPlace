@@ -20,7 +20,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-xl font-semibold text-(--color-ink)">Categories</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Categories</h1>
 
       <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-4">
         <CategoryForm action={boundCreate} />

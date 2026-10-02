@@ -13,9 +13,9 @@ import {
 } from "recharts";
 import type { DailyPoint } from "@/lib/dashboard-data";
 
-const BRAND = "#4338ca";
-const GRID = "#e2e8f0";
-const AXIS_TEXT = "#64748b";
+const BRAND = "var(--color-brand)";
+const GRID = "var(--color-border)";
+const AXIS_TEXT = "var(--color-ink-muted)";
 
 function formatDay(date: string) {
   return new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
@@ -38,7 +38,7 @@ export function RevenueChart({ data, currency }: { data: DailyPoint[]; currency:
         <Tooltip
           formatter={(value) => [`${currency} ${Number(value).toFixed(2)}`, "Revenue"]}
           labelFormatter={(label) => formatDay(String(label))}
-          contentStyle={{ borderRadius: 8, border: `1px solid ${GRID}`, fontSize: 13 }}
+          contentStyle={{ borderRadius: 12, border: `1px solid ${GRID}`, fontSize: 13, background: "var(--color-surface)", color: "var(--color-ink)" }}
         />
         <Bar dataKey="value" fill={BRAND} radius={[4, 4, 0, 0]} maxBarSize={28} />
       </BarChart>
@@ -63,7 +63,7 @@ export function ViewsChart({ data }: { data: DailyPoint[] }) {
         <Tooltip
           formatter={(value) => [String(value), "Views"]}
           labelFormatter={(label) => formatDay(String(label))}
-          contentStyle={{ borderRadius: 8, border: `1px solid ${GRID}`, fontSize: 13 }}
+          contentStyle={{ borderRadius: 12, border: `1px solid ${GRID}`, fontSize: 13, background: "var(--color-surface)", color: "var(--color-ink)" }}
         />
         <Line type="monotone" dataKey="value" stroke={BRAND} strokeWidth={2} dot={false} />
       </LineChart>

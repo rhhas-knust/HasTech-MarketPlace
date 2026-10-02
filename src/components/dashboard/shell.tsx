@@ -10,17 +10,21 @@ export function DashboardShell({
   storeSlug,
   storeName,
   userEmail,
+  ordersToFulfil,
+  stockAlerts,
   children,
 }: {
   storeSlug: string;
   storeName: string;
   userEmail: string;
+  ordersToFulfil: number;
+  stockAlerts: number;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen lg:flex">
+    <div className="bg-hero-glow min-h-screen lg:flex">
       <div className="glass sticky top-0 z-40 flex items-center justify-between border-b border-(--color-border)/60 px-4 py-3 lg:hidden">
         <span className="text-sm font-semibold text-(--color-ink)">
           <PlatformLogo iconSize={20} />
@@ -41,7 +45,7 @@ export function DashboardShell({
 
       {open && (
         <div className="mx-3 mt-3 rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-3 shadow-lift lg:hidden">
-          <DashboardSidebar storeSlug={storeSlug} storeName={storeName} />
+          <DashboardSidebar storeSlug={storeSlug} storeName={storeName} ordersToFulfil={ordersToFulfil} stockAlerts={stockAlerts} />
         </div>
       )}
 
@@ -53,7 +57,7 @@ export function DashboardShell({
             </p>
             <ThemeToggle />
           </div>
-          <DashboardSidebar storeSlug={storeSlug} storeName={storeName} />
+          <DashboardSidebar storeSlug={storeSlug} storeName={storeName} ordersToFulfil={ordersToFulfil} stockAlerts={stockAlerts} />
           <form action="/auth/signout" method="post" className="mt-auto border-t border-(--color-border)/70 pt-4">
             <p className="mb-2 truncate px-2 text-xs text-(--color-ink-muted)">{userEmail}</p>
             <button
@@ -66,7 +70,9 @@ export function DashboardShell({
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 p-4 sm:p-6 lg:py-8 lg:pl-4 lg:pr-8">{children}</main>
+      <main className="min-w-0 flex-1 p-4 sm:p-6 lg:py-8 lg:pl-4 lg:pr-8">
+        <div className="mx-auto max-w-6xl">{children}</div>
+      </main>
     </div>
   );
 }

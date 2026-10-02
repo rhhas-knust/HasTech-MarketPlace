@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Bug, CircleHelp, Lightbulb, Mail, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { StatusSelect } from "@/components/dashboard/status-select";
-import { AdminPageHeader, FilterTabs, InitialsAvatar, timeAgo } from "@/components/admin/ui";
+import { PageHeader, FilterTabs, InitialsAvatar, timeAgo } from "@/components/console/ui";
 import { cn } from "@/lib/cn";
 import { updateFeedbackStatus } from "./actions";
 
@@ -50,7 +50,7 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
+      <PageHeader
         eyebrow="Inbox"
         title="Platform feedback"
         description="Bug reports and feature requests sellers have sent in."

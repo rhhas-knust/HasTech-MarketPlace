@@ -7,8 +7,10 @@ export function PublishToggle({
   published,
   onPublish,
   onUnpublish,
+  className,
 }: {
   published: boolean;
+  className?: string;
   onPublish: () => Promise<{ error?: string }>;
   onUnpublish: () => Promise<{ error?: string }>;
 }) {
@@ -18,6 +20,7 @@ export function PublishToggle({
     <Button
       variant={published ? "outline" : "primary"}
       size="sm"
+      className={className}
       disabled={pending}
       onClick={() => startTransition(async () => {
         await (published ? onUnpublish() : onPublish());

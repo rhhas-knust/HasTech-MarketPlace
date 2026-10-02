@@ -3,7 +3,7 @@ import { Building2, Mail, MessageCircle, Phone } from "lucide-react";
 import { getConsultationRequests, updateConsultationStatus, type ConsultationRequestRow } from "@/lib/consultations";
 import { Badge } from "@/components/ui/badge";
 import { StatusSelect } from "@/components/dashboard/status-select";
-import { AdminPageHeader, FilterTabs, InitialsAvatar, timeAgo } from "@/components/admin/ui";
+import { PageHeader, FilterTabs, InitialsAvatar, timeAgo } from "@/components/console/ui";
 import { cn } from "@/lib/cn";
 
 export const metadata: Metadata = { title: "Consultation requests" };
@@ -52,7 +52,7 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
+      <PageHeader
         eyebrow="Inbox"
         title="Consultation requests"
         description="Messages from the public “Talk to us” form."

@@ -27,7 +27,7 @@ export default async function AnalyticsPage({ params }: { params: Promise<{ slug
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold text-(--color-ink)">Analytics</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Analytics</h1>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Total views" value={String(stats.totalViews)} />

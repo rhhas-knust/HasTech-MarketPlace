@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ExternalLink, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
-import { AdminPageHeader, FilterTabs, InitialsAvatar, formatShortDate } from "@/components/admin/ui";
+import { PageHeader, FilterTabs, InitialsAvatar, formatShortDate } from "@/components/console/ui";
 import { cn } from "@/lib/cn";
 
 export const metadata: Metadata = { title: "All stores" };
@@ -68,7 +68,7 @@ export default async function AdminStoresPage({
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader eyebrow="Sellers" title="All stores" description="Every seller on the platform, newest first.">
+      <PageHeader eyebrow="Sellers" title="All stores" description="Every seller on the platform, newest first.">
         <form action="/admin/stores" className="w-full sm:w-72">
           {filter !== "all" && <input type="hidden" name="filter" value={filter} />}
           <label className="flex items-center gap-2 rounded-full border border-(--color-border) bg-(--color-surface) px-4 py-2.5 shadow-soft transition focus-within:border-(--color-brand) focus-within:ring-4 focus-within:ring-(--color-brand)/15">
@@ -83,7 +83,7 @@ export default async function AdminStoresPage({
             />
           </label>
         </form>
-      </AdminPageHeader>
+      </PageHeader>
 
       <FilterTabs
         tabs={FILTERS.map((f) => ({ href: hrefFor(f.value), label: f.label, count: counts[f.value], active: filter === f.value }))}

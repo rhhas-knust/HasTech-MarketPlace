@@ -37,7 +37,7 @@ export default async function FeedbackPage({ params }: { params: Promise<{ slug:
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-(--color-ink)">Feedback</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Feedback</h1>
         <p className="mt-1 text-sm text-(--color-ink-muted)">
           Report a bug, ask for a feature, or flag anything else about the platform — this goes to the
           HASTECH team, not your customers.

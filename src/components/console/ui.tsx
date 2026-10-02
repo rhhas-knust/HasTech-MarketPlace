@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { RollingDigits } from "@/components/rolling-digits";
 import { cn } from "@/lib/cn";
 
-export function AdminPageHeader({
+export function PageHeader({
   eyebrow,
   title,
   description,

@@ -27,7 +27,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ slug:
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-(--color-ink)">Settings</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Settings</h1>
         <div className="flex gap-4 text-sm">
           <Link href={`/dashboard/${slug}/settings/billing`} className="text-(--color-brand) hover:underline">
             Billing →

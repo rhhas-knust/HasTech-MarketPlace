@@ -43,7 +43,7 @@ export default async function EditProductPage({
   return (
     <div className="max-w-2xl space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-(--color-ink)">Edit product</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Edit product</h1>
         <DeleteProductButton onDelete={boundDelete} />
       </div>
 

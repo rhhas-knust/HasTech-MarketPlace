@@ -45,7 +45,7 @@ export default async function OrderDetailPage({
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-(--color-ink)">Order {order.order_number}</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Order {order.order_number}</h1>
         <p className="text-sm text-(--color-ink-muted)">
           Placed {new Date(order.created_at).toLocaleString("en-GB")}
         </p>
