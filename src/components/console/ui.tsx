@@ -3,12 +3,10 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export function PageHeader({
-  eyebrow,
   title,
   description,
   children,
 }: {
-  eyebrow?: string;
   title: string;
   description?: string;
   children?: ReactNode;
@@ -16,10 +14,7 @@ export function PageHeader({
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
-        {eyebrow && (
-          <p className="text-xs font-semibold uppercase tracking-wider text-(--color-brand)">{eyebrow}</p>
-        )}
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">{title}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">{title}</h1>
         {description && <p className="mt-1 text-sm text-(--color-ink-muted)">{description}</p>}
       </div>
       {children}
@@ -64,7 +59,7 @@ export function KpiTile({
   const body = (
     <div
       className={cn(
-        "h-full rounded-xl border border-(--color-border) bg-(--color-surface) p-5 transition-all duration-300",
+        "h-full rounded-xl border border-(--color-border) bg-(--color-surface) p-5 transition-colors duration-300",
         href && "hover:-translate-y-1",
       )}
     >
@@ -142,7 +137,7 @@ export function FilterTabs({ tabs }: { tabs: { href: string; label: string; coun
           key={tab.href}
           href={tab.href}
           className={cn(
-            "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all",
+            "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors",
             tab.active
               ? "bg-(--color-brand) text-(--color-on-brand)"
               : "border border-(--color-border) bg-(--color-surface) text-(--color-ink-muted) hover:text-(--color-ink)",

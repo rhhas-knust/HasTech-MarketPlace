@@ -15,18 +15,15 @@ export default async function OnboardingPage() {
   if (stores.length > 0) redirect(`/dashboard/${stores[0].store.slug}`);
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-xl px-4 py-12">
-        <p className="mb-4 text-sm font-medium text-(--color-brand)">{PLATFORM_NAME}</p>
+    <div className="min-h-dvh">
+      <main id="main" className="mx-auto max-w-xl px-4 py-12">
+        <p className="mb-6 text-sm font-semibold text-(--color-ink)">{PLATFORM_NAME}</p>
         <SignupProgress current={3} />
-        <h1 className="mb-1 text-3xl font-bold tracking-tight text-(--color-ink)">Last step: your store details</h1>
-        <p className="mb-8 text-sm text-(--color-ink-muted)">
-          This becomes your storefront. Your welcome gift opens as soon as it&apos;s created.
-        </p>
-        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-7 shadow-raised sm:p-8">
+        <h1 className="mb-8 text-2xl font-semibold tracking-tight text-(--color-ink)">Store details</h1>
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6 sm:p-8">
           <StoreForm />
         </div>
-      </div>
+      </main>
     </div>
   );
 }

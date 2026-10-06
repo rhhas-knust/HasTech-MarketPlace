@@ -39,7 +39,7 @@ export default async function FeedbackPage({ params }: { params: Promise<{ slug:
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Feedback</h1>
         <p className="mt-1 text-sm text-(--color-ink-muted)">
-          Report a bug, ask for a feature, or flag anything else about the platform — this goes to the
+          Report a bug, ask for a feature, or flag anything else about the platform. This goes to the
           HASTECH team, not your customers.
         </p>
       </div>

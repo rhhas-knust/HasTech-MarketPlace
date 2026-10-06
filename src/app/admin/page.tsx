@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight, Crown, Inbox, MessageSquareWarning, Receipt, Store, Trophy, Users } from "lucide-react";
+import { ArrowRight, Inbox, MessageSquareWarning, Receipt, Store, Trophy, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { CardHeading, InitialsAvatar, KpiTile, Meter, timeAgo } from "@/components/console/ui";
@@ -86,31 +86,23 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="space-y-6">
-      {/* Welcome + hero figure */}
-      <section className="relative overflow-hidden rounded-xl bg-(--color-brand) p-6 text-white shadow-raised sm:p-8">
-        <div aria-hidden className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-white/15 blur-3xl" />
-        <div aria-hidden className="absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-black/10 blur-3xl" />
-        <div className="relative flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-md bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur">
-              <Crown className="h-3.5 w-3.5" /> Owner console
-            </p>
-            <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
-              {greetingFor(now)}, {firstName} 👋
-            </h1>
-            <p className="mt-1 text-sm text-white/80">Here&apos;s everything happening across HASTECH Commerce.</p>
-          </div>
-          <div className="text-left sm:text-right">
-            <p className="text-xs font-medium uppercase tracking-wider text-white/70">Total sales on the platform</p>
-            <p className="mt-1 text-4xl font-bold tracking-tight sm:text-5xl">
-              {formatCurrency(gmv, currency)}
-            </p>
-            <p className="mt-1 text-sm text-white/80">
-              {gmvThisWeek > 0 ? `+${formatCurrency(gmvThisWeek, currency)} this week` : "No sales yet this week"}
-            </p>
-          </div>
+      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">
+            {greetingFor(now)}, {firstName}
+          </h1>
+          <p className="mt-1 text-sm text-(--color-ink-muted)">Platform overview</p>
         </div>
-      </section>
+        <div className="text-left sm:text-right">
+          <p className="text-sm text-(--color-ink-muted)">Total sales on the platform</p>
+          <p className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-(--color-ink)">
+            {formatCurrency(gmv, currency)}
+          </p>
+          <p className="mt-1 text-sm text-(--color-ink-muted)">
+            {gmvThisWeek > 0 ? `+${formatCurrency(gmvThisWeek, currency)} this week` : "No sales yet this week"}
+          </p>
+        </div>
+      </header>
 
       {/* KPI row */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -182,7 +174,7 @@ export default async function AdminOverviewPage() {
           <div className="mt-4 space-y-3">
             <Link
               href="/admin/consultations"
-              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-all hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-brand)/40 hover:shadow-soft"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-brand-subtle) text-(--color-brand)">
                 <Inbox className="h-5 w-5" />
@@ -195,7 +187,7 @@ export default async function AdminOverviewPage() {
             </Link>
             <Link
               href="/admin/feedback"
-              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-all hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-brand)/40 hover:shadow-soft"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-warning-subtle) text-(--color-warning)">
                 <MessageSquareWarning className="h-5 w-5" />
@@ -250,7 +242,7 @@ export default async function AdminOverviewPage() {
                 <li key={p.id} className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-(--color-surface-subtle)">
                   <InitialsAvatar name={p.full_name ?? p.email} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-(--color-ink)">{p.full_name ?? "—"}</p>
+                    <p className="truncate text-sm font-medium text-(--color-ink)">{p.full_name ?? "No name"}</p>
                     <p className="truncate text-xs text-(--color-ink-muted)">{p.email}</p>
                   </div>
                   <div className="shrink-0 text-right">

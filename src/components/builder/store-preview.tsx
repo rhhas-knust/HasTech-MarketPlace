@@ -1,6 +1,7 @@
 import { Briefcase, FileDown, Landmark, Package, Palette, Scissors, ShoppingBag, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import { ctaLabelForBusinessType } from "@/lib/constants";
 import { slugify } from "@/lib/slug";
+import { readableTextOn } from "@/lib/color";
 import type { StoreDraft } from "@/lib/store-draft";
 
 const TYPE_ICON: Record<string, LucideIcon> = {
@@ -24,22 +25,26 @@ export function StorePreview({ draft }: { draft: StoreDraft }) {
   const name = draft.name.trim() || "Your Store";
   const slug = slugify(draft.name) || "your-store";
   const Icon = TYPE_ICON[draft.businessType] ?? Package;
+  const onAccent = readableTextOn(draft.accentColor);
 
   return (
-    <div className="mx-auto w-full max-w-[300px] rounded-xl border border-(--color-border) bg-(--color-surface) shadow-raised">
+    <div className="mx-auto w-full max-w-[300px] rounded-xl border border-(--color-border) bg-(--color-surface) shadow-soft">
       <div className="overflow-hidden rounded-xl">
         <div className="truncate bg-(--color-surface-subtle) px-4 py-1.5 text-center tabular-nums text-xs text-(--color-ink-muted)">
           /store/{slug}
         </div>
-        <div className="px-4 pb-5 pt-4 text-white transition-colors duration-300" style={{ backgroundColor: draft.accentColor }}>
+        <div className="border-b border-(--color-border) px-4 pb-4 pt-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-sm font-semibold">
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-md text-sm font-semibold"
+              style={{ backgroundColor: draft.accentColor, color: onAccent }}
+            >
               {name.charAt(0).toUpperCase()}
             </span>
-            <span className="truncate text-sm font-semibold">{name}</span>
+            <span className="truncate text-sm font-semibold text-(--color-ink)">{name}</span>
           </div>
-          <p className="mt-3 line-clamp-2 text-xs text-white/85">
-            {draft.tagline.trim() || "Welcome! Browse, order and pay in a few taps."}
+          <p className="mt-3 line-clamp-2 text-xs text-(--color-ink-muted)">
+            {draft.tagline.trim() || "A short line about what you sell."}
           </p>
         </div>
         <div className="space-y-3 p-4">
@@ -50,10 +55,10 @@ export function StorePreview({ draft }: { draft: StoreDraft }) {
             <p className="mt-2 truncate text-sm font-medium text-(--color-ink)">
               {draft.productName.trim() || "Your first product"}
             </p>
-            <p className="tabular-nums text-sm text-(--color-ink-muted) tabular-nums">{formatPrice(draft.productPrice)}</p>
+            <p className="text-sm tabular-nums text-(--color-ink-muted)">{formatPrice(draft.productPrice)}</p>
             <span
-              className="mt-2 block rounded-full py-1.5 text-center text-xs font-medium text-white transition-colors duration-300"
-              style={{ backgroundColor: draft.accentColor }}
+              className="mt-2 block rounded-md py-1.5 text-center text-xs font-medium"
+              style={{ backgroundColor: draft.accentColor, color: onAccent }}
             >
               {ctaLabelForBusinessType(draft.businessType)}
             </span>

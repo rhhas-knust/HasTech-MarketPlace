@@ -40,7 +40,7 @@ export default async function BillingCallbackPage({
           <p className="mt-2 text-(--color-ink-muted)">
             {result?.kind === "subscription"
               ? "Your subscription is now active for the coming month."
-              : "Thanks — your accrued platform fees have been settled."}
+              : "Payment received. Your platform fees are settled."}
           </p>
         </>
       ) : (

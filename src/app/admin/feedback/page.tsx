@@ -51,9 +51,7 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Inbox"
         title="Platform feedback"
-        description="Bug reports and feature requests sellers have sent in."
       />
       <FilterTabs tabs={tabs} />
 
@@ -72,7 +70,7 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
               <article
                 key={item.id}
                 className={cn(
-                  "flex flex-col rounded-xl border bg-(--color-surface) p-6 transition-all duration-300",
+                  "flex flex-col rounded-xl border bg-(--color-surface) p-6 transition-colors duration-300",
                   item.status === "open" ? "border-(--color-brand)/40" : "border-(--color-border)",
                   item.status === "resolved" && "opacity-75",
                 )}

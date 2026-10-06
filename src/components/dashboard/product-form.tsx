@@ -129,7 +129,7 @@ export function ProductForm({
           </Label>
         </div>
         <FieldHint>
-          Customers can order this even while stock is 0 — the &quot;Add to cart&quot; button becomes
+          Customers can order this even while stock is 0. The &quot;Add to cart&quot; button becomes
           &quot;Pre-order&quot; on your storefront.
         </FieldHint>
         {isPreorder && (

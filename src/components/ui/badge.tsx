@@ -1,12 +1,13 @@
 import { cn } from "@/lib/cn";
 
-type Tone = "neutral" | "success" | "warning" | "danger" | "brand";
+type Tone = "neutral" | "success" | "warning" | "danger" | "info" | "brand";
 
 const toneClasses: Record<Tone, string> = {
   neutral: "bg-(--color-surface-subtle) text-(--color-ink-muted)",
   success: "bg-(--color-success-subtle) text-(--color-success)",
   warning: "bg-(--color-warning-subtle) text-(--color-warning)",
   danger: "bg-(--color-danger-subtle) text-(--color-danger)",
+  info: "bg-(--color-info-subtle) text-(--color-info)",
   brand: "bg-(--color-brand-subtle) text-(--color-brand)",
 };
 

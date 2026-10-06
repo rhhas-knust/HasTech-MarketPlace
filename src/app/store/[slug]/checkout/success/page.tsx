@@ -72,7 +72,7 @@ export default async function CheckoutSuccessPage({
             ))}
           </ul>
           <p className="mt-3 text-xs text-(--color-ink-muted)">
-            These links expire after a few minutes — look up your order anytime to get fresh ones.
+            These links expire after a few minutes. Look up your order any time to get new ones.
           </p>
         </div>
       )}

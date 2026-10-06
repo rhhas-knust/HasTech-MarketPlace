@@ -43,7 +43,7 @@ export function FeedbackForm({
         />
       </div>
       {state.error && <p className="text-sm text-(--color-danger)">{state.error}</p>}
-      {state.success && <p className="text-sm text-(--color-success)">Thanks — we&apos;ve got it.</p>}
+      {state.success && <p className="text-sm text-(--color-success)">Sent. Thank you.</p>}
       <Button type="submit" disabled={pending}>
         {pending ? "Sending…" : "Send feedback"}
       </Button>

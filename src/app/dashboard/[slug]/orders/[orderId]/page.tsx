@@ -137,7 +137,7 @@ export default async function OrderDetailPage({
           <CardTitle>Customer</CardTitle>
         </CardHeader>
         <CardBody className="space-y-1 text-sm text-(--color-ink)">
-          <p>{[customer?.first_name, customer?.last_name].filter(Boolean).join(" ") || "—"}</p>
+          <p>{[customer?.first_name, customer?.last_name].filter(Boolean).join(" ") || "No name"}</p>
           <p className="text-(--color-ink-muted)">{customer?.email}</p>
           <p className="text-(--color-ink-muted)">{customer?.phone}</p>
           {order.delivery_method === "delivery" && address && (

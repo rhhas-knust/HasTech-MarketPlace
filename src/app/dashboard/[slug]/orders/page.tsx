@@ -72,7 +72,7 @@ export default async function OrdersPage({
   if (orders.length === 0) {
     return (
       <div className="space-y-6">
-        <PageHeader eyebrow="Sales" title="Orders" />
+        <PageHeader title="Orders" />
         <EmptyState
           icon={<ShoppingBag className="h-7 w-7" />}
           title="No orders yet"
@@ -104,10 +104,10 @@ export default async function OrdersPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Sales" title="Orders" description="Every order placed in your store, newest first.">
+      <PageHeader title="Orders">
         <form action={`/dashboard/${slug}/orders`} className="w-full sm:w-72">
           {view !== "all" && <input type="hidden" name="view" value={view} />}
-          <label className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-surface) px-4 py-2.5 transition focus-within:border-(--color-brand) focus-within:ring-4 focus-within:ring-(--color-brand)/15">
+          <label className="flex items-center gap-2 rounded-md border border-(--color-border-strong) bg-(--color-surface) px-4 py-2.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--color-brand)">
             <Search className="h-4 w-4 text-(--color-ink-muted)" aria-hidden />
             <input
               type="search"
@@ -132,12 +132,12 @@ export default async function OrdersPage({
 
       {visible.length === 0 ? (
         <div className="rounded-xl border border-dashed border-(--color-border) bg-(--color-surface)/60 px-6 py-14 text-center text-sm text-(--color-ink-muted)">
-          {view === "todo" && !needle ? "🎉 All caught up. No orders waiting to be fulfilled." : "No orders match this view."}
+          {view === "todo" && !needle ? "No orders waiting to be fulfilled." : "No orders match this view."}
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface)">
           <table className="w-full min-w-[680px] text-sm">
-            <thead className="bg-(--color-surface-subtle)/70 text-left text-xs uppercase tracking-wider text-(--color-ink-muted)">
+            <thead className="bg-(--color-surface-subtle)/70 text-left text-xs font-medium text-(--color-ink-muted)">
               <tr>
                 <th className="px-5 py-3.5 font-semibold">Customer</th>
                 <th className="px-5 py-3.5 font-semibold">Order</th>

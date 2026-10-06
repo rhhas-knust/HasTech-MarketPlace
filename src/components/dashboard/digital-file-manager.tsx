@@ -49,7 +49,7 @@ export function DigitalFileManager({
         <label className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-(--color-border) py-6 text-center text-sm text-(--color-ink-muted) hover:text-(--color-ink)">
           <Upload className="h-5 w-5" />
           <span>{pending ? "Uploading…" : "Upload a file for customers to download after purchase"}</span>
-          <span className="text-xs">PDF, EPUB, ZIP, PSD, AI and more — up to 20MB</span>
+          <span className="text-xs">PDF, EPUB, ZIP, PSD and other files, up to 20MB</span>
           <input
             ref={inputRef}
             type="file"

@@ -40,7 +40,7 @@ export default async function CustomersPage({
   if (customers.length === 0) {
     return (
       <div className="space-y-6">
-        <PageHeader eyebrow="People" title="Customers" />
+        <PageHeader title="Customers" />
         <EmptyState
           icon={<Users className="h-7 w-7" />}
           title="No customers yet"
@@ -81,10 +81,10 @@ export default async function CustomersPage({
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="People" title="Customers" description="Everyone who has ordered from your store.">
+      <PageHeader title="Customers">
         <form action={`/dashboard/${slug}/customers`} className="w-full sm:w-72">
           {tab !== "all" && <input type="hidden" name="tab" value={tab} />}
-          <label className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-surface) px-4 py-2.5 transition focus-within:border-(--color-brand) focus-within:ring-4 focus-within:ring-(--color-brand)/15">
+          <label className="flex items-center gap-2 rounded-md border border-(--color-border-strong) bg-(--color-surface) px-4 py-2.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--color-brand)">
             <Search className="h-4 w-4 text-(--color-ink-muted)" aria-hidden />
             <input
               type="search"
@@ -118,7 +118,7 @@ export default async function CustomersPage({
             return (
               <article
                 key={customer.id}
-                className="relative flex flex-col rounded-xl border border-(--color-border) bg-(--color-surface) p-5 transition-all duration-300"
+                className="relative flex flex-col rounded-xl border border-(--color-border) bg-(--color-surface) p-5 transition-colors duration-300"
               >
                 {isTop && (
                   <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-md bg-(--color-warning-subtle) px-2.5 py-1 text-xs font-semibold text-(--color-warning)">

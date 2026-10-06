@@ -12,7 +12,7 @@ const variantClasses: Record<Variant, string> = {
     "border border-(--color-border-strong)/60 bg-(--color-surface) text-(--color-ink) hover:bg-(--color-surface-subtle)",
   ghost: "text-(--color-ink) hover:bg-(--color-surface-subtle)",
   danger: "bg-(--color-danger) text-white hover:opacity-90",
-  store: "bg-(--store-accent) text-white hover:bg-(--store-accent-hover)",
+  store: "bg-(--store-accent) text-(--store-on-accent) hover:opacity-90",
 };
 
 const sizeClasses: Record<Size, string> = {

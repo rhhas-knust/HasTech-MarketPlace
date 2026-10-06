@@ -1,10 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LinkButton } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { PlatformLogo } from "@/components/platform-logo";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import {
-  PLATFORM_NAME,
   BUSINESS_TYPE_OPTIONS,
   COMMISSION_RATE_PERCENT,
   FOUNDING_FREE_MONTHS,
@@ -14,220 +13,145 @@ import {
 
 export const metadata: Metadata = {
   title: "Sell on HASTECH Commerce",
-  description:
-    "Create a branded online store, accept Paystack payments and track sales — built for Ghanaian businesses of every kind.",
+  description: "What you need to open an online store on HASTECH Commerce and start taking MoMo and card payments.",
 };
 
-const STEPS = [
+const NEEDS = [
   {
-    title: "Create your account",
-    description:
-      "Sign up with your email or Google account and tell us a bit about your business — retail, service, food, digital products, it all works.",
+    title: "An email address or Google account",
+    body: "To create your seller account. We send a 6-digit code to confirm it.",
   },
   {
-    title: "Add what you sell",
-    description:
-      "List your products or services with photos, prices and stock levels. Your storefront is live at your own address as soon as you publish it.",
+    title: "A few product or service details",
+    body: "A name, a price and ideally a photo for each. You can start with one and add more later.",
   },
   {
-    title: "Connect Paystack & get paid",
-    description:
-      "Link your own Paystack account from your dashboard. Customers pay by card or mobile money and it goes straight to you — HASTECH never holds your money.",
+    title: "A Paystack account",
+    body: "Free to open at paystack.com with your Ghana Card and business details. You paste its API keys into your store settings. Until then, your store can be built but not take payments.",
   },
-];
-
-const WHAT_YOU_GET = [
-  "A branded storefront at your own store address, no coding required",
-  "A product/service catalogue with photos, categories and stock tracking",
-  "Checkout and order tracking your customers already know how to use",
-  "A dashboard with orders, customers and privacy-conscious sales analytics",
-  "Payments through your own Paystack account — you're never waiting on a platform payout",
+  {
+    title: "Your business contact details",
+    body: "A phone or email and an address. Ghanaian law requires online sellers to show these to buyers.",
+  },
 ];
 
 const FAQS = [
   {
-    q: "Do I need my own website or domain first?",
-    a: "No. Signing up gives you a storefront at a HASTECH Commerce address (yourstore.hastech-marketplace.vercel.app/store/your-store). Custom domains aren't supported yet, but nothing about the setup requires you to have a website already.",
+    q: "Do I need my own website or domain?",
+    a: "No. Your store gets an address like hastech-marketplace.vercel.app/store/your-store. Custom domains aren't available yet.",
   },
   {
-    q: "What kinds of businesses can sell here?",
-    a: "Retail products, services and bookings, digital downloads, food orders, professional services, creator work, and organisations. The storefront adapts its labels automatically — a service business gets \"Book Service\" where a retailer gets \"Add to Cart\", for example.",
+    q: "How do payments work?",
+    a: "Customers pay on Paystack's page by MoMo or card, and the money goes to your own Paystack account. We check every amount with Paystack before marking an order paid.",
   },
   {
-    q: "How do payments actually work?",
-    a: "You connect your own Paystack account from Dashboard → Settings → Payments after you sign up. Every order total is verified on our server before it's marked paid, so neither you nor your customers have to trust a number typed into a form.",
+    q: "What does it cost?",
+    a: `${COMMISSION_RATE_PERCENT}% of each sale, or GHS ${SUBSCRIPTION_PRICE_GHS} a month with no commission. The first ${FOUNDING_MEMBER_LIMIT} stores pay no platform fees for ${FOUNDING_FREE_MONTHS} months.`,
   },
   {
-    q: "Is there a monthly fee?",
-    a: `Not unless you want one. By default you pay nothing upfront and ${COMMISSION_RATE_PERCENT}% only when you make a sale. If you'd rather pay a flat fee, there's a GHS ${SUBSCRIPTION_PRICE_GHS}/month plan with no cut of your sales. The first ${FOUNDING_MEMBER_LIMIT} stores pay no fees at all for their first ${FOUNDING_FREE_MONTHS} months as founding members.`,
-  },
-  {
-    q: "How long does setup actually take?",
-    a: "A few minutes to create your account and add your first product or service. There's no approval queue — your store goes live the moment you publish it.",
+    q: "Is there an approval process?",
+    a: "No. Your store goes live when you press Publish. We may suspend stores that break the Terms.",
   },
 ];
 
 export default function SellPage() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-b border-(--color-border) px-4 py-4">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2">
-          <Link href="/" className="shrink-0 text-lg font-semibold text-(--color-ink)">
-            <PlatformLogo />
-          </Link>
-          <nav className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
-            <Link href="/login" className="whitespace-nowrap text-(--color-ink-muted) hover:text-(--color-ink)">
-              Sign in
-            </Link>
-            <LinkButton href="/start" size="sm" className="whitespace-nowrap">
-              Create your store
-            </LinkButton>
-            <ThemeToggle />
-          </nav>
-        </div>
-      </header>
+    <div className="flex min-h-dvh flex-col">
+      <SiteHeader />
 
       <main id="main" className="flex-1">
-        <div className="">
-          <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-            <span className="inline-flex items-center rounded-md border border-(--color-border) bg-(--color-surface) px-3 py-1 text-xs font-medium text-(--color-ink-muted)">
-              For first-time sellers
-            </span>
-            <h1 className="mt-5 text-4xl font-semibold tracking-tight text-(--color-ink) sm:text-5xl">
-              Bring your business online, without hiring a developer
+        <section className="border-b border-(--color-border)">
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+            <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-(--color-ink) sm:text-5xl sm:leading-[1.08]">
+              Open an online store without hiring a developer.
             </h1>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-(--color-ink-muted)">
-              Whatever you sell — books, clothes, a barber shop, catering, tutoring, digital
-              downloads — you can have a real storefront and be taking payments today.
+            <p className="mt-5 max-w-xl text-lg text-(--color-ink-muted)">
+              Books, clothes, catering, haircuts, tutoring or e-books: list what you sell, share one link, and get paid
+              into your own Paystack account.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <LinkButton href="/start" size="lg">
-                Create your free store
+                Start selling
               </LinkButton>
-              <LinkButton href="#how-it-works" size="lg" variant="outline">
-                See how it works
-              </LinkButton>
+              <Link
+                href="/store/amara-books"
+                className="text-sm font-medium text-(--color-ink) underline underline-offset-4 hover:text-(--color-brand)"
+              >
+                See Amara Books&rsquo; store
+              </Link>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div id="how-it-works" className="mx-auto max-w-5xl scroll-mt-16 px-4 py-16">
-          <h2 className="text-center text-2xl font-semibold text-(--color-ink)">
-            Three steps to your first sale
-          </h2>
-          <div className="mt-10 grid gap-8 sm:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <div key={step.title}>
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-(--color-brand) text-sm font-semibold text-white">
-                  {i + 1}
-                </div>
-                <h3 className="text-base font-semibold text-(--color-ink)">{step.title}</h3>
-                <p className="mt-1.5 text-sm text-(--color-ink-muted)">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="border-y border-(--color-border) bg-(--color-surface) px-4 py-16">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="text-center text-2xl font-semibold text-(--color-ink)">
-              Built for every kind of business
+        <section aria-labelledby="needs-heading" className="border-b border-(--color-border)">
+          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 lg:grid-cols-[1fr_2fr]">
+            <h2 id="needs-heading" className="text-2xl font-semibold tracking-tight text-(--color-ink)">
+              What you need
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-center text-sm text-(--color-ink-muted)">
-              The same platform adapts to whatever you&apos;re selling — no separate product for
-              services versus goods.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-2">
+            <ol className="divide-y divide-(--color-border) border-y border-(--color-border)">
+              {NEEDS.map((item, i) => (
+                <li key={item.title} className="grid gap-1 py-5 sm:grid-cols-[2rem_1fr] sm:gap-4">
+                  <span className="text-sm tabular-nums text-(--color-ink-muted)">{i + 1}.</span>
+                  <div>
+                    <h3 className="font-medium text-(--color-ink)">{item.title}</h3>
+                    <p className="mt-1 text-(--color-ink-muted)">{item.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section aria-labelledby="types-heading" className="border-b border-(--color-border)">
+          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 lg:grid-cols-[1fr_2fr]">
+            <h2 id="types-heading" className="text-2xl font-semibold tracking-tight text-(--color-ink)">
+              Who it works for
+            </h2>
+            <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
               {BUSINESS_TYPE_OPTIONS.filter((o) => o.value !== "other").map((option) => (
-                <span
-                  key={option.value}
-                  className="rounded-md border border-(--color-border) bg-(--color-surface-subtle) px-3.5 py-1.5 text-sm text-(--color-ink) transition-colors duration-150 hover:border-(--color-brand) hover:text-(--color-brand)"
-                >
-                  {option.label}
-                </span>
+                <div key={option.value}>
+                  <dt className="font-medium text-(--color-ink)">{option.label}</dt>
+                  <dd className="mt-0.5 text-sm text-(--color-ink-muted)">
+                    {option.description} Buyers see &ldquo;{option.ctaLabel}&rdquo;.
+                  </dd>
+                </div>
               ))}
-            </div>
+            </dl>
           </div>
-        </div>
+        </section>
 
-        <div className="mx-auto max-w-5xl px-4 py-16">
-          <div className="grid gap-10 sm:grid-cols-2 sm:items-center">
-            <div>
-              <h2 className="text-2xl font-semibold text-(--color-ink)">
-                Everything included from day one
-              </h2>
-              <ul className="mt-6 space-y-3">
-                {WHAT_YOU_GET.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm text-(--color-ink)">
-                    <svg
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="mt-0.5 h-4 w-4 shrink-0 text-(--color-success)"
-                      aria-hidden
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.8 6.8-6.8a1 1 0 0 1 1.4 0Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-xl border border-(--color-border) bg-(--color-surface-subtle) p-6">
-              <p className="text-sm font-medium text-(--color-ink)">See it live: Amara Books</p>
-              <p className="mt-1.5 text-sm text-(--color-ink-muted)">
-                A real bookshop selling books and graduation sashes, running on the exact same
-                storefront and dashboard you&apos;d get — nothing about their store is custom-built.
-              </p>
-              <LinkButton href="/store/amara-books" variant="outline" size="md" className="mt-4">
-                Visit the store
-              </LinkButton>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-(--color-border) px-4 py-16">
-          <div className="mx-auto max-w-2xl">
-            <h2 className="text-center text-2xl font-semibold text-(--color-ink)">
-              Questions from new sellers
+        <section aria-labelledby="faq-heading" className="border-b border-(--color-border)">
+          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 lg:grid-cols-[1fr_2fr]">
+            <h2 id="faq-heading" className="text-2xl font-semibold tracking-tight text-(--color-ink)">
+              Questions
             </h2>
-            <div className="mt-8 divide-y divide-(--color-border) rounded-xl border border-(--color-border) bg-(--color-surface)">
+            <dl className="divide-y divide-(--color-border) border-y border-(--color-border)">
               {FAQS.map((faq) => (
-                <details key={faq.q} className="group px-5 py-4 open:pb-4">
-                  <summary className="cursor-pointer list-none text-sm font-medium text-(--color-ink) marker:content-none">
-                    {faq.q}
-                  </summary>
-                  <p className="mt-2 text-sm text-(--color-ink-muted)">{faq.a}</p>
-                </details>
+                <div key={faq.q} className="py-5">
+                  <dt className="font-medium text-(--color-ink)">{faq.q}</dt>
+                  <dd className="mt-1 text-(--color-ink-muted)">{faq.a}</dd>
+                </div>
               ))}
+            </dl>
+          </div>
+        </section>
+
+        <section className="py-16">
+          <div className="mx-auto flex max-w-6xl flex-col px-4 gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-2xl font-semibold tracking-tight text-(--color-ink)">Design your store before you sign up.</h2>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <LinkButton href="/start" size="lg">
+                Start selling
+              </LinkButton>
+              <Link href="/contact" className="text-sm font-medium text-(--color-ink) underline underline-offset-4">
+                Ask us a question
+              </Link>
             </div>
           </div>
-        </div>
-
-        <div className="border-t border-(--color-border) px-4 py-16 text-center">
-          <h2 className="text-2xl font-semibold text-(--color-ink)">Ready to start selling?</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-(--color-ink-muted)">
-            It takes a few minutes to set up your store and start adding products or services.
-          </p>
-          <LinkButton href="/start" size="lg" className="mt-6">
-            Create your free store
-          </LinkButton>
-        </div>
+        </section>
       </main>
 
-      <footer className="border-t border-(--color-border) px-4 py-6 text-center text-sm text-(--color-ink-muted)">
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/" className="hover:text-(--color-ink)">
-            &larr; Back to {PLATFORM_NAME}
-          </Link>
-          <Link href="/contact" className="hover:text-(--color-ink)">
-            Talk to us
-          </Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

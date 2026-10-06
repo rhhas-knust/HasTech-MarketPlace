@@ -9,7 +9,7 @@ export function ShareButtons({ url, title }: { url: string; title: string }) {
   return (
     <div className="flex items-center gap-2">
       <a
-        href={`https://wa.me/?text=${encodeURIComponent(`${title} — ${url}`)}`}
+        href={`https://wa.me/?text=${encodeURIComponent(`${title}: ${url}`)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="flex h-9 w-9 items-center justify-center rounded-md border border-(--color-border) text-(--color-ink-muted) hover:text-(--color-ink)"

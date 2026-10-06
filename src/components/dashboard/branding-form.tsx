@@ -67,7 +67,7 @@ export function BrandingForm({
                 ? uploading
                   ? "Uploading…"
                   : "JPEG, PNG or WEBP, up to 2MB."
-                : "No logo yet — customers see your initial in your accent colour instead."}
+                : "No logo yet. Customers see your first initial in your accent colour."}
             </FieldHint>
             {logoError && <p className="mt-1 text-sm text-(--color-danger)">{logoError}</p>}
             {logoUrl && (

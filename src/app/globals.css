@@ -13,7 +13,7 @@
   --color-ink: #18181b;
   --color-ink-muted: #52525b;
   --color-border: #e4e4e7;
-  --color-border-strong: #a1a1aa;
+  --color-border-strong: #8a8a93;
   --color-surface: #ffffff;
   --color-surface-subtle: #f4f4f5;
 
@@ -38,6 +38,7 @@
      storefront layout root via an inline style from stores.theme. */
   --store-accent: var(--color-brand);
   --store-accent-hover: var(--color-brand-hover);
+  --store-on-accent: var(--color-on-brand);
 }
 
 @theme inline {
@@ -81,7 +82,7 @@
     --color-ink: #f4f4f5;
     --color-ink-muted: #a1a1aa;
     --color-border: #2a2a2f;
-    --color-border-strong: #52525b;
+    --color-border-strong: #71717a;
     --color-surface: #18181b;
     --color-surface-subtle: #131316;
     --color-brand: #a990ea;
@@ -107,7 +108,7 @@
   --color-ink: #f4f4f5;
   --color-ink-muted: #a1a1aa;
   --color-border: #2a2a2f;
-  --color-border-strong: #52525b;
+  --color-border-strong: #71717a;
   --color-surface: #18181b;
   --color-surface-subtle: #131316;
   --color-brand: #a990ea;

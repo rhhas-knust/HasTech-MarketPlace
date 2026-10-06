@@ -7,7 +7,7 @@ import { getFoundingSpotsLeft } from "@/lib/founding";
 
 export const metadata: Metadata = {
   title: "Design your store",
-  description: "Design your online store in about 2 minutes. No account needed until you love it.",
+  description: "Pick a store name, colour and first product. No account needed yet.",
 };
 
 export const revalidate = 300;
@@ -16,7 +16,7 @@ export default async function StartPage() {
   const spotsLeft = await getFoundingSpotsLeft();
 
   return (
-    <div className="min-h-screen bg-(--color-surface-subtle)">
+    <div className="min-h-dvh bg-(--color-surface-subtle)">
       <header className="px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
           <Link href="/" className="text-lg font-semibold text-(--color-ink)">

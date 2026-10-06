@@ -30,7 +30,7 @@ export async function generateMetadata({
   const { store, product } = data;
   const image = primaryImage(product);
   const title = product.meta_title || `${product.name} | ${store.name}`;
-  const description = product.meta_description || product.description || `${product.name} — available at ${store.name}.`;
+  const description = product.meta_description || product.description || `${product.name}, available at ${store.name}.`;
 
   return {
     title: product.meta_title || product.name,

@@ -54,9 +54,7 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Inbox"
         title="Consultation requests"
-        description="Messages from the public “Talk to us” form."
       />
       <FilterTabs tabs={tabs} />
 
@@ -70,7 +68,7 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
             <article
               key={request.id}
               className={cn(
-                "flex flex-col rounded-xl border bg-(--color-surface) p-6 transition-all duration-300",
+                "flex flex-col rounded-xl border bg-(--color-surface) p-6 transition-colors duration-300",
                 request.status === "new" ? "border-(--color-brand)/40" : "border-(--color-border)",
               )}
             >
@@ -80,9 +78,7 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-(--color-ink)">{request.name}</p>
                     {request.status === "new" && (
-                      <span className="rounded-md bg-(--color-danger) px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
-                        New
-                      </span>
+                      <Badge tone="info">New</Badge>
                     )}
                   </div>
                   {request.business_name && (

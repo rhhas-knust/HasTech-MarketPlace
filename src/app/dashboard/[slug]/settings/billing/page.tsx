@@ -37,7 +37,7 @@ export default async function BillingSettingsPage({ params }: { params: Promise<
       {billing.isFoundingMember && (
         <Card className="border-(--color-brand) bg-(--color-brand-subtle)">
           <CardBody>
-            <p className="text-sm font-semibold text-(--color-ink)">You&apos;re a founding member 🎉</p>
+            <p className="text-sm font-semibold text-(--color-ink)">You&apos;re a founding member</p>
             <p className="mt-1 text-sm text-(--color-ink-muted)">
               As one of our first five sellers, every platform fee is waived until{" "}
               {new Date(billing.foundingMemberUntil!).toLocaleDateString("en-GH", {
@@ -45,7 +45,7 @@ export default async function BillingSettingsPage({ params }: { params: Promise<
                 month: "long",
                 year: "numeric",
               })}
-              . Pick a plan below for after that — you won&apos;t be charged until then.
+              . Pick a plan below for after that. You won&apos;t be charged until then.
             </p>
           </CardBody>
         </Card>
@@ -88,8 +88,8 @@ export default async function BillingSettingsPage({ params }: { params: Promise<
           </CardHeader>
           <CardBody>
             <p className="text-sm text-(--color-ink-muted)">
-              {formatCurrency(billing.subscriptionPrice)} per month, paid manually — we&apos;ll add reminders
-              before your period ends.
+              {formatCurrency(billing.subscriptionPrice)} per month, paid manually from this page. It
+              doesn&apos;t renew on its own.
             </p>
             <p className="mt-3 text-sm font-medium text-(--color-ink)">
               {subscriptionActive

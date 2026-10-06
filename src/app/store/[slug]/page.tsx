@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { getPublishedProducts, getStoreBySlug } from "@/lib/store-data";
 import { ProductCard } from "@/components/storefront/product-card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { ctaLabelForBusinessType } from "@/lib/constants";
 import { Package } from "lucide-react";
 
 const PAGE_SIZE = 12;
@@ -33,22 +32,15 @@ export default async function StoreHomePage({
     : [];
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const cta = ctaLabelForBusinessType(store.business_type);
 
   return (
     <div>
       {!q && !category && (
-        <section className="px-4 pt-6">
-          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-xl bg-(--store-accent) px-6 py-14 text-center shadow-raised sm:py-16">
-            <div aria-hidden className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/15 blur-2xl" />
-            <div aria-hidden className="absolute -bottom-24 -left-10 h-64 w-64 rounded-full bg-black/10 blur-2xl" />
-            <h1 className="relative text-3xl font-bold tracking-tight text-white sm:text-5xl">{store.name}</h1>
-            {store.description && (
-              <p className="relative mx-auto mt-3 max-w-xl text-white/85">{store.description}</p>
-            )}
-            <p className="relative mx-auto mt-6 w-fit rounded-md bg-white/15 px-4 py-1.5 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur">
-              {cta} on any product below
-            </p>
+        <section className="border-b border-(--color-border) bg-(--color-surface)">
+          <div className="mx-auto max-w-6xl px-4 py-10 sm:py-12">
+            <span aria-hidden className="block h-1 w-12 rounded-sm bg-(--store-accent)" />
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-(--color-ink) sm:text-4xl">{store.name}</h1>
+            {store.description && <p className="mt-3 max-w-2xl text-(--color-ink-muted)">{store.description}</p>}
           </div>
         </section>
       )}
@@ -95,7 +87,7 @@ export default async function StoreHomePage({
                   href={`?${new URLSearchParams({ ...(q ? { q } : {}), ...(category ? { category } : {}), page: String(p) })}`}
                   className={
                     p === currentPage
-                      ? "flex h-9 w-9 items-center justify-center rounded-lg bg-(--store-accent) font-medium text-white"
+                      ? "flex h-9 w-9 items-center justify-center rounded-lg bg-(--store-accent) font-medium text-(--store-on-accent)"
                       : "flex h-9 w-9 items-center justify-center rounded-lg border border-(--color-border) text-(--color-ink)"
                   }
                 >

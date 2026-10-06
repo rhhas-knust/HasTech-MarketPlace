@@ -57,7 +57,7 @@ export function DashboardSidebar({
             key={href}
             href={href}
             className={cn(
-              "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200",
+              "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors duration-200",
               active
                 ? "bg-(--color-brand) text-(--color-on-brand)"
                 : "text-(--color-ink-muted) hover:bg-(--color-surface-subtle) hover:text-(--color-ink)",

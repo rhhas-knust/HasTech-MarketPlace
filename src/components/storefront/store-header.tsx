@@ -20,7 +20,7 @@ export function StoreHeader({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={store.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover" />
             ) : (
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-(--store-accent) text-sm font-semibold text-white">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-(--store-accent) text-sm font-semibold text-(--store-on-accent)">
                 {store.name.charAt(0).toUpperCase()}
               </span>
             )}
@@ -29,7 +29,7 @@ export function StoreHeader({
 
           <div className="flex items-center gap-3">
             <form action={`/store/${store.slug}`} className="hidden sm:block">
-              <div className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-surface) px-4 py-2 transition focus-within:border-(--store-accent) focus-within:ring-4 focus-within:ring-(--store-accent)/15">
+              <div className="flex items-center gap-2 rounded-md border border-(--color-border-strong) bg-(--color-surface) px-4 py-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--color-ink)">
                 <Search className="h-4 w-4 text-(--color-ink-muted)" aria-hidden />
                 <input
                   type="search"
@@ -47,7 +47,7 @@ export function StoreHeader({
             >
               <ShoppingCart className="h-5 w-5" aria-hidden />
               {cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-md bg-(--store-accent) px-1 text-xs font-medium text-white ring-2 ring-(--color-surface)">
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-md bg-(--store-accent) px-1 text-xs font-medium text-(--store-on-accent) ring-2 ring-(--color-surface)">
                   {cartCount}
                 </span>
               )}
@@ -59,7 +59,7 @@ export function StoreHeader({
           <nav className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 text-sm text-(--color-ink-muted)">
             <Link
               href={`/store/${store.slug}`}
-              className="whitespace-nowrap rounded-md border border-(--color-border) bg-(--color-surface) px-3.5 py-1.5 transition-colors hover:border-(--store-accent) hover:text-(--store-accent)"
+              className="whitespace-nowrap rounded-md border border-(--color-border) bg-(--color-surface) px-3.5 py-1.5 transition-colors hover:border-(--store-accent) hover:text-(--color-ink)"
             >
               All products
             </Link>
@@ -67,7 +67,7 @@ export function StoreHeader({
               <Link
                 key={category.id}
                 href={`/store/${store.slug}?category=${category.slug}`}
-                className="whitespace-nowrap rounded-md border border-(--color-border) bg-(--color-surface) px-3.5 py-1.5 transition-colors hover:border-(--store-accent) hover:text-(--store-accent)"
+                className="whitespace-nowrap rounded-md border border-(--color-border) bg-(--color-surface) px-3.5 py-1.5 transition-colors hover:border-(--store-accent) hover:text-(--color-ink)"
               >
                 {category.name}
               </Link>
@@ -76,7 +76,7 @@ export function StoreHeader({
         )}
 
         <form action={`/store/${store.slug}`} className="sm:hidden">
-          <div className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-surface) px-4 py-2.5">
+          <div className="flex items-center gap-2 rounded-md border border-(--color-border-strong) bg-(--color-surface) px-4 py-2.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--color-ink)">
             <Search className="h-4 w-4 text-(--color-ink-muted)" aria-hidden />
             <input
               type="search"

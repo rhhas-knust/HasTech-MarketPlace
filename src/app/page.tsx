@@ -158,8 +158,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="px-4 py-16">
-          <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <section className="py-16">
+          <div className="mx-auto flex max-w-6xl flex-col px-4 gap-4 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-2xl font-semibold tracking-tight text-(--color-ink)">Set up your store in a few minutes.</h2>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
               <LinkButton href="/start" size="lg">

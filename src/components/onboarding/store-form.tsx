@@ -142,7 +142,7 @@ export function StoreForm() {
       )}
 
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Creating your store…" : "Create my store & open my gift 🎁"}
+        {pending ? "Creating your store…" : "Create store"}
       </Button>
     </form>
   );

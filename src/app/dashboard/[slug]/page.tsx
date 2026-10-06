@@ -11,7 +11,6 @@ import {
   Percent,
   ShoppingBag,
   ShoppingCart,
-  Sparkles,
   Truck,
   Users,
   Wallet,
@@ -107,7 +106,7 @@ export default async function StoreOverviewPage({
   const conversionRate = stats.totalViews > 0 ? (stats.purchaseCount / stats.totalViews) * 100 : 0;
   const isPublished = Boolean(store.published_at);
   const storeUrl = `${appUrl}/store/${store.slug}`;
-  const shareText = `🛍️ Shop ${store.name} online! Order and pay with MoMo or card: ${storeUrl}`;
+  const shareText = `${store.name} is online. Order and pay with MoMo or card: ${storeUrl}`;
 
   const checklist = [
     { done: stats.productsCount > 0, label: "Add your first product", href: `/dashboard/${slug}/products/new` },
@@ -136,69 +135,66 @@ export default async function StoreOverviewPage({
         />
       )}
 
-      {/* Welcome banner + hero figure */}
-      <section className="relative overflow-hidden rounded-xl bg-(--color-brand) p-6 text-white shadow-raised sm:p-8">
-        <div aria-hidden className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-white/15 blur-3xl" />
-        <div aria-hidden className="absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-black/10 blur-3xl" />
-        <div className="relative flex flex-wrap items-end justify-between gap-6">
-          <div className="min-w-0">
-            <p className="inline-flex items-center gap-2 rounded-md bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur">
-              <span className={cn("h-2 w-2 rounded-full", isPublished ? "bg-emerald-300" : "bg-amber-300")} />
-              {isPublished ? "Your store is live" : "Not published yet"}
-            </p>
-            <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
-              {greetingFor(now)}, {firstName} 👋
-            </h1>
-            <p className="mt-1 truncate text-sm text-white/80">Here&apos;s how {store.name} is doing.</p>
-            <div className="mt-5 flex flex-wrap gap-2">
+      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">
+            {greetingFor(now)}, {firstName}
+          </h1>
+          <p className="mt-1 flex items-center gap-2 text-sm text-(--color-ink-muted)">
+            <span
+              aria-hidden
+              className={cn("h-2 w-2 rounded-full", isPublished ? "bg-(--color-success)" : "bg-(--color-warning)")}
+            />
+            <span className="truncate">
+              {store.name} is {isPublished ? "live" : "not published yet"}
+            </span>
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <PublishToggle
+              published={isPublished}
+              onPublish={publishStoreAction.bind(null, slug)}
+              onUnpublish={unpublishStoreAction.bind(null, slug)}
+            />
+            <a
+              href={`/store/${store.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--color-border-strong) px-3 text-sm font-medium text-(--color-ink) hover:bg-(--color-surface-subtle)"
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden /> View store
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+            {isPublished && (
               <a
-                href={`/store/${store.slug}`}
+                href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 items-center gap-1.5 rounded-md bg-white/15 px-4 text-sm font-medium ring-1 ring-white/30 backdrop-blur transition-colors hover:bg-white/25"
+                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--color-border-strong) px-3 text-sm font-medium text-(--color-ink) hover:bg-(--color-surface-subtle)"
               >
-                <ExternalLink className="h-4 w-4" /> View store
+                <MessageCircle className="h-4 w-4" aria-hidden /> Share on WhatsApp
+                <span className="sr-only">(opens in a new tab)</span>
               </a>
-              {isPublished && (
-                <a
-                  href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-9 items-center gap-1.5 rounded-md bg-white/15 px-4 text-sm font-medium ring-1 ring-white/30 backdrop-blur transition-colors hover:bg-white/25"
-                >
-                  <MessageCircle className="h-4 w-4" /> Share on WhatsApp
-                </a>
-              )}
-              <PublishToggle
-                published={isPublished}
-                onPublish={publishStoreAction.bind(null, slug)}
-                onUnpublish={unpublishStoreAction.bind(null, slug)}
-                className="h-9 border-transparent bg-white px-4 text-(--color-brand) shadow-lg hover:bg-white hover:brightness-100"
-              />
-            </div>
-          </div>
-          <div className="text-left sm:text-right">
-            <p className="text-xs font-medium uppercase tracking-wider text-white/70">Total sales</p>
-            <p className="mt-1 text-4xl font-bold tracking-tight sm:text-5xl">
-              {formatCurrency(stats.totalRevenue, store.currency)}
-            </p>
-            <p className="mt-1 text-sm text-white/80">
-              {weekly.revenueThisWeek > 0
-                ? `+${formatCurrency(weekly.revenueThisWeek, store.currency)} this week`
-                : "Share your link to get this week's first sale"}
-            </p>
+            )}
           </div>
         </div>
-      </section>
+        <div className="text-left sm:text-right">
+          <p className="text-sm text-(--color-ink-muted)">Total sales</p>
+          <p className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-(--color-ink)">
+            {formatCurrency(stats.totalRevenue, store.currency)}
+          </p>
+          <p className="mt-1 text-sm text-(--color-ink-muted)">
+            {weekly.revenueThisWeek > 0
+              ? `+${formatCurrency(weekly.revenueThisWeek, store.currency)} this week`
+              : "No sales yet this week"}
+          </p>
+        </div>
+      </header>
 
       {/* Setup progress: only until everything is done */}
       {doneCount < checklist.length && (
-        <section className="rounded-xl border border-(--color-brand)/30 bg-(--color-surface) p-6">
+        <section className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <CardHeading title="Finish setting up your store" description={`${doneCount} of ${checklist.length} steps done. You're nearly there.`} />
-            <span className="flex items-center gap-1.5 text-sm font-medium text-(--color-brand)">
-              <Sparkles className="h-4 w-4" /> {Math.round((doneCount / checklist.length) * 100)}%
-            </span>
+            <CardHeading title="Finish setting up your store" description={`${doneCount} of ${checklist.length} steps done`} />
           </div>
           <div className="mt-4">
             <Meter value={doneCount} max={checklist.length} label="Store setup progress" />
@@ -208,14 +204,14 @@ export default async function StoreOverviewPage({
               const content = (
                 <>
                   {item.done ? (
-                    <CircleCheck className="h-5 w-5 shrink-0 text-(--color-success)" />
+                    <CircleCheck className="h-5 w-5 shrink-0 text-(--color-success)" aria-label="Done" />
                   ) : (
-                    <Circle className="h-5 w-5 shrink-0 text-(--color-ink-muted)" />
+                    <Circle className="h-5 w-5 shrink-0 text-(--color-ink-muted)" aria-label="Not done" />
                   )}
                   <span className={cn("text-sm", item.done ? "text-(--color-ink-muted) line-through" : "font-medium text-(--color-ink)")}>
                     {item.label}
                   </span>
-                  {!item.done && item.href && <ArrowRight className="ml-auto h-4 w-4 text-(--color-brand)" />}
+                  {!item.done && item.href && <ArrowRight className="ml-auto h-4 w-4 text-(--color-brand)" aria-hidden />}
                 </>
               );
               return (
@@ -223,7 +219,7 @@ export default async function StoreOverviewPage({
                   {item.href && !item.done ? (
                     <Link
                       href={item.href}
-                      className="flex h-full items-center gap-3 rounded-lg border border-(--color-border) bg-(--color-surface-subtle) p-4 transition-all hover:border-(--color-brand)/40 hover:shadow-soft"
+                      className="flex h-full items-center gap-3 rounded-lg border border-(--color-border) bg-(--color-surface-subtle) p-4 transition-colors hover:border-(--color-border-strong)"
                     >
                       {content}
                     </Link>
@@ -277,7 +273,7 @@ export default async function StoreOverviewPage({
           <div className="mt-4 space-y-3">
             <Link
               href={`/dashboard/${slug}/orders?view=todo`}
-              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-all hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-brand)/40 hover:shadow-soft"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-brand-subtle) text-(--color-brand)">
                 <Truck className="h-5 w-5" />
@@ -290,7 +286,7 @@ export default async function StoreOverviewPage({
             </Link>
             <Link
               href={`/dashboard/${slug}/products?status=low_stock`}
-              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-all hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-brand)/40 hover:shadow-soft"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-warning-subtle) text-(--color-warning)">
                 <PackageX className="h-5 w-5" />

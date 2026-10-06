@@ -52,7 +52,7 @@ export function DashboardShell({
       <aside className="sticky top-0 hidden h-screen w-72 shrink-0 p-4 lg:block">
         <div className="flex h-full flex-col overflow-y-auto rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
           <div className="mb-4 flex items-center justify-between px-2">
-            <p className="text-xs font-medium uppercase tracking-wide text-(--color-ink-muted)">
+            <p className="text-sm font-semibold text-(--color-ink)">
               <PlatformLogo iconSize={16} />
             </p>
             <ThemeToggle />

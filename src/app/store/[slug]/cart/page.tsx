@@ -65,7 +65,7 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
                     defaultValue={item.quantity}
                     className="h-8 w-16 rounded-md border border-(--color-border) px-2 text-sm"
                   />
-                  <button type="submit" className="text-sm font-medium text-(--store-accent)">
+                  <button type="submit" className="text-sm font-medium text-(--color-ink) underline underline-offset-4">
                     Update
                   </button>
                 </form>
