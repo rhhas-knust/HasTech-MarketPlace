@@ -10,26 +10,19 @@ import {
   PackageX,
   Percent,
   ShoppingBag,
-  ShoppingCart,
   Truck,
   Users,
-  Wallet,
 } from "lucide-react";
 import { getCurrentProfile, getCurrentUser, requireStoreAccess } from "@/lib/auth/session";
 import {
   getAttentionCounts,
   getOverviewStats,
-  getRecentActivity,
   getRecentOrders,
-  getRevenueOverTime,
-  getTopSellingProducts,
-  getViewsOverTime,
   getWeeklyHighlights,
 } from "@/lib/dashboard-data";
 import { isPaymentProviderConfigured } from "@/lib/payments";
 import { formatCurrency } from "@/lib/money";
 import { FULFILMENT_STATUS_LABELS } from "@/lib/constants";
-import { RevenueChart, ViewsChart } from "@/components/dashboard/charts";
 import { CardHeading, InitialsAvatar, KpiTile, Meter, timeAgo } from "@/components/console/ui";
 import { PublishToggle } from "@/components/dashboard/publish-toggle";
 import { WelcomeGift } from "@/components/dashboard/welcome-gift";
@@ -49,12 +42,6 @@ function greetingFor(date: Date) {
 function currentTime() {
   return new Date();
 }
-
-const ACTIVITY_ICONS: Record<string, { icon: typeof Eye; tone: string }> = {
-  product_view: { icon: Eye, tone: "bg-(--color-brand-subtle) text-(--color-brand)" },
-  add_to_cart: { icon: ShoppingCart, tone: "bg-(--color-warning-subtle) text-(--color-warning)" },
-  purchase: { icon: Wallet, tone: "bg-(--color-success-subtle) text-(--color-success)" },
-};
 
 export default async function StoreOverviewPage({
   params,
@@ -76,11 +63,7 @@ export default async function StoreOverviewPage({
     stats,
     weekly,
     attention,
-    revenueSeries,
-    viewsSeries,
-    activity,
     recentOrders,
-    topProducts,
     paymentConfigured,
     billing,
     appUrl,
@@ -90,11 +73,7 @@ export default async function StoreOverviewPage({
     getOverviewStats(store.id),
     getWeeklyHighlights(store.id),
     getAttentionCounts(store.id),
-    getRevenueOverTime(store.id),
-    getViewsOverTime(store.id),
-    getRecentActivity(store.id, 8),
     getRecentOrders(store.id, 6),
-    getTopSellingProducts(store.id, 5),
     isPaymentProviderConfigured(store.id),
     getPlatformBilling(store.id),
     getAppUrl(),
@@ -114,7 +93,6 @@ export default async function StoreOverviewPage({
     { done: isPublished, label: "Publish your store", href: undefined },
   ];
   const doneCount = checklist.filter((c) => c.done).length;
-  const topSales = topProducts[0]?.purchase_count ?? 0;
 
   return (
     <div className="space-y-6">
@@ -266,30 +244,31 @@ export default async function StoreOverviewPage({
         />
       </div>
 
-      {/* Needs attention + top sellers */}
+      {/* Charts, best sellers and live activity live on the Analytics page,
+          so the overview only shows what needs doing next. */}
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <CardHeading title="Needs your attention" />
           <div className="mt-4 space-y-3">
             <Link
               href={`/dashboard/${slug}/orders?view=todo`}
-              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-border-strong)"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-brand-subtle) text-(--color-brand)">
-                <Truck className="h-5 w-5" />
+                <Truck className="h-5 w-5" aria-hidden />
               </span>
               <span className="flex-1">
                 <span className="block text-2xl font-semibold text-(--color-ink)">{attention.ordersToFulfil}</span>
                 <span className="text-sm text-(--color-ink-muted)">paid orders to fulfil</span>
               </span>
-              <ArrowRight className="h-4 w-4 text-(--color-ink-muted) transition-transform" />
+              <ArrowRight className="h-4 w-4 text-(--color-ink-muted)" aria-hidden />
             </Link>
             <Link
               href={`/dashboard/${slug}/products?status=low_stock`}
-              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-colors hover:border-(--color-border-strong)"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-warning-subtle) text-(--color-warning)">
-                <PackageX className="h-5 w-5" />
+                <PackageX className="h-5 w-5" aria-hidden />
               </span>
               <span className="flex-1">
                 <span className="block text-2xl font-semibold text-(--color-ink)">{attention.lowStock + attention.outOfStock}</span>
@@ -297,66 +276,12 @@ export default async function StoreOverviewPage({
                   products low or out of stock
                 </span>
               </span>
-              <ArrowRight className="h-4 w-4 text-(--color-ink-muted) transition-transform" />
+              <ArrowRight className="h-4 w-4 text-(--color-ink-muted)" aria-hidden />
             </Link>
           </div>
         </div>
 
         <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6 lg:col-span-2">
-          <CardHeading title="Best sellers" description="Your products ranked by sales." />
-          {topProducts.length === 0 ? (
-            <p className="mt-6 rounded-lg bg-(--color-surface-subtle) px-4 py-8 text-center text-sm text-(--color-ink-muted)">
-              Add a product and your best sellers will show up here.
-            </p>
-          ) : (
-            <ol className="mt-5 space-y-4">
-              {topProducts.map((product, i) => (
-                <li key={product.id}>
-                  <div className="flex items-center gap-3">
-                    <span className="w-5 tabular-nums text-sm text-(--color-ink-muted)">{i + 1}</span>
-                    <Link
-                      href={`/dashboard/${slug}/products/${product.id}`}
-                      className="flex-1 truncate text-sm font-medium text-(--color-ink) hover:text-(--color-brand)"
-                    >
-                      {product.name}
-                    </Link>
-                    <span className="text-xs text-(--color-ink-muted)">{product.view_count} views</span>
-                    <span className="w-16 text-right tabular-nums text-sm font-semibold text-(--color-ink) tabular-nums">
-                      {product.purchase_count} sold
-                    </span>
-                  </div>
-                  <div className="ml-8 mt-2 h-1.5 overflow-hidden rounded-full bg-(--color-brand-subtle)">
-                    <div
-                      className="h-full rounded-full bg-(--color-brand)"
-                      style={{ width: `${topSales > 0 ? (product.purchase_count / topSales) * 100 : 0}%` }}
-                    />
-                  </div>
-                </li>
-              ))}
-            </ol>
-          )}
-        </div>
-      </div>
-
-      {/* Charts */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
-          <CardHeading title="Revenue" description="Last 30 days." />
-          <div className="mt-4">
-            <RevenueChart data={revenueSeries} currency={store.currency} />
-          </div>
-        </div>
-        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
-          <CardHeading title="Product views" description="Last 30 days." />
-          <div className="mt-4">
-            <ViewsChart data={viewsSeries} />
-          </div>
-        </div>
-      </div>
-
-      {/* Recent orders + live activity */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <div className="flex items-center justify-between gap-3">
             <CardHeading title="Recent orders" />
             <Link href={`/dashboard/${slug}/orders`} className="text-sm font-medium text-(--color-brand) hover:underline">
@@ -408,30 +333,6 @@ export default async function StoreOverviewPage({
           )}
         </div>
 
-        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
-          <CardHeading title="Live activity" description="What shoppers are doing in your store." />
-          {activity.length === 0 ? (
-            <p className="mt-6 rounded-lg bg-(--color-surface-subtle) px-4 py-8 text-center text-sm text-(--color-ink-muted)">
-              Once customers start visiting, you&apos;ll see it here.
-            </p>
-          ) : (
-            <ul className="mt-4 space-y-1">
-              {activity.map((item) => {
-                const meta = ACTIVITY_ICONS[item.type] ?? ACTIVITY_ICONS.product_view;
-                const Icon = meta.icon;
-                return (
-                  <li key={item.id} className="flex items-center gap-3 rounded-lg px-2 py-2.5">
-                    <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", meta.tone)}>
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <span className="min-w-0 flex-1 truncate text-sm text-(--color-ink)">{item.description}</span>
-                    <span className="shrink-0 text-xs text-(--color-ink-muted)">{timeAgo(item.createdAt, nowMs)}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
       </div>
     </div>
   );

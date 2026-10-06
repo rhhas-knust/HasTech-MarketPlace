@@ -2,7 +2,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { requireStoreAccess } from "@/lib/auth/session";
-import { getOverviewStats, getRevenueOverTime, getTopViewedProducts, getViewsOverTime } from "@/lib/dashboard-data";
+import {
+  getOverviewStats,
+  getRecentActivity,
+  getRevenueOverTime,
+  getTopViewedProducts,
+  getViewsOverTime,
+} from "@/lib/dashboard-data";
+import { timeAgo } from "@/components/console/ui";
 import { RevenueChart, ViewsChart } from "@/components/dashboard/charts";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/dashboard/stat-card";
@@ -10,24 +17,30 @@ import { EmptyState } from "@/components/ui/empty-state";
 
 export const metadata: Metadata = { title: "Analytics" };
 
+function currentTimeMs() {
+  return new Date().getTime();
+}
+
 export default async function AnalyticsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const membership = await requireStoreAccess(slug);
   if (!membership) redirect("/dashboard");
 
-  const [stats, revenueSeries, viewsSeries, topProducts] = await Promise.all([
+  const [stats, revenueSeries, viewsSeries, topProducts, activity] = await Promise.all([
     getOverviewStats(membership.store.id),
     getRevenueOverTime(membership.store.id),
     getViewsOverTime(membership.store.id),
     getTopViewedProducts(membership.store.id, 8),
+    getRecentActivity(membership.store.id, 10),
   ]);
+  const nowMs = currentTimeMs();
 
   const viewToCartRate = stats.totalViews > 0 ? (stats.addToCartCount / stats.totalViews) * 100 : 0;
   const cartToPurchaseRate = stats.addToCartCount > 0 ? (stats.purchaseCount / stats.addToCartCount) * 100 : 0;
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Analytics</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">Analytics</h1>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Total views" value={String(stats.totalViews)} />
@@ -91,6 +104,26 @@ export default async function AnalyticsPage({ params }: { params: Promise<{ slug
                 ))}
               </tbody>
             </table>
+          )}
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent activity</CardTitle>
+        </CardHeader>
+        <CardBody>
+          {activity.length === 0 ? (
+            <EmptyState title="No visits recorded yet" />
+          ) : (
+            <ul className="divide-y divide-(--color-border)">
+              {activity.map((item) => (
+                <li key={item.id} className="flex items-center justify-between gap-4 py-2.5 text-sm">
+                  <span className="min-w-0 truncate text-(--color-ink)">{item.description}</span>
+                  <span className="shrink-0 text-(--color-ink-muted)">{timeAgo(item.createdAt, nowMs)}</span>
+                </li>
+              ))}
+            </ul>
           )}
         </CardBody>
       </Card>
