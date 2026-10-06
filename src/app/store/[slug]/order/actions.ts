@@ -13,6 +13,7 @@ export interface OrderLookupState {
     orderNumber: string;
     paymentStatusLabel: string;
     fulfilmentStatusLabel: string;
+    fulfilmentStatus: string;
     total: string;
     createdAt: string;
     items: { name: string; quantity: number; downloadUrl?: string }[];
@@ -52,6 +53,7 @@ export async function lookupOrderAction(
       orderNumber: order.order_number,
       paymentStatusLabel: PAYMENT_STATUS_LABELS[order.payment_status] ?? order.payment_status,
       fulfilmentStatusLabel: FULFILMENT_STATUS_LABELS[order.fulfilment_status] ?? order.fulfilment_status,
+      fulfilmentStatus: order.fulfilment_status,
       total: formatCurrency(order.total, order.currency),
       createdAt: new Date(order.created_at).toLocaleDateString("en-GB", {
         day: "numeric",

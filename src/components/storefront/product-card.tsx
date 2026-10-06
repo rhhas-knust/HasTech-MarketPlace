@@ -4,15 +4,24 @@ import { isOutOfStock } from "@/lib/inventory";
 import { primaryImage, type ProductWithImages } from "@/lib/store-data";
 import { Badge } from "@/components/ui/badge";
 
-export function ProductCard({ storeSlug, product }: { storeSlug: string; product: ProductWithImages }) {
+export function ProductCard({
+  storeSlug,
+  product,
+  index,
+}: {
+  storeSlug: string;
+  product: ProductWithImages;
+  /** Position in a grid; when set, cards fade in one after another. */
+  index?: number;
+}) {
   const image = primaryImage(product);
   const onSale = product.sale_price != null && product.sale_price < product.price;
   const outOfStock = isOutOfStock(product);
 
-  return (
+  const card = (
     <Link
       href={`/store/${storeSlug}/product/${product.slug}`}
-      className="lift group flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) p-2"
+      className="lift group flex h-full flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) p-2"
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-(--color-surface-subtle)">
         {image ? (
@@ -58,5 +67,13 @@ export function ProductCard({ storeSlug, product }: { storeSlug: string; product
         </div>
       </div>
     </Link>
+  );
+
+  if (index === undefined) return card;
+  // The entrance lives on a wrapper so it never fights the card's hover lift.
+  return (
+    <div className="enter" style={{ "--i": Math.min(index, 8), animationDuration: "500ms" } as React.CSSProperties}>
+      {card}
+    </div>
   );
 }

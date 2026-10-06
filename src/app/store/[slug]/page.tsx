@@ -38,9 +38,18 @@ export default async function StoreHomePage({
       {!q && !category && (
         <section className="border-b border-(--color-border) bg-(--color-surface)">
           <div className="mx-auto max-w-6xl px-4 py-10 sm:py-12">
-            <span aria-hidden className="block h-1 w-12 rounded-sm bg-(--store-accent)" />
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-(--color-ink) sm:text-4xl">{store.name}</h1>
-            {store.description && <p className="mt-3 max-w-2xl text-(--color-ink-muted)">{store.description}</p>}
+            <span aria-hidden className="progress-fill block h-1 w-12 origin-left rounded-sm bg-(--store-accent)" />
+            <h1
+              className="enter mt-4 text-3xl font-semibold tracking-tight text-(--color-ink) sm:text-4xl"
+              style={{ "--i": 1 } as React.CSSProperties}
+            >
+              {store.name}
+            </h1>
+            {store.description && (
+              <p className="enter mt-3 max-w-2xl text-(--color-ink-muted)" style={{ "--i": 2 } as React.CSSProperties}>
+                {store.description}
+              </p>
+            )}
           </div>
         </section>
       )}
@@ -50,8 +59,8 @@ export default async function StoreHomePage({
           <section className="mb-10">
             <h2 className="mb-4 text-lg font-semibold text-(--color-ink)">Featured</h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {featured.map((product) => (
-                <ProductCard key={product.id} storeSlug={store.slug} product={product} />
+              {featured.map((product, i) => (
+                <ProductCard key={product.id} storeSlug={store.slug} product={product} index={i} />
               ))}
             </div>
           </section>
@@ -73,8 +82,8 @@ export default async function StoreHomePage({
             />
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {products.map((product) => (
-                <ProductCard key={product.id} storeSlug={store.slug} product={product} />
+              {products.map((product, i) => (
+                <ProductCard key={product.id} storeSlug={store.slug} product={product} index={i + featured.length} />
               ))}
             </div>
           )}
@@ -85,10 +94,11 @@ export default async function StoreHomePage({
                 <a
                   key={p}
                   href={`?${new URLSearchParams({ ...(q ? { q } : {}), ...(category ? { category } : {}), page: String(p) })}`}
+                  aria-current={p === currentPage ? "page" : undefined}
                   className={
                     p === currentPage
                       ? "flex h-9 w-9 items-center justify-center rounded-lg bg-(--store-accent) font-medium text-(--store-on-accent)"
-                      : "flex h-9 w-9 items-center justify-center rounded-lg border border-(--color-border) text-(--color-ink)"
+                      : "flex h-9 w-9 items-center justify-center rounded-lg border border-(--color-border) text-(--color-ink) transition-colors hover:border-(--color-border-strong)"
                   }
                 >
                   {p}

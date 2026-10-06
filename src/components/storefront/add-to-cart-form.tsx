@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { AddToCartState } from "@/app/store/[slug]/product/[productSlug]/actions";
 
@@ -17,6 +18,16 @@ export function AddToCartForm({
 }) {
   const [state, formAction, pending] = useActionState<AddToCartState, FormData>(action, {});
   const [quantity, setQuantity] = useState(1);
+  const [justAdded, setJustAdded] = useState(false);
+
+  // Each successful submit returns a new state object; flash "Added" briefly.
+  useEffect(() => {
+    if (!state.success) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- feedback for a completed server action
+    setJustAdded(true);
+    const timer = window.setTimeout(() => setJustAdded(false), 1800);
+    return () => clearTimeout(timer);
+  }, [state]);
 
   return (
     <form action={formAction} className="space-y-3">
@@ -25,16 +36,20 @@ export function AddToCartForm({
         <div className="flex items-center rounded-lg border border-(--color-border)">
           <button
             type="button"
-            className="h-10 w-10 text-lg text-(--color-ink)"
+            className="h-10 w-10 text-lg text-(--color-ink) transition-transform duration-100 active:scale-90"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
             aria-label="Decrease quantity"
           >
             −
           </button>
-          <span className="w-10 text-center text-sm font-medium">{quantity}</span>
+          <span className="w-10 overflow-hidden text-center text-sm font-medium tabular-nums">
+            <span key={quantity} className="qty-tick inline-block">
+              {quantity}
+            </span>
+          </span>
           <button
             type="button"
-            className="h-10 w-10 text-lg text-(--color-ink)"
+            className="h-10 w-10 text-lg text-(--color-ink) transition-transform duration-100 active:scale-90"
             onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
             aria-label="Increase quantity"
           >
@@ -42,7 +57,19 @@ export function AddToCartForm({
           </button>
         </div>
         <Button type="submit" variant="store" size="lg" className="flex-1" disabled={disabled || pending}>
-          {disabled ? "Out of stock" : pending ? "Adding…" : ctaLabel}
+          <span key={justAdded ? "added" : "idle"} className="label-swap inline-flex items-center gap-2">
+            {disabled ? (
+              "Out of stock"
+            ) : pending ? (
+              "Adding…"
+            ) : justAdded ? (
+              <>
+                <Check className="h-4 w-4" aria-hidden /> Added to cart
+              </>
+            ) : (
+              ctaLabel
+            )}
+          </span>
         </Button>
       </div>
       {state.error && (
@@ -50,11 +77,9 @@ export function AddToCartForm({
           {state.error}
         </p>
       )}
-      {state.success && (
-        <p role="status" className="text-sm text-(--color-success)">
-          Added to cart.
-        </p>
-      )}
+      <p role="status" className="sr-only">
+        {justAdded ? "Added to cart." : ""}
+      </p>
     </form>
   );
 }

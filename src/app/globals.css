@@ -217,6 +217,34 @@ a {
 .icon-swap {
   animation: icon-in 250ms var(--ease-out);
 }
+/* Storefront feedback */
+@keyframes bump {
+  40% {
+    transform: scale(1.3);
+  }
+}
+.badge-bump {
+  animation: bump 400ms var(--ease-out);
+}
+@keyframes tick {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.qty-tick {
+  animation: tick 160ms var(--ease-out);
+}
+@keyframes label-in {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+    transform: scale(0.96);
+  }
+}
+.label-swap {
+  animation: label-in 220ms var(--ease-out);
+}
 @keyframes shimmer {
   to {
     transform: translateX(100%);
@@ -311,8 +339,13 @@ a {
     stroke-dashoffset: 0;
   }
   .progress-fill,
-  .icon-swap {
+  .icon-swap,
+  .badge-bump,
+  .qty-tick {
     animation: none;
+  }
+  .label-swap {
+    animation: fade-in 150ms ease;
   }
   .animate-pulse {
     animation: none;

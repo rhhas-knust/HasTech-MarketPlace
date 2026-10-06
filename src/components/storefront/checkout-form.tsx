@@ -46,38 +46,46 @@ export function CheckoutForm({
       </div>
 
       {deliveryEnabled && pickupEnabled && (
-        <div>
-          <Label>Delivery method</Label>
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="radio"
-                name="deliveryMethod"
-                value="delivery"
-                checked={deliveryMethod === "delivery"}
-                onChange={() => setDeliveryMethod("delivery")}
-              />
-              Delivery
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="radio"
-                name="deliveryMethod"
-                value="pickup"
-                checked={deliveryMethod === "pickup"}
-                onChange={() => setDeliveryMethod("pickup")}
-              />
-              Pickup
-            </label>
+        <fieldset>
+          <legend className="mb-1.5 block text-sm font-medium text-(--color-ink)">Delivery method</legend>
+          <div className="grid grid-cols-2 gap-3">
+            {(
+              [
+                { value: "delivery", label: "Delivery", hint: "To your address" },
+                { value: "pickup", label: "Pickup", hint: "Collect from the seller" },
+              ] as const
+            ).map((option) => (
+              <label
+                key={option.value}
+                className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-[border-color,background-color] duration-200 ${
+                  deliveryMethod === option.value
+                    ? "border-(--store-accent) bg-(--color-surface-subtle)"
+                    : "border-(--color-border) hover:border-(--color-border-strong)"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="deliveryMethod"
+                  value={option.value}
+                  checked={deliveryMethod === option.value}
+                  onChange={() => setDeliveryMethod(option.value)}
+                  className="mt-0.5 accent-(--store-accent)"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-(--color-ink)">{option.label}</span>
+                  <span className="block text-xs text-(--color-ink-muted)">{option.hint}</span>
+                </span>
+              </label>
+            ))}
           </div>
-        </div>
+        </fieldset>
       )}
       {!(deliveryEnabled && pickupEnabled) && (
         <input type="hidden" name="deliveryMethod" value={deliveryMethod} />
       )}
 
       {deliveryMethod === "delivery" && (
-        <div className="space-y-4 border-t border-(--color-border) pt-4">
+        <div className="enter space-y-4 border-t border-(--color-border) pt-4" style={{ animationDuration: "300ms" }}>
           <div>
             <Label htmlFor="addressLine">Delivery address</Label>
             <Input id="addressLine" name="addressLine" required autoComplete="street-address" />

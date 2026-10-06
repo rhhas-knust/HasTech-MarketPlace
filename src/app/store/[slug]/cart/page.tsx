@@ -39,10 +39,14 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
       <h1 className="mb-6 text-xl font-semibold text-(--color-ink)">Your cart</h1>
 
       <ul className="divide-y divide-(--color-border) rounded-xl border border-(--color-border) bg-(--color-surface)">
-        {items.map((item) => {
+        {items.map((item, i) => {
           const image = item.product ? primaryImage(item.product as never) : null;
           return (
-            <li key={item.id} className="flex items-center gap-4 p-4">
+            <li
+              key={item.id}
+              className="enter flex items-center gap-4 p-4"
+              style={{ "--i": Math.min(i, 6), animationDuration: "400ms" } as React.CSSProperties}
+            >
               <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-(--color-surface-subtle)">
                 {image ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -65,7 +69,7 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
                     defaultValue={item.quantity}
                     className="h-8 w-16 rounded-md border border-(--color-border) px-2 text-sm"
                   />
-                  <button type="submit" className="text-sm font-medium text-(--color-ink) underline underline-offset-4">
+                  <button type="submit" className="link-grow text-sm font-medium text-(--color-ink)">
                     Update
                   </button>
                 </form>
@@ -78,10 +82,10 @@ export default async function CartPage({ params }: { params: Promise<{ slug: str
                   <input type="hidden" name="cartItemId" value={item.id} />
                   <button
                     type="submit"
-                    className="flex items-center gap-1 text-sm text-(--color-ink-muted) hover:text-(--color-danger)"
+                    className="flex items-center gap-1 text-sm text-(--color-ink-muted) transition-colors hover:text-(--color-danger)"
                     aria-label="Remove item"
                   >
-                    <Trash2 className="h-4 w-4" /> Remove
+                    <Trash2 className="h-4 w-4" aria-hidden /> Remove
                   </button>
                 </form>
               </div>

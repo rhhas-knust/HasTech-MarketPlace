@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Search, ShoppingCart } from "lucide-react";
 import type { Category, Store } from "@/lib/types/database";
+import { CartCountBadge } from "@/components/storefront/cart-count-badge";
 
 export function StoreHeader({
   store,
@@ -42,15 +43,11 @@ export function StoreHeader({
             </form>
             <Link
               href={`/store/${store.slug}/cart`}
-              className="relative flex h-11 w-11 items-center justify-center rounded-md border border-(--color-border) bg-(--color-surface) text-(--color-ink) transition-transform"
+              className="relative flex h-11 w-11 items-center justify-center rounded-md border border-(--color-border) bg-(--color-surface) text-(--color-ink) transition-transform duration-150 ease-(--ease-out) active:scale-[0.95]"
               aria-label={`Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
             >
               <ShoppingCart className="h-5 w-5" aria-hidden />
-              {cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-md bg-(--store-accent) px-1 text-xs font-medium text-(--store-on-accent) ring-2 ring-(--color-surface)">
-                  {cartCount}
-                </span>
-              )}
+              <CartCountBadge count={cartCount} />
             </Link>
           </div>
         </div>

@@ -90,7 +90,7 @@ export default async function ProductPage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <div className="aspect-square overflow-hidden rounded-xl bg-(--color-surface-subtle)">
+        <div className="enter-scale aspect-square overflow-hidden rounded-xl bg-(--color-surface-subtle)">
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={image.url} alt={image.alt_text ?? product.name} className="h-full w-full object-cover" />
@@ -99,7 +99,7 @@ export default async function ProductPage({
           )}
         </div>
 
-        <div>
+        <div className="enter" style={{ "--i": 1 } as React.CSSProperties}>
           <h1 className="text-2xl font-semibold text-(--color-ink)">{product.name}</h1>
           <div className="mt-3 flex items-baseline gap-3">
             <span className="text-2xl font-semibold text-(--color-ink)">
@@ -150,8 +150,8 @@ export default async function ProductPage({
         <section className="mt-14">
           <h2 className="mb-4 text-lg font-semibold text-(--color-ink)">You may also like</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {related.map((item) => (
-              <ProductCard key={item.id} storeSlug={store.slug} product={item} />
+            {related.map((item, i) => (
+              <ProductCard key={item.id} storeSlug={store.slug} product={item} index={i} />
             ))}
           </div>
         </section>
