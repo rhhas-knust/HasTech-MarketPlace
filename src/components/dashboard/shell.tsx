@@ -24,8 +24,8 @@ export function DashboardShell({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-hero-glow min-h-screen lg:flex">
-      <div className="glass sticky top-0 z-40 flex items-center justify-between border-b border-(--color-border)/60 px-4 py-3 lg:hidden">
+    <div className="min-h-screen lg:flex">
+      <div className="bg-(--color-surface) sticky top-0 z-40 flex items-center justify-between border-b border-(--color-border) px-4 py-3 lg:hidden">
         <span className="text-sm font-semibold text-(--color-ink)">
           <PlatformLogo iconSize={20} />
         </span>
@@ -34,7 +34,7 @@ export function DashboardShell({
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-(--color-border) bg-(--color-surface) shadow-soft"
+            className="flex h-10 w-10 items-center justify-center rounded-md border border-(--color-border) bg-(--color-surface)"
             aria-label="Toggle menu"
             aria-expanded={open}
           >
@@ -44,13 +44,13 @@ export function DashboardShell({
       </div>
 
       {open && (
-        <div className="mx-3 mt-3 rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-3 shadow-lift lg:hidden">
+        <div className="mx-3 mt-3 rounded-xl border border-(--color-border) bg-(--color-surface) p-3 shadow-raised lg:hidden">
           <DashboardSidebar storeSlug={storeSlug} storeName={storeName} ordersToFulfil={ordersToFulfil} stockAlerts={stockAlerts} />
         </div>
       )}
 
       <aside className="sticky top-0 hidden h-screen w-72 shrink-0 p-4 lg:block">
-        <div className="flex h-full flex-col overflow-y-auto rounded-[2rem] border border-(--color-border)/70 bg-(--color-surface) p-4 shadow-soft">
+        <div className="flex h-full flex-col overflow-y-auto rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
           <div className="mb-4 flex items-center justify-between px-2">
             <p className="text-xs font-medium uppercase tracking-wide text-(--color-ink-muted)">
               <PlatformLogo iconSize={16} />
@@ -58,7 +58,7 @@ export function DashboardShell({
             <ThemeToggle />
           </div>
           <DashboardSidebar storeSlug={storeSlug} storeName={storeName} ordersToFulfil={ordersToFulfil} stockAlerts={stockAlerts} />
-          <form action="/auth/signout" method="post" className="mt-auto border-t border-(--color-border)/70 pt-4">
+          <form action="/auth/signout" method="post" className="mt-auto border-t border-(--color-border) pt-4">
             <p className="mb-2 truncate px-2 text-xs text-(--color-ink-muted)">{userEmail}</p>
             <button
               type="submit"
@@ -70,7 +70,7 @@ export function DashboardShell({
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 p-4 sm:p-6 lg:py-8 lg:pl-4 lg:pr-8">
+      <main id="main" className="min-w-0 flex-1 p-4 sm:p-6 lg:py-8 lg:pl-4 lg:pr-8">
         <div className="mx-auto max-w-6xl">{children}</div>
       </main>
     </div>

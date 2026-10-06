@@ -2,14 +2,14 @@ import { cn } from "@/lib/cn";
 import type { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, LabelHTMLAttributes } from "react";
 
 const fieldBase =
-  "w-full rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft px-4 py-2.5 text-sm text-(--color-ink) shadow-[inset_0_1px_2px_rgb(15_23_42/0.04)] transition-[border-color,box-shadow] placeholder:text-(--color-ink-muted)/80 hover:border-(--color-brand)/30 focus:border-(--color-brand) focus:outline-none focus:ring-4 focus:ring-(--color-brand)/15 disabled:opacity-50";
+  "w-full rounded-md border border-(--color-border-strong)/60 bg-(--color-surface) px-3 py-2 text-sm text-(--color-ink) transition-[border-color,box-shadow] duration-150 placeholder:text-(--color-ink-muted) focus:border-(--color-brand) focus:outline-none focus:ring-2 focus:ring-(--color-brand)/25 aria-[invalid=true]:border-(--color-danger) disabled:cursor-not-allowed disabled:opacity-60";
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(fieldBase, className)} {...props} />;
 }
 
 export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea className={cn(fieldBase, "min-h-28", className)} {...props} />;
+  return <textarea className={cn(fieldBase, "min-h-24", className)} {...props} />;
 }
 
 export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {

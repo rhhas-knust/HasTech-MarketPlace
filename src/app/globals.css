@@ -1,30 +1,38 @@
 @import "tailwindcss";
 
+/*
+  One accent (the logo purple, used solid and sparingly), one neutral family
+  (zinc), and a reserved semantic set for state. Text on accent fills uses
+  --color-on-brand so dark mode can flip to dark-on-light without failing
+  contrast.
+*/
 :root {
-  --background: #f6f7fb;
-  --foreground: #0f172a;
+  --background: #f7f7f8;
+  --foreground: #18181b;
 
-  --color-ink: #0f172a;
-  --color-ink-muted: #64748b;
-  --color-border: #e6e8f0;
+  --color-ink: #18181b;
+  --color-ink-muted: #52525b;
+  --color-border: #e4e4e7;
+  --color-border-strong: #a1a1aa;
   --color-surface: #ffffff;
-  --color-surface-subtle: #f3f4f9;
+  --color-surface-subtle: #f4f4f5;
 
-  --color-brand: #4f46e5;
-  --color-brand-hover: #4338ca;
-  --color-brand-subtle: #eef2ff;
-  --color-brand-2: #8b5cf6;
+  --color-brand: #5b39a8;
+  --color-brand-hover: #4a2e8c;
+  --color-brand-subtle: #f1edf9;
+  --color-on-brand: #ffffff;
 
   --color-success: #15803d;
   --color-success-subtle: #ecfdf3;
-  --color-warning: #b45309;
-  --color-warning-subtle: #fffbeb;
+  --color-warning: #a16207;
+  --color-warning-subtle: #fefce8;
   --color-danger: #b91c1c;
   --color-danger-subtle: #fef2f2;
+  --color-info: #1d4ed8;
+  --color-info-subtle: #eff6ff;
 
-  --app-shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -8px rgb(15 23 42 / 0.1);
-  --app-shadow-lift: 0 2px 6px rgb(15 23 42 / 0.05), 0 24px 48px -16px rgb(79 70 229 / 0.28);
-  --app-shadow-glow: 0 8px 24px -6px rgb(79 70 229 / 0.55);
+  --app-shadow-soft: 0 1px 2px rgb(24 24 27 / 0.05);
+  --app-shadow-raised: 0 1px 2px rgb(24 24 27 / 0.04), 0 4px 12px -2px rgb(24 24 27 / 0.08);
 
   /* Default storefront accent; each store can override this at the
      storefront layout root via an inline style from stores.theme. */
@@ -41,24 +49,26 @@
   --color-ink: var(--color-ink);
   --color-ink-muted: var(--color-ink-muted);
   --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
   --color-surface: var(--color-surface);
   --color-surface-subtle: var(--color-surface-subtle);
   --color-brand: var(--color-brand);
   --color-brand-hover: var(--color-brand-hover);
   --color-brand-subtle: var(--color-brand-subtle);
-  --color-brand-2: var(--color-brand-2);
+  --color-on-brand: var(--color-on-brand);
   --color-success: var(--color-success);
   --color-success-subtle: var(--color-success-subtle);
   --color-warning: var(--color-warning);
   --color-warning-subtle: var(--color-warning-subtle);
   --color-danger: var(--color-danger);
   --color-danger-subtle: var(--color-danger-subtle);
+  --color-info: var(--color-info);
+  --color-info-subtle: var(--color-info-subtle);
   --color-store-accent: var(--store-accent);
   --color-store-accent-hover: var(--store-accent-hover);
 
   --shadow-soft: var(--app-shadow-soft);
-  --shadow-lift: var(--app-shadow-lift);
-  --shadow-glow: var(--app-shadow-glow);
+  --shadow-raised: var(--app-shadow-raised);
 }
 
 /* Dark mode applies automatically from OS preference, unless the user has
@@ -66,115 +76,156 @@
    localStorage) -- an explicit choice always wins over the OS setting. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #090d18;
-    --foreground: #e2e8f0;
-    --color-ink: #e8edf5;
-    --color-ink-muted: #94a3b8;
-    --color-border: #232c42;
-    --color-surface: #121a2c;
-    --color-surface-subtle: #0d1424;
-    --color-brand: #6366f1;
-    --color-brand-hover: #818cf8;
-    --color-brand-subtle: #1e1b4b;
-    --color-brand-2: #a78bfa;
+    --background: #0f0f11;
+    --foreground: #f4f4f5;
+    --color-ink: #f4f4f5;
+    --color-ink-muted: #a1a1aa;
+    --color-border: #2a2a2f;
+    --color-border-strong: #52525b;
+    --color-surface: #18181b;
+    --color-surface-subtle: #131316;
+    --color-brand: #a990ea;
+    --color-brand-hover: #bba6f0;
+    --color-brand-subtle: #241c38;
+    --color-on-brand: #0f0f11;
     --color-success: #4ade80;
-    --color-success-subtle: #052e16;
-    --color-warning: #fbbf24;
-    --color-warning-subtle: #451a03;
+    --color-success-subtle: #0b2a17;
+    --color-warning: #facc15;
+    --color-warning-subtle: #2b2306;
     --color-danger: #f87171;
-    --color-danger-subtle: #450a0a;
-    --app-shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -10px rgb(0 0 0 / 0.6);
-    --app-shadow-lift: 0 2px 6px rgb(0 0 0 / 0.3), 0 24px 48px -16px rgb(99 102 241 / 0.35);
-    --app-shadow-glow: 0 8px 28px -6px rgb(99 102 241 / 0.6);
+    --color-danger-subtle: #2e0f0f;
+    --color-info: #93b4fd;
+    --color-info-subtle: #121c33;
+    --app-shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4);
+    --app-shadow-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 6px 16px -4px rgb(0 0 0 / 0.5);
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #090d18;
-  --foreground: #e2e8f0;
-  --color-ink: #e8edf5;
-  --color-ink-muted: #94a3b8;
-  --color-border: #232c42;
-  --color-surface: #121a2c;
-  --color-surface-subtle: #0d1424;
-  --color-brand: #6366f1;
-  --color-brand-hover: #818cf8;
-  --color-brand-subtle: #1e1b4b;
-  --color-brand-2: #a78bfa;
+  --background: #0f0f11;
+  --foreground: #f4f4f5;
+  --color-ink: #f4f4f5;
+  --color-ink-muted: #a1a1aa;
+  --color-border: #2a2a2f;
+  --color-border-strong: #52525b;
+  --color-surface: #18181b;
+  --color-surface-subtle: #131316;
+  --color-brand: #a990ea;
+  --color-brand-hover: #bba6f0;
+  --color-brand-subtle: #241c38;
+  --color-on-brand: #0f0f11;
   --color-success: #4ade80;
-  --color-success-subtle: #052e16;
-  --color-warning: #fbbf24;
-  --color-warning-subtle: #451a03;
+  --color-success-subtle: #0b2a17;
+  --color-warning: #facc15;
+  --color-warning-subtle: #2b2306;
   --color-danger: #f87171;
-  --color-danger-subtle: #450a0a;
-  --app-shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -10px rgb(0 0 0 / 0.6);
-  --app-shadow-lift: 0 2px 6px rgb(0 0 0 / 0.3), 0 24px 48px -16px rgb(99 102 241 / 0.35);
-  --app-shadow-glow: 0 8px 28px -6px rgb(99 102 241 / 0.6);
+  --color-danger-subtle: #2e0f0f;
+  --color-info: #93b4fd;
+  --color-info-subtle: #121c33;
+  --app-shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4);
+  --app-shadow-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 6px 16px -4px rgb(0 0 0 / 0.5);
+}
+
+html {
+  scroll-behavior: smooth;
+  accent-color: var(--color-brand);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  transition: background-color 150ms ease, color 150ms ease;
+  font-feature-settings: "cv11", "ss01";
 }
 
 * {
   border-color: var(--color-border);
 }
 
-@utility bg-brand-gradient {
-  background-image: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-2) 100%);
+::selection {
+  background: var(--color-brand-subtle);
+  color: var(--color-ink);
 }
 
-@utility text-gradient {
-  background-image: linear-gradient(120deg, var(--color-brand) 0%, var(--color-brand-2) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
 }
 
-@utility glass {
-  background-color: color-mix(in srgb, var(--color-surface) 72%, transparent);
-  backdrop-filter: blur(16px) saturate(1.6);
-  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+h1,
+h2,
+h3 {
+  text-wrap: balance;
 }
 
-@utility bg-hero-glow {
-  background-image:
-    radial-gradient(ellipse 60% 50% at 15% 0%, color-mix(in srgb, var(--color-brand) 16%, transparent), transparent 70%),
-    radial-gradient(ellipse 50% 45% at 90% 10%, color-mix(in srgb, var(--color-brand-2) 14%, transparent), transparent 70%);
+p {
+  text-wrap: pretty;
 }
 
-@utility bg-dots {
-  background-image: radial-gradient(color-mix(in srgb, var(--color-ink) 9%, transparent) 1px, transparent 1px);
-  background-size: 22px 22px;
+a {
+  text-underline-offset: 3px;
 }
 
-@keyframes feed-in {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-@keyframes gift-wiggle {
-  0%, 85%, 100% { transform: rotate(0deg) scale(1); }
-  88% { transform: rotate(-10deg) scale(1.08); }
-  91% { transform: rotate(9deg) scale(1.08); }
-  94% { transform: rotate(-6deg) scale(1.04); }
-  97% { transform: rotate(4deg) scale(1.02); }
+/* Long-form legal text: readable measure, clear section breaks. */
+.legal-prose {
+  color: var(--color-ink);
+  line-height: 1.65;
 }
-
-@keyframes gift-pop {
-  0% { opacity: 0; transform: scale(0.6) translateY(12px); }
-  60% { opacity: 1; transform: scale(1.06) translateY(0); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+.legal-prose h2 {
+  margin-top: 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  scroll-margin-top: 5rem;
 }
-
-@keyframes confetti-fall {
-  0% { opacity: 1; transform: translate3d(0, -10px, 0) rotate(0deg); }
-  100% { opacity: 0; transform: translate3d(var(--drift, 0px), 140px, 0) rotate(540deg); }
+.legal-prose h3 {
+  margin-top: 1.5rem;
+  font-weight: 600;
 }
-
-@keyframes float-slow {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(0, -14px, 0); }
+.legal-prose p,
+.legal-prose ul,
+.legal-prose ol,
+.legal-prose table {
+  margin-top: 0.75rem;
+}
+.legal-prose ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.legal-prose ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+}
+.legal-prose li + li {
+  margin-top: 0.375rem;
+}
+.legal-prose a {
+  font-weight: 500;
+  text-decoration: underline;
+}
+.legal-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.legal-prose th,
+.legal-prose td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+.legal-prose th {
+  font-weight: 600;
 }

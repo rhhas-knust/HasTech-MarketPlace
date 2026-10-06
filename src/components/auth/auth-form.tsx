@@ -44,7 +44,7 @@ export function AuthForm({
             Password
           </Label>
           {mode === "login" && (
-            <Link href="/forgot-password" className="mb-1.5 text-xs font-medium text-(--color-brand)">
+            <Link href="/forgot-password" className="mb-1.5 text-sm font-medium text-(--color-brand) underline-offset-4 hover:underline">
               Forgot password?
             </Link>
           )}
@@ -65,36 +65,62 @@ export function AuthForm({
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-(--color-ink-muted) hover:bg-(--color-surface-subtle) hover:text-(--color-ink)"
+            className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-(--color-ink-muted) hover:bg-(--color-surface-subtle) hover:text-(--color-ink)"
             aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
           </button>
         </div>
       </div>
 
-      {state.error && (
-        <p role="alert" className="rounded-lg bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
-          {state.error}
-          {state.existingAccount && (
-            <>
-              {" "}
-              <Link href="/login" className="font-medium underline">
-                Sign in instead
-              </Link>
-              .
-            </>
-          )}
-        </p>
-      )}
-      {state.info && (
-        <p role="status" className="rounded-lg bg-(--color-success-subtle) px-3 py-2 text-sm text-(--color-success)">
-          {state.info}
-        </p>
+      {mode === "signup" && (
+        <div className="flex items-start gap-3">
+          <input
+            id="acceptTerms"
+            name="acceptTerms"
+            type="checkbox"
+            required
+            className="mt-0.5 h-4 w-4 shrink-0 rounded border-(--color-border-strong)"
+          />
+          <label htmlFor="acceptTerms" className="text-sm text-(--color-ink-muted)">
+            I agree to the{" "}
+            <Link href="/terms" className="font-medium text-(--color-ink) underline underline-offset-4">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="font-medium text-(--color-ink) underline underline-offset-4">
+              Privacy Policy
+            </Link>
+            .
+          </label>
+        </div>
       )}
 
+      <div aria-live="polite">
+        {state.error && (
+          <p id="auth-error" role="alert" className="rounded-md bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
+            {state.error}
+            {state.existingAccount && (
+              <>
+                {" "}
+                <Link href="/login" className="font-medium underline">
+                  Sign in instead
+                </Link>
+                .
+              </>
+            )}
+          </p>
+        )}
+        {state.info && (
+          <p role="status" className="rounded-md bg-(--color-success-subtle) px-3 py-2 text-sm text-(--color-success)">
+            {state.info}
+          </p>
+        )}
+      </div>
+
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Please wait…" : mode === "signup" ? "Create account" : "Sign in"}
+        {pending ? (mode === "signup" ? "Creating account…" : "Signing in…") : mode === "signup" ? "Create account" : "Sign in"}
       </Button>
     </form>
   );

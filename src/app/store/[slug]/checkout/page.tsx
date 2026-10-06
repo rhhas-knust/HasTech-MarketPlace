@@ -40,9 +40,10 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
             action={boundAction}
             deliveryEnabled={cartNeedsDelivery ? (settings?.delivery_enabled ?? true) : false}
             pickupEnabled={cartNeedsDelivery ? (settings?.pickup_enabled ?? true) : true}
+            storeSlug={slug}
           />
         </div>
-        <aside className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-4">
+        <aside className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
           <h2 className="mb-3 font-medium text-(--color-ink)">Order summary</h2>
           <ul className="space-y-2 text-sm">
             {cart.items.map((item) => (

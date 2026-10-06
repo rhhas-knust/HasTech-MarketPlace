@@ -18,27 +18,26 @@ export default async function SignupPage() {
 
   return (
     <div>
-      <SignupProgress current={1} percent={40} />
-      <h1 className="mb-1 text-2xl font-bold tracking-tight text-(--color-ink)">Create your account</h1>
-      <p className="mb-4 text-sm text-(--color-ink-muted)">You&apos;re 2 quick steps from your own store.</p>
+      <SignupProgress current={1} />
+      <h1 className="mb-4 text-2xl font-semibold tracking-tight text-(--color-ink)">Create your account</h1>
       <DraftClaimBanner />
-      <div className="mb-5 flex items-start gap-3 rounded-2xl border border-dashed border-(--color-brand)/50 bg-(--color-brand-subtle) px-4 py-3">
-        <span className="text-2xl motion-safe:animate-[gift-wiggle_3s_ease-in-out_infinite]" aria-hidden>
-          🎁
-        </span>
-        <p className="text-xs text-(--color-ink)">
-          <strong className="block text-sm">A welcome gift is waiting at the finish line.</strong>
-          {spotsLeft !== null && spotsLeft > 0
-            ? `Founding members pay no fees for ${FOUNDING_FREE_MONTHS} months. ${spotsLeft} of ${FOUNDING_MEMBER_LIMIT} spots left.`
-            : "Launch your store to unlock it."}
+      {spotsLeft !== null && spotsLeft > 0 && (
+        <p className="mb-5 text-sm text-(--color-ink-muted)">
+          Founding members pay no platform fees for {FOUNDING_FREE_MONTHS} months. {spotsLeft} of{" "}
+          {FOUNDING_MEMBER_LIMIT} places left.
         </p>
-      </div>
+      )}
       <GoogleButton />
+      <p className="mt-2 text-xs text-(--color-ink-muted)">
+        By continuing with Google you agree to our{" "}
+        <Link href="/terms" className="underline">Terms</Link> and{" "}
+        <Link href="/privacy" className="underline">Privacy Policy</Link>.
+      </p>
       <OrDivider />
       <AuthForm mode="signup" action={signUpAction} />
       <p className="mt-6 text-center text-sm text-(--color-ink-muted)">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-(--color-brand)">
+        <Link href="/login" className="font-medium text-(--color-brand) underline-offset-4 hover:underline">
           Sign in
         </Link>
       </p>

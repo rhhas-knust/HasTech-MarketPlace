@@ -36,8 +36,8 @@ function AdminNav({ newConsultations, openFeedback, onNavigate }: { newConsultat
             className={cn(
               "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200",
               active
-                ? "bg-brand-gradient text-white shadow-glow"
-                : "text-(--color-ink-muted) hover:translate-x-0.5 hover:bg-(--color-surface-subtle) hover:text-(--color-ink)",
+                ? "bg-(--color-brand) text-(--color-on-brand)"
+                : "text-(--color-ink-muted) hover:bg-(--color-surface-subtle) hover:text-(--color-ink)",
             )}
           >
             <Icon className="h-4 w-4" />
@@ -45,7 +45,7 @@ function AdminNav({ newConsultations, openFeedback, onNavigate }: { newConsultat
             {count > 0 && (
               <span
                 className={cn(
-                  "min-w-6 rounded-full px-2 py-0.5 text-center text-xs font-semibold",
+                  "min-w-6 rounded-md px-2 py-0.5 text-center text-xs font-semibold",
                   active ? "bg-white/25 text-white" : "bg-(--color-danger) text-white",
                 )}
               >
@@ -61,8 +61,8 @@ function AdminNav({ newConsultations, openFeedback, onNavigate }: { newConsultat
 
 function OwnerBadge() {
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-(--color-surface-subtle) p-2.5">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-gradient text-white shadow-glow">
+    <div className="flex items-center gap-3 rounded-lg bg-(--color-surface-subtle) p-2.5">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--color-brand) text-(--color-on-brand)">
         <ShieldCheck className="h-5 w-5" />
       </span>
       <div className="min-w-0">
@@ -76,7 +76,7 @@ function OwnerBadge() {
 export function AdminShell({ userEmail, newConsultations, openFeedback, children }: AdminShellProps) {
   const [open, setOpen] = useState(false);
   const footer = (
-    <div className="space-y-1 border-t border-(--color-border)/70 pt-4">
+    <div className="space-y-1 border-t border-(--color-border) pt-4">
       <a
         href="/"
         target="_blank"
@@ -98,8 +98,8 @@ export function AdminShell({ userEmail, newConsultations, openFeedback, children
   );
 
   return (
-    <div className="bg-hero-glow min-h-screen lg:flex">
-      <div className="glass sticky top-0 z-40 flex items-center justify-between border-b border-(--color-border)/60 px-4 py-3 lg:hidden">
+    <div className="min-h-screen lg:flex">
+      <div className="bg-(--color-surface) sticky top-0 z-40 flex items-center justify-between border-b border-(--color-border) px-4 py-3 lg:hidden">
         <span className="text-sm font-semibold text-(--color-ink)">
           <PlatformLogo iconSize={20} />
         </span>
@@ -108,7 +108,7 @@ export function AdminShell({ userEmail, newConsultations, openFeedback, children
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-(--color-border) bg-(--color-surface) shadow-soft"
+            className="flex h-10 w-10 items-center justify-center rounded-md border border-(--color-border) bg-(--color-surface)"
             aria-label="Toggle menu"
             aria-expanded={open}
           >
@@ -118,7 +118,7 @@ export function AdminShell({ userEmail, newConsultations, openFeedback, children
       </div>
 
       {open && (
-        <div className="mx-3 mt-3 space-y-4 rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-3 shadow-lift lg:hidden">
+        <div className="mx-3 mt-3 space-y-4 rounded-xl border border-(--color-border) bg-(--color-surface) p-3 shadow-raised lg:hidden">
           <OwnerBadge />
           <AdminNav newConsultations={newConsultations} openFeedback={openFeedback} onNavigate={() => setOpen(false)} />
           {footer}
@@ -126,7 +126,7 @@ export function AdminShell({ userEmail, newConsultations, openFeedback, children
       )}
 
       <aside className="sticky top-0 hidden h-screen w-72 shrink-0 p-4 lg:block">
-        <div className="flex h-full flex-col gap-5 overflow-y-auto rounded-[2rem] border border-(--color-border)/70 bg-(--color-surface) p-4 shadow-soft">
+        <div className="flex h-full flex-col gap-5 overflow-y-auto rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
           <div className="flex items-center justify-between px-2">
             <span className="text-sm font-semibold text-(--color-ink)">
               <PlatformLogo iconSize={18} />
@@ -139,7 +139,7 @@ export function AdminShell({ userEmail, newConsultations, openFeedback, children
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 p-4 sm:p-6 lg:py-8 lg:pl-4 lg:pr-8">
+      <main id="main" className="min-w-0 flex-1 p-4 sm:p-6 lg:py-8 lg:pl-4 lg:pr-8">
         <div className="mx-auto max-w-6xl">{children}</div>
       </main>
     </div>

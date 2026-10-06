@@ -1,24 +1,23 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PlatformLogo } from "@/components/platform-logo";
+import { LegalLinks } from "@/components/legal-links";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
-      <div aria-hidden className="bg-dots absolute inset-0 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_30%,black,transparent)]" />
-      <div aria-hidden className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-(--color-brand)/20 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-32 -right-24 h-96 w-96 rounded-full bg-(--color-brand-2)/20 blur-3xl" />
-      <div className="relative w-full max-w-md">
-        <div className="mb-8 flex items-center justify-center gap-3">
-          <Link href="/" className="text-center text-lg font-semibold text-(--color-ink)">
-            <PlatformLogo />
-          </Link>
-          <ThemeToggle />
-        </div>
-        <div className="rounded-[2rem] border border-(--color-border)/70 bg-(--color-surface) p-7 shadow-lift sm:p-8">
-          {children}
-        </div>
-      </div>
+    <div className="flex min-h-dvh flex-col px-4">
+      <header className="mx-auto flex w-full max-w-md items-center justify-between py-6">
+        <Link href="/" className="text-base font-semibold text-(--color-ink)">
+          <PlatformLogo />
+        </Link>
+        <ThemeToggle />
+      </header>
+      <main id="main" className="mx-auto w-full max-w-md flex-1">
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6 sm:p-8">{children}</div>
+      </main>
+      <footer className="mx-auto w-full max-w-md py-6">
+        <LegalLinks />
+      </footer>
     </div>
   );
 }

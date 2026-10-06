@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { getAppUrl } from "@/lib/app-url";
+import { LEGAL_VERSION } from "@/lib/constants";
 
 export interface AuthFormState {
   error?: string;
@@ -27,6 +28,9 @@ export async function signUpAction(
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
   if (!fullName) return { error: "Your name is required" };
+  if (formData.get("acceptTerms") !== "on") {
+    return { error: "Please agree to the Terms and Privacy Policy to create an account." };
+  }
 
   const supabase = await createClient();
   const appUrl = await getAppUrl();
@@ -41,7 +45,9 @@ export async function signUpAction(
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      data: { full_name: fullName },
+      // Record what was agreed to and when, so consent can be demonstrated
+      // (Data Protection Act, 2012 (Act 843)).
+      data: { full_name: fullName, terms_accepted_at: new Date().toISOString(), terms_version: LEGAL_VERSION },
       emailRedirectTo: `${appUrl}/auth/callback`,
     },
   });

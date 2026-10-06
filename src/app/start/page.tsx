@@ -16,7 +16,7 @@ export default async function StartPage() {
   const spotsLeft = await getFoundingSpotsLeft();
 
   return (
-    <div className="bg-hero-glow min-h-screen bg-(--color-surface-subtle)">
+    <div className="min-h-screen bg-(--color-surface-subtle)">
       <header className="px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
           <Link href="/" className="text-lg font-semibold text-(--color-ink)">
@@ -30,7 +30,7 @@ export default async function StartPage() {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 pb-16 pt-4">
+      <main id="main" className="mx-auto max-w-5xl px-4 pb-16 pt-4">
         <StoreBuilder spotsLeft={spotsLeft} />
       </main>
     </div>

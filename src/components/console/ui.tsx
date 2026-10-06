@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { RollingDigits } from "@/components/rolling-digits";
 import { cn } from "@/lib/cn";
 
 export function PageHeader({
@@ -40,7 +39,7 @@ export function InitialsAvatar({ name, className }: { name: string; className?: 
     <span
       aria-hidden
       className={cn(
-        "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-gradient text-sm font-semibold text-white shadow-glow",
+        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-brand) text-sm font-semibold text-white",
         className,
       )}
     >
@@ -65,23 +64,23 @@ export function KpiTile({
   const body = (
     <div
       className={cn(
-        "h-full rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-5 shadow-soft transition-all duration-300",
-        href && "hover:-translate-y-1 hover:shadow-lift",
+        "h-full rounded-xl border border-(--color-border) bg-(--color-surface) p-5 transition-all duration-300",
+        href && "hover:-translate-y-1",
       )}
     >
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-(--color-ink-muted)">{label}</p>
-        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-gradient text-white shadow-glow">
+        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-(--color-brand) text-(--color-on-brand)">
           {icon}
         </span>
       </div>
       <p className="mt-4 text-3xl font-semibold tracking-tight text-(--color-ink)">
-        <RollingDigits text={value} />
+        {value}
       </p>
       {delta && (
         <p
           className={cn(
-            "mt-2 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium",
+            "mt-2 inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-medium",
             delta.value > 0
               ? "bg-(--color-success-subtle) text-(--color-success)"
               : "bg-(--color-surface-subtle) text-(--color-ink-muted)",
@@ -114,7 +113,7 @@ export function Meter({ value, max, label }: { value: number; max: number; label
         aria-valuenow={value}
         aria-label={label}
       >
-        <div className="h-full rounded-full bg-brand-gradient transition-[width] duration-700" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-(--color-brand) transition-[width] duration-700" style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -143,14 +142,14 @@ export function FilterTabs({ tabs }: { tabs: { href: string; label: string; coun
           key={tab.href}
           href={tab.href}
           className={cn(
-            "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
+            "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all",
             tab.active
-              ? "bg-brand-gradient text-white shadow-glow"
-              : "border border-(--color-border) bg-(--color-surface) text-(--color-ink-muted) shadow-soft hover:-translate-y-0.5 hover:text-(--color-ink)",
+              ? "bg-(--color-brand) text-(--color-on-brand)"
+              : "border border-(--color-border) bg-(--color-surface) text-(--color-ink-muted) hover:text-(--color-ink)",
           )}
         >
           {tab.label}
-          <span className={cn("rounded-full px-2 py-0.5 text-xs", tab.active ? "bg-white/25" : "bg-(--color-surface-subtle)")}>
+          <span className={cn("rounded-md px-2 py-0.5 text-xs", tab.active ? "bg-white/25" : "bg-(--color-surface-subtle)")}>
             {tab.count}
           </span>
         </Link>

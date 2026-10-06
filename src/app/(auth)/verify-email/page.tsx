@@ -19,7 +19,7 @@ export default async function VerifyEmailPage({
 
   return (
     <div>
-      <SignupProgress current={2} percent={62} />
+      <SignupProgress current={2} />
       <h1 className="mb-1 text-2xl font-bold tracking-tight text-(--color-ink)">Check your email</h1>
       <p className="mb-6 text-sm text-(--color-ink-muted)">
         We sent a 6-digit code and a confirmation link to <strong>{email}</strong>.

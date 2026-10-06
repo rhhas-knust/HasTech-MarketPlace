@@ -16,18 +16,18 @@ export function DraftClaimBanner() {
 
   if (!storeName) {
     return (
-      <p className="mb-4 rounded-lg bg-(--color-surface-subtle) px-3 py-2 text-xs text-(--color-ink-muted)">
-        Want to see your store first?{" "}
-        <Link href="/start" className="font-medium text-(--color-brand)">
-          Design it before signing up &rarr;
+      <p className="mb-4 text-sm text-(--color-ink-muted)">
+        Prefer to see your store first?{" "}
+        <Link href="/start" className="font-medium text-(--color-brand) underline-offset-4 hover:underline">
+          Design it before signing up
         </Link>
       </p>
     );
   }
 
   return (
-    <p className="mb-4 rounded-lg border border-(--color-brand) bg-(--color-brand-subtle) px-3 py-2 text-sm text-(--color-ink)">
-      <strong>{storeName}</strong> is saved. Create your account to claim it.
+    <p className="mb-4 rounded-md border border-(--color-border) bg-(--color-surface-subtle) px-3 py-2 text-sm text-(--color-ink)">
+      Your design for <strong>{storeName}</strong> is saved in this browser. Create an account to keep it.
     </p>
   );
 }

@@ -1,48 +1,29 @@
 import { cn } from "@/lib/cn";
 
-const STEPS = ["Start", "Account", "Verify", "Launch"];
+const STEPS = ["Design", "Account", "Verify email", "Store details"];
 
-/**
- * Shared across /start → /signup → /verify-email → /onboarding. The bar is
- * never empty (the first step is already ticked when you arrive) and the
- * gift sits at the finish line, so every step visibly moves you toward it.
- */
-export function SignupProgress({ current, percent }: { current: number; percent: number }) {
-  const clamped = Math.min(100, Math.max(0, percent));
+/** Shared across /start, /signup, /verify-email and /onboarding. */
+export function SignupProgress({ current }: { current: number }) {
   return (
-    <div className="mb-6" aria-label={`Setup progress: ${Math.round(clamped)}%`}>
-      <div className="flex items-center gap-3">
-        <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-(--color-surface-subtle) ring-1 ring-inset ring-(--color-border)">
-          <div
-            className="h-full rounded-full bg-brand-gradient shadow-glow transition-[width] duration-700 ease-out"
-            style={{ width: `${clamped}%` }}
-          />
-        </div>
-        <span
-          className="text-xl motion-safe:animate-[gift-wiggle_3s_ease-in-out_infinite]"
-          role="img"
-          aria-label="A welcome gift unlocks when you launch"
-          title="A welcome gift unlocks when you launch"
-        >
-          🎁
-        </span>
-      </div>
-      <ol className="mt-2 flex justify-between pr-8 text-[11px]">
+    <nav aria-label="Setup progress" className="mb-6">
+      <p className="text-sm text-(--color-ink-muted)">
+        Step {current + 1} of {STEPS.length}:{" "}
+        <span className="font-medium text-(--color-ink)">{STEPS[current]}</span>
+      </p>
+      <ol className="mt-2 grid grid-cols-4 gap-1.5">
         {STEPS.map((label, i) => (
-          <li
-            key={label}
-            className={cn(
-              "flex items-center gap-1",
-              i < current && "text-(--color-success)",
-              i === current && "font-semibold text-(--color-brand)",
-              i > current && "text-(--color-ink-muted)",
-            )}
-          >
-            {i < current ? "✓" : <span className="font-mono">{i + 1}</span>}
-            <span>{label}</span>
+          <li key={label} aria-current={i === current ? "step" : undefined}>
+            <span
+              aria-hidden
+              className={cn("block h-1 rounded-full", i <= current ? "bg-(--color-brand)" : "bg-(--color-border)")}
+            />
+            <span className="sr-only">
+              {label}
+              {i < current ? ", done" : i === current ? ", current step" : ""}
+            </span>
           </li>
         ))}
       </ol>
-    </div>
+    </nav>
   );
 }

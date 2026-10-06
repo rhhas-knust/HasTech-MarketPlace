@@ -34,6 +34,7 @@ export const storeContactSchema = z.object({
   address: z.string().trim().max(255).optional().or(z.literal("")),
   city: z.string().trim().max(120).optional().or(z.literal("")),
   region: z.string().trim().max(120).optional().or(z.literal("")),
+  refundPolicy: z.string().trim().max(4000, "Keep the refund policy under 4000 characters").optional().or(z.literal("")),
 });
 
 export const storeSettingsSchema = z.object({

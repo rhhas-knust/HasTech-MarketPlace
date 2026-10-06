@@ -40,6 +40,7 @@ export async function updateStoreInfoAction(
     address: formData.get("address"),
     city: formData.get("city"),
     region: formData.get("region"),
+    refundPolicy: formData.get("refundPolicy") ?? "",
   });
   if (!contact.success) return { error: contact.error.issues[0]?.message };
 
@@ -56,6 +57,7 @@ export async function updateStoreInfoAction(
       address: contact.data.address || null,
       city: contact.data.city || null,
       region: contact.data.region || null,
+      refund_policy: contact.data.refundPolicy || null,
     })
     .eq("id", membership.store.id);
   if (error) return { error: "Could not save changes." };

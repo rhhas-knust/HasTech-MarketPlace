@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea, FieldHint } from "@/components/ui/input";
 import type { CheckoutFormState } from "@/app/store/[slug]/checkout/actions";
@@ -9,10 +10,12 @@ export function CheckoutForm({
   action,
   deliveryEnabled,
   pickupEnabled,
+  storeSlug,
 }: {
   action: (state: CheckoutFormState, formData: FormData) => Promise<CheckoutFormState>;
   deliveryEnabled: boolean;
   pickupEnabled: boolean;
+  storeSlug: string;
 }) {
   const [state, formAction, pending] = useActionState<CheckoutFormState, FormData>(action, {});
   const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup">(
@@ -95,11 +98,23 @@ export function CheckoutForm({
       <div>
         <Label htmlFor="notes">Order notes (optional)</Label>
         <Textarea id="notes" name="notes" placeholder="Anything the seller should know?" />
-        <FieldHint>You&apos;ll be taken to Paystack to complete payment securely.</FieldHint>
       </div>
 
+      <p className="text-sm text-(--color-ink-muted)">
+        You&apos;ll pay on Paystack&apos;s secure page. Your details go to the seller to fulfil this order, as described in
+        the{" "}
+        <Link href="/privacy" className="underline underline-offset-4">
+          Privacy Policy
+        </Link>
+        . The store&apos;s{" "}
+        <Link href={`/store/${storeSlug}/refunds`} className="underline underline-offset-4">
+          refund policy
+        </Link>{" "}
+        applies.
+      </p>
+
       {state.error && (
-        <p role="alert" className="rounded-lg bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
+        <p role="alert" className="rounded-md bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
           {state.error}
         </p>
       )}

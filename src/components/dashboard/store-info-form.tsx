@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input, Label, Select, Textarea } from "@/components/ui/input";
+import { FieldHint, Input, Label, Select, Textarea } from "@/components/ui/input";
 import { BUSINESS_TYPE_OPTIONS } from "@/lib/constants";
 import type { Store } from "@/lib/types/database";
 import type { SettingsFormState } from "@/app/dashboard/[slug]/settings/actions";
@@ -43,12 +43,12 @@ export function StoreInfoForm({
         </div>
         <div>
           <Label htmlFor="contactPhone">Contact phone</Label>
-          <Input id="contactPhone" name="contactPhone" defaultValue={store.contact_phone ?? ""} />
+          <Input id="contactPhone" name="contactPhone" type="tel" autoComplete="tel" defaultValue={store.contact_phone ?? ""} />
         </div>
       </div>
       <div>
         <Label htmlFor="whatsappNumber">WhatsApp number</Label>
-        <Input id="whatsappNumber" name="whatsappNumber" defaultValue={store.whatsapp_number ?? ""} />
+        <Input id="whatsappNumber" name="whatsappNumber" type="tel" defaultValue={store.whatsapp_number ?? ""} />
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
@@ -64,9 +64,31 @@ export function StoreInfoForm({
           <Input id="region" name="region" defaultValue={store.region ?? ""} />
         </div>
       </div>
+      <div>
+        <Label htmlFor="refundPolicy">Refund and returns policy</Label>
+        <Textarea
+          id="refundPolicy"
+          name="refundPolicy"
+          rows={5}
+          maxLength={4000}
+          aria-describedby="refundPolicy-hint"
+          defaultValue={store.refund_policy ?? ""}
+        />
+        <FieldHint>
+          <span id="refundPolicy-hint">
+            Shown on your store. Ghanaian law requires online sellers to publish one. Leave empty to use the{" "}
+            <a href="/refunds#seller-default" className="underline underline-offset-4">
+              default policy
+            </a>
+            .
+          </span>
+        </FieldHint>
+      </div>
 
-      {state.error && <p className="text-sm text-(--color-danger)">{state.error}</p>}
-      {state.success && <p className="text-sm text-(--color-success)">Saved.</p>}
+      <div aria-live="polite">
+        {state.error && <p role="alert" className="text-sm text-(--color-danger)">{state.error}</p>}
+        {state.success && <p className="text-sm text-(--color-success)">Saved.</p>}
+      </div>
 
       <Button type="submit" disabled={pending}>
         {pending ? "Saving…" : "Save changes"}

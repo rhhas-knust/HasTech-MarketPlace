@@ -1,22 +1,27 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input, Label, Select, Textarea } from "@/components/ui/input";
+import { FieldHint, Input, Label, Select, Textarea } from "@/components/ui/input";
 import type { ConsultationFormState } from "@/lib/consultations";
+
+export type ConsultationTopic = "how_it_works" | "pricing" | "privacy" | "other";
 
 export function ConsultationForm({
   action,
+  defaultTopic = "how_it_works",
 }: {
   action: (state: ConsultationFormState, formData: FormData) => Promise<ConsultationFormState>;
+  defaultTopic?: ConsultationTopic;
 }) {
   const [state, formAction, pending] = useActionState<ConsultationFormState, FormData>(action, {});
 
   if (state.success) {
     return (
-      <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-6 text-center">
-        <p className="text-base font-medium text-(--color-ink)">Thanks — we&apos;ve got your message.</p>
-        <p className="mt-1 text-sm text-(--color-ink-muted)">We&apos;ll get back to you by email soon.</p>
+      <div role="status" className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
+        <p className="font-medium text-(--color-ink)">Message sent.</p>
+        <p className="mt-1 text-sm text-(--color-ink-muted)">We reply by email, usually within two working days.</p>
       </div>
     );
   }
@@ -41,38 +46,64 @@ export function ConsultationForm({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="phone">Phone (optional)</Label>
-          <Input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="024 000 0000" />
-        </div>
-        <div>
-          <Label htmlFor="businessName">Business name (optional)</Label>
-          <Input id="businessName" name="businessName" />
-        </div>
-      </div>
-
       <div>
-        <Label htmlFor="topic">What would you like to know?</Label>
-        <Select id="topic" name="topic" defaultValue="how_it_works">
+        <Label htmlFor="topic">Topic</Label>
+        <Select id="topic" name="topic" defaultValue={defaultTopic}>
           <option value="how_it_works">How the platform works</option>
-          <option value="pricing">Pricing &amp; fees</option>
+          <option value="pricing">Pricing and fees</option>
+          <option value="privacy">My personal data (access, correction, deletion)</option>
           <option value="other">Something else</option>
         </Select>
       </div>
 
       <div>
-        <Label htmlFor="message">Your question</Label>
-        <Textarea id="message" name="message" required placeholder="Tell us what you'd like to know..." />
+        <Label htmlFor="message">Message</Label>
+        <Textarea id="message" name="message" required aria-describedby="message-hint" />
+        <FieldHint>
+          <span id="message-hint">At least 10 characters.</span>
+        </FieldHint>
       </div>
 
-      {state.error && (
-        <p role="alert" className="rounded-lg bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
-          {state.error}
-        </p>
-      )}
+      <details className="rounded-md border border-(--color-border) px-3 py-2 text-sm">
+        <summary className="cursor-pointer text-(--color-ink)">Add a phone number or business name (optional)</summary>
+        <div className="mt-3 grid gap-4 pb-1 sm:grid-cols-2">
+          <div>
+            <Label htmlFor="phone">Phone</Label>
+            <Input id="phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" />
+          </div>
+          <div>
+            <Label htmlFor="businessName">Business name</Label>
+            <Input id="businessName" name="businessName" autoComplete="organization" />
+          </div>
+        </div>
+      </details>
 
-      <Button type="submit" className="w-full" disabled={pending}>
+      <div className="flex items-start gap-3">
+        <input
+          id="acceptPrivacy"
+          name="acceptPrivacy"
+          type="checkbox"
+          required
+          className="mt-0.5 h-4 w-4 shrink-0 accent-(--color-brand)"
+        />
+        <label htmlFor="acceptPrivacy" className="text-sm text-(--color-ink-muted)">
+          I agree that HASTECH Commerce may store these details to reply to me, as described in the{" "}
+          <Link href="/privacy" className="font-medium text-(--color-ink) underline underline-offset-4">
+            Privacy Policy
+          </Link>
+          .
+        </label>
+      </div>
+
+      <div aria-live="polite">
+        {state.error && (
+          <p role="alert" className="rounded-md bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
+            {state.error}
+          </p>
+        )}
+      </div>
+
+      <Button type="submit" className="w-full sm:w-auto" disabled={pending}>
         {pending ? "Sending…" : "Send message"}
       </Button>
     </form>

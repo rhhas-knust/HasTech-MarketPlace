@@ -17,6 +17,7 @@ const STATUS_OPTIONS = [
 const TOPIC_LABELS: Record<string, string> = {
   how_it_works: "How it works",
   pricing: "Pricing & fees",
+  privacy: "Privacy request",
   other: "Something else",
 };
 
@@ -60,7 +61,7 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
       <FilterTabs tabs={tabs} />
 
       {visible.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-(--color-border) bg-(--color-surface)/60 px-6 py-14 text-center text-sm text-(--color-ink-muted)">
+        <div className="rounded-xl border border-dashed border-(--color-border) bg-(--color-surface)/60 px-6 py-14 text-center text-sm text-(--color-ink-muted)">
           {requests.length === 0 ? "No requests yet. They'll appear here as soon as someone writes in." : "Nothing in this view."}
         </div>
       ) : (
@@ -69,8 +70,8 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
             <article
               key={request.id}
               className={cn(
-                "flex flex-col rounded-3xl border bg-(--color-surface) p-6 shadow-soft transition-all duration-300 hover:shadow-lift",
-                request.status === "new" ? "border-(--color-brand)/40" : "border-(--color-border)/70",
+                "flex flex-col rounded-xl border bg-(--color-surface) p-6 transition-all duration-300",
+                request.status === "new" ? "border-(--color-brand)/40" : "border-(--color-border)",
               )}
             >
               <div className="flex items-start gap-3">
@@ -79,7 +80,7 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-(--color-ink)">{request.name}</p>
                     {request.status === "new" && (
-                      <span className="rounded-full bg-(--color-danger) px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                      <span className="rounded-md bg-(--color-danger) px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                         New
                       </span>
                     )}
@@ -96,14 +97,14 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
               <div className="mt-4">
                 <Badge tone="brand">{TOPIC_LABELS[request.topic] ?? request.topic}</Badge>
               </div>
-              <p className="mt-3 flex-1 whitespace-pre-line rounded-2xl rounded-tl-md bg-(--color-surface-subtle) px-4 py-3 text-sm leading-relaxed text-(--color-ink)">
+              <p className="mt-3 flex-1 whitespace-pre-line rounded-lg rounded-tl-md bg-(--color-surface-subtle) px-4 py-3 text-sm leading-relaxed text-(--color-ink)">
                 {request.message}
               </p>
 
               <div className="mt-5 flex flex-wrap items-center gap-2">
                 <a
                   href={`mailto:${request.email}?subject=${encodeURIComponent("Re: your HASTECH Commerce question")}`}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-gradient px-4 text-sm font-medium text-white shadow-glow transition-transform hover:-translate-y-0.5"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-md bg-(--color-brand) px-4 text-sm font-medium text-white transition-transform"
                 >
                   <Mail className="h-4 w-4" /> Reply by email
                 </a>
@@ -113,13 +114,13 @@ export default async function AdminConsultationsPage({ searchParams }: { searchP
                       href={whatsappHref(request.phone)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[#25D366] px-4 text-sm font-medium text-white shadow-soft transition-transform hover:-translate-y-0.5"
+                      className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[#25D366] px-4 text-sm font-medium text-white transition-transform"
                     >
                       <MessageCircle className="h-4 w-4" /> WhatsApp
                     </a>
                     <a
                       href={`tel:${request.phone}`}
-                      className="inline-flex h-9 items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-surface) px-4 text-sm font-medium text-(--color-ink) shadow-soft transition-transform hover:-translate-y-0.5"
+                      className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--color-border) bg-(--color-surface) px-4 text-sm font-medium text-(--color-ink) transition-transform"
                     >
                       <Phone className="h-4 w-4" /> Call
                     </a>

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Button, LinkButton } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { SignupProgress } from "@/components/signup-progress";
-import { GiftBox } from "@/components/gift-box";
 import { StorePreview } from "@/components/builder/store-preview";
 import { BUSINESS_TYPE_OPTIONS, FOUNDING_FREE_MONTHS, FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
 import { ACCENT_SWATCHES, EMPTY_DRAFT, loadStoreDraft, saveStoreDraft, type StoreDraft } from "@/lib/store-draft";
@@ -40,8 +39,8 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_340px] lg:items-start">
-      <div className="rounded-[2rem] border border-(--color-border)/70 bg-(--color-surface) p-6 shadow-lift sm:p-8">
-        <SignupProgress current={0} percent={10 + Math.min(step, 4) * 6} />
+      <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6 sm:p-8">
+        <SignupProgress current={0} />
 
         {!done ? (
           <form
@@ -50,10 +49,10 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
               if (canContinue) setStep((s) => s + 1);
             }}
           >
-            <p className="font-mono text-xs text-(--color-ink-muted)">
-              Step {step + 1} of {STEP_TITLES.length}
+            <p className="tabular-nums text-xs text-(--color-ink-muted)">
+              Question {step + 1} of {STEP_TITLES.length}
             </p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">{STEP_TITLES[step]}</h1>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-(--color-ink)">{STEP_TITLES[step]}</h1>
 
             <div className="mt-6 min-h-[180px]">
               {step === 0 && (
@@ -62,7 +61,6 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                     <Label htmlFor="name">Store name</Label>
                     <Input
                       id="name"
-                      autoFocus
                       value={draft.name}
                       maxLength={120}
                       onChange={(e) => update({ name: e.target.value })}
@@ -88,12 +86,13 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                     <button
                       key={opt.value}
                       type="button"
+                      aria-pressed={draft.businessType === opt.value}
                       onClick={() => update({ businessType: opt.value })}
                       className={cn(
-                        "rounded-2xl border p-4 text-left transition-all duration-200 hover:-translate-y-0.5",
+                        "rounded-lg border p-3 text-left transition-colors duration-150",
                         draft.businessType === opt.value
-                          ? "border-(--color-brand) bg-(--color-brand-subtle) shadow-soft ring-2 ring-(--color-brand)/20"
-                          : "border-(--color-border) hover:border-(--color-brand)",
+                          ? "border-(--color-brand) bg-(--color-brand-subtle)"
+                          : "border-(--color-border) hover:border-(--color-border-strong)",
                       )}
                     >
                       <span className="block text-sm font-medium text-(--color-ink)">{opt.label}</span>
@@ -111,16 +110,17 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                         key={color}
                         type="button"
                         aria-label={`Use colour ${color}`}
+                        aria-pressed={draft.accentColor === color}
                         onClick={() => update({ accentColor: color })}
                         className={cn(
-                          "h-12 w-12 rounded-full shadow-soft transition-transform hover:scale-110",
-                          draft.accentColor === color && "ring-4 ring-(--color-brand) ring-offset-2 ring-offset-(--color-surface)",
+                          "h-11 w-11 rounded-md",
+                          draft.accentColor === color && "ring-2 ring-(--color-ink) ring-offset-2 ring-offset-(--color-surface)",
                         )}
                         style={{ backgroundColor: color }}
                       />
                     ))}
-                    <label className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-(--color-border) text-xs text-(--color-ink-muted) hover:border-(--color-brand)">
-                      <span aria-hidden>+</span>
+                    <label className="flex h-11 cursor-pointer items-center justify-center rounded-md border border-dashed border-(--color-border-strong) px-3 text-xs text-(--color-ink-muted) focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--color-brand) hover:text-(--color-ink)">
+                      Custom
                       <input
                         type="color"
                         className="sr-only"
@@ -131,7 +131,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                     </label>
                   </div>
                   <p className="mt-4 text-sm text-(--color-ink-muted)">
-                    Watch your store change on the right. You can fine-tune this any time.
+                    The preview updates as you choose. You can change this later in Settings.
                   </p>
                 </div>
               )}
@@ -166,7 +166,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
             <div className="mt-6 flex items-center justify-between gap-3">
               {step > 0 ? (
                 <Button type="button" variant="ghost" onClick={() => setStep((s) => s - 1)}>
-                  &larr; Back
+                  Back
                 </Button>
               ) : (
                 <span />
@@ -178,63 +178,39 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
                   </Button>
                 )}
                 <Button type="submit" disabled={!canContinue}>
-                  {step === 3 ? "Finish my store" : "Continue"} &rarr;
+                  {step === 3 ? "Finish" : "Continue"}
                 </Button>
               </div>
             </div>
           </form>
         ) : (
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">
-              🎉 {draft.name.trim() || "Your store"} is ready to go live
+            <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">
+              {draft.name.trim() || "Your store"} is ready
             </h1>
-            <p className="mt-2 text-sm text-(--color-ink-muted)">
-              You built this. Create your account to claim it, and everything you designed is
-              saved straight into your real store.
+            <p className="mt-2 max-w-prose text-sm text-(--color-ink-muted)">
+              Create an account to save it. Your name, colour and first product carry over to your
+              real store, and you can change all of them later.
             </p>
-
-            <div className="mt-6">
-              <GiftBox label="You unlocked a welcome gift. Tap to open">
-                {hasFoundingSpots ? (
-                  <>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-(--color-brand)">
-                      Founding member gift
-                    </p>
-                    <p className="mt-1 text-lg font-semibold text-(--color-ink)">
-                      No platform fees for your first {FOUNDING_FREE_MONTHS} months
-                    </p>
-                    <p className="mt-1 text-sm text-(--color-ink-muted)">
-                      Only {spotsLeft} of {FOUNDING_MEMBER_LIMIT} founding spots are left. Claim your
-                      store to lock it in.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-(--color-brand)">
-                      Launch kit
-                    </p>
-                    <p className="mt-1 text-lg font-semibold text-(--color-ink)">
-                      A ready-made launch announcement
-                    </p>
-                    <p className="mt-1 text-sm text-(--color-ink-muted)">
-                      Your store link plus a WhatsApp message written for you, waiting in your dashboard.
-                    </p>
-                  </>
-                )}
-              </GiftBox>
-            </div>
-
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <LinkButton href="/signup" size="lg" className="w-full sm:flex-1">
-                Claim my store &rarr;
+            {hasFoundingSpots && (
+              <p className="mt-4 rounded-md border border-(--color-border) bg-(--color-surface-subtle) px-3 py-2.5 text-sm text-(--color-ink)">
+                Founding member offer: no platform fees for your first {FOUNDING_FREE_MONTHS} months.{" "}
+                <span className="text-(--color-ink-muted)">
+                  {spotsLeft} of {FOUNDING_MEMBER_LIMIT} places left.
+                </span>
+              </p>
+            )}
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+              <LinkButton href="/signup" size="lg">
+                Create account
               </LinkButton>
               <Button type="button" size="lg" variant="outline" onClick={() => setStep(0)}>
                 Edit design
               </Button>
             </div>
-            <p className="mt-3 text-center text-xs text-(--color-ink-muted)">
+            <p className="mt-4 text-sm text-(--color-ink-muted)">
               Already have an account?{" "}
-              <a href="/login" className="font-medium text-(--color-brand)">
+              <a href="/login" className="font-medium text-(--color-brand) underline-offset-4 hover:underline">
                 Sign in
               </a>
             </p>
@@ -243,9 +219,7 @@ export function StoreBuilder({ spotsLeft }: { spotsLeft: number | null }) {
       </div>
 
       <div className="lg:sticky lg:top-8">
-        <p className="mb-3 text-center text-xs font-medium uppercase tracking-wider text-(--color-ink-muted)">
-          Live preview
-        </p>
+        <p className="mb-3 text-center text-sm text-(--color-ink-muted)">Preview</p>
         <StorePreview draft={draft} />
       </div>
     </div>

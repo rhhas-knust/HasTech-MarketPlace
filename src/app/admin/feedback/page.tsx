@@ -58,7 +58,7 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
       <FilterTabs tabs={tabs} />
 
       {visible.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-(--color-border) bg-(--color-surface)/60 px-6 py-14 text-center text-sm text-(--color-ink-muted)">
+        <div className="rounded-xl border border-dashed border-(--color-border) bg-(--color-surface)/60 px-6 py-14 text-center text-sm text-(--color-ink-muted)">
           {feedback.length === 0 ? "No feedback yet. Sellers can send it from their dashboard." : "Nothing in this view."}
         </div>
       ) : (
@@ -72,8 +72,8 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
               <article
                 key={item.id}
                 className={cn(
-                  "flex flex-col rounded-3xl border bg-(--color-surface) p-6 shadow-soft transition-all duration-300 hover:shadow-lift",
-                  item.status === "open" ? "border-(--color-brand)/40" : "border-(--color-border)/70",
+                  "flex flex-col rounded-xl border bg-(--color-surface) p-6 transition-all duration-300",
+                  item.status === "open" ? "border-(--color-brand)/40" : "border-(--color-border)",
                   item.status === "resolved" && "opacity-75",
                 )}
               >
@@ -86,10 +86,10 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
                   <span className="shrink-0 text-xs text-(--color-ink-muted)">{timeAgo(item.created_at, now)}</span>
                 </div>
 
-                <span className={cn("mt-4 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium", category.tone)}>
+                <span className={cn("mt-4 inline-flex w-fit items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium", category.tone)}>
                   <Icon className="h-3.5 w-3.5" /> {category.label}
                 </span>
-                <p className="mt-3 flex-1 whitespace-pre-line rounded-2xl rounded-tl-md bg-(--color-surface-subtle) px-4 py-3 text-sm leading-relaxed text-(--color-ink)">
+                <p className="mt-3 flex-1 whitespace-pre-line rounded-lg rounded-tl-md bg-(--color-surface-subtle) px-4 py-3 text-sm leading-relaxed text-(--color-ink)">
                   {item.message}
                 </p>
 
@@ -97,7 +97,7 @@ export default async function AdminFeedbackPage({ searchParams }: { searchParams
                   {author?.email && (
                     <a
                       href={`mailto:${author.email}?subject=${encodeURIComponent("Re: your HASTECH Commerce feedback")}`}
-                      className="inline-flex h-9 items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-surface) px-4 text-sm font-medium text-(--color-ink) shadow-soft transition-transform hover:-translate-y-0.5"
+                      className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--color-border) bg-(--color-surface) px-4 text-sm font-medium text-(--color-ink) transition-transform"
                     >
                       <Mail className="h-4 w-4" /> Reply
                     </a>

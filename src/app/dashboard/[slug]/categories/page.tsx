@@ -22,14 +22,14 @@ export default async function CategoriesPage({ params }: { params: Promise<{ slu
     <div className="max-w-2xl space-y-6">
       <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Categories</h1>
 
-      <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft p-4">
+      <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
         <CategoryForm action={boundCreate} />
       </div>
 
       {categories.length === 0 ? (
         <EmptyState icon={<Tag className="h-8 w-8" />} title="No categories yet" description="Organise your products into categories customers can browse." />
       ) : (
-        <ul className="divide-y divide-(--color-border) rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
+        <ul className="divide-y divide-(--color-border) rounded-xl border border-(--color-border) bg-(--color-surface)">
           {categories.map((category) => (
             <li key={category.id} className="flex items-center justify-between px-4 py-3">
               <div>

@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { GiftBox } from "@/components/gift-box";
+import { Check, Copy, MessageCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { clearStoreDraft } from "@/lib/store-draft";
 
+/** Shown once, right after a seller creates their store. */
 export function WelcomeGift({
   storeName,
   storeUrl,
@@ -25,78 +26,72 @@ export function WelcomeGift({
     clearStoreDraft();
   }, []);
 
-  const message = `🎉 ${storeName} is now online! See what we have, order and pay with MoMo or card here: ${storeUrl}`;
+  const message = `${storeName} is now online. See what we have, order and pay with MoMo or card: ${storeUrl}`;
   const whatsappHref = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  const until = foundingUntil
+    ? new Date(foundingUntil).toLocaleDateString("en-GH", { day: "numeric", month: "long", year: "numeric" })
+    : null;
 
   return (
-    <div className="rounded-2xl border border-(--color-border) bg-(--color-surface) p-5 shadow-sm">
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-(--color-success)">
-            ✓ Setup complete · 100%
-          </p>
-          <h2 className="mt-1 text-lg font-semibold text-(--color-ink)">Welcome to your store, you made it!</h2>
-        </div>
-        <button
-          type="button"
-          onClick={() => router.replace(pathname)}
-          className="text-sm text-(--color-ink-muted) hover:text-(--color-ink)"
-          aria-label="Dismiss"
-        >
-          ✕
-        </button>
-      </div>
+    <section
+      aria-labelledby="welcome-heading"
+      className="relative rounded-xl border border-(--color-border) bg-(--color-surface) p-5 sm:p-6"
+    >
+      <button
+        type="button"
+        onClick={() => router.replace(pathname)}
+        className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-md text-(--color-ink-muted) hover:bg-(--color-surface-subtle) hover:text-(--color-ink)"
+        aria-label="Dismiss welcome message"
+      >
+        <X className="h-4 w-4" aria-hidden />
+      </button>
 
-      <GiftBox label="Your welcome gift is here. Tap to open">
-        <div className="space-y-4">
-          {foundingUntil && (
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-(--color-brand)">
-                Founding member
-              </p>
-              <p className="mt-1 text-lg font-semibold text-(--color-ink)">
-                No platform fees until{" "}
-                {new Date(foundingUntil).toLocaleDateString("en-GH", { day: "numeric", month: "long" })}
-              </p>
-              <p className="text-sm text-(--color-ink-muted)">
-                Every cedi you make until then is yours. As a founding partner, your feedback
-                directly shapes how HASTECH works, so tell us what to fix or add.
-              </p>
-            </div>
-          )}
-          <div className={foundingUntil ? "border-t border-(--color-border) pt-4" : undefined}>
-            <p className="text-xs font-semibold uppercase tracking-wider text-(--color-brand)">Launch kit</p>
-            <p className="mt-1 text-sm text-(--color-ink)">
-              {isPublished
-                ? "Your announcement is written. Send it to your customers now:"
-                : "Your announcement is written. Publish your store (top right), then send it to your customers:"}
-            </p>
-            <p className="mt-2 rounded-lg bg-(--color-surface-subtle) px-3 py-2 text-sm text-(--color-ink)">{message}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-10 items-center rounded-lg bg-[#25D366] px-4 text-sm font-medium text-white hover:opacity-90"
-              >
-                Share on WhatsApp
-              </a>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  navigator.clipboard
-                    .writeText(message)
-                    .then(() => setCopied(true))
-                    .catch(() => {});
-                }}
-              >
-                {copied ? "Copied ✓" : "Copy message"}
-              </Button>
-            </div>
-          </div>
+      <h2 id="welcome-heading" className="pr-10 text-lg font-semibold text-(--color-ink)">
+        {storeName} is set up
+      </h2>
+      {until && (
+        <p className="mt-1 max-w-prose text-sm text-(--color-ink-muted)">
+          As a founding member you pay no platform fees until {until}. Your feedback during this time
+          decides what we build next, so tell us what to fix or add from the Feedback page.
+        </p>
+      )}
+
+      <div className="mt-5 border-t border-(--color-border) pt-5">
+        <h3 className="text-sm font-medium text-(--color-ink)">Announce your store</h3>
+        <p className="mt-1 text-sm text-(--color-ink-muted)">
+          {isPublished
+            ? "Send this message to your customers:"
+            : "Publish your store first, then send this message to your customers:"}
+        </p>
+        <p className="mt-3 rounded-md bg-(--color-surface-subtle) px-3 py-2 text-sm text-(--color-ink)">{message}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-(--color-brand) px-4 text-sm font-medium text-(--color-on-brand) hover:bg-(--color-brand-hover)"
+          >
+            <MessageCircle className="h-4 w-4" aria-hidden /> Share on WhatsApp
+            <span className="sr-only">(opens in a new tab)</span>
+          </a>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              navigator.clipboard
+                .writeText(message)
+                .then(() => setCopied(true))
+                .catch(() => {});
+            }}
+          >
+            {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
+            {copied ? "Copied" : "Copy message"}
+          </Button>
+          <span role="status" className="sr-only">
+            {copied ? "Message copied to clipboard" : ""}
+          </span>
         </div>
-      </GiftBox>
-    </div>
+      </div>
+    </section>
   );
 }

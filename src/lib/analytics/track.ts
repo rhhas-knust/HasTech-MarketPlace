@@ -9,6 +9,16 @@ async function getVisitorId(): Promise<string | null> {
   return cookieStore.get(VISITOR_ID_COOKIE)?.value ?? null;
 }
 
+/** Keep only the referring site's hostname, never its full URL or query. */
+function referrerHost(referer: string | null): string | null {
+  if (!referer) return null;
+  try {
+    return new URL(referer).hostname;
+  } catch {
+    return null;
+  }
+}
+
 function guessDeviceType(userAgent: string | null): string {
   if (!userAgent) return "unknown";
   if (/mobile/i.test(userAgent)) return "mobile";
@@ -35,7 +45,7 @@ export async function trackProductView(storeId: string, productId: string) {
     p_product_id: productId,
     p_visitor_id: visitorId,
     p_session_id: visitorId,
-    p_source: headerList.get("referer"),
+    p_source: referrerHost(headerList.get("referer")),
     p_device_type: guessDeviceType(headerList.get("user-agent")),
     p_country: headerList.get("x-vercel-ip-country"),
   });
@@ -58,7 +68,7 @@ export async function trackEvent(
     p_session_id: visitorId,
     p_visitor_id: visitorId,
     p_metadata: options.metadata ?? {},
-    p_source: headerList.get("referer"),
+    p_source: referrerHost(headerList.get("referer")),
     p_device_type: guessDeviceType(headerList.get("user-agent")),
     p_country: headerList.get("x-vercel-ip-country"),
   });

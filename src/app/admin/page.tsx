@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { ArrowRight, Crown, Inbox, MessageSquareWarning, Receipt, Store, Trophy, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/session";
-import { RollingDigits } from "@/components/rolling-digits";
 import { CardHeading, InitialsAvatar, KpiTile, Meter, timeAgo } from "@/components/console/ui";
 import { formatCurrency } from "@/lib/money";
 import { FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
@@ -88,12 +87,12 @@ export default async function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       {/* Welcome + hero figure */}
-      <section className="relative overflow-hidden rounded-[2rem] bg-brand-gradient p-6 text-white shadow-lift sm:p-8">
+      <section className="relative overflow-hidden rounded-xl bg-(--color-brand) p-6 text-white shadow-raised sm:p-8">
         <div aria-hidden className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-white/15 blur-3xl" />
         <div aria-hidden className="absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-black/10 blur-3xl" />
         <div className="relative flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur">
+            <p className="inline-flex items-center gap-2 rounded-md bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur">
               <Crown className="h-3.5 w-3.5" /> Owner console
             </p>
             <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
@@ -104,7 +103,7 @@ export default async function AdminOverviewPage() {
           <div className="text-left sm:text-right">
             <p className="text-xs font-medium uppercase tracking-wider text-white/70">Total sales on the platform</p>
             <p className="mt-1 text-4xl font-bold tracking-tight sm:text-5xl">
-              <RollingDigits text={formatCurrency(gmv, currency)} />
+              {formatCurrency(gmv, currency)}
             </p>
             <p className="mt-1 text-sm text-white/80">
               {gmvThisWeek > 0 ? `+${formatCurrency(gmvThisWeek, currency)} this week` : "No sales yet this week"}
@@ -144,7 +143,7 @@ export default async function AdminOverviewPage() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Founding members meter */}
-        <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-6 shadow-soft">
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <p className="text-sm font-medium text-(--color-ink-muted)">Founding members</p>
           <p className="mt-3 text-3xl font-semibold tracking-tight text-(--color-ink)">
             {foundingCount}
@@ -161,7 +160,7 @@ export default async function AdminOverviewPage() {
         </div>
 
         {/* Plans */}
-        <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-6 shadow-soft">
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <p className="text-sm font-medium text-(--color-ink-muted)">Billing plans</p>
           <ul className="mt-4 space-y-3">
             {[
@@ -169,43 +168,43 @@ export default async function AdminOverviewPage() {
               { label: "Monthly subscription", value: subscriptionCount },
               { label: "Fees waived (founding)", value: foundingCount },
             ].map((row) => (
-              <li key={row.label} className="flex items-center justify-between rounded-2xl bg-(--color-surface-subtle) px-4 py-3">
+              <li key={row.label} className="flex items-center justify-between rounded-lg bg-(--color-surface-subtle) px-4 py-3">
                 <span className="text-sm text-(--color-ink)">{row.label}</span>
-                <span className="font-mono text-lg font-semibold text-(--color-ink) tabular-nums">{row.value}</span>
+                <span className="tabular-nums text-lg font-semibold text-(--color-ink) tabular-nums">{row.value}</span>
               </li>
             ))}
           </ul>
         </div>
 
         {/* Inbox */}
-        <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-6 shadow-soft">
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <p className="text-sm font-medium text-(--color-ink-muted)">Needs your attention</p>
           <div className="mt-4 space-y-3">
             <Link
               href="/admin/consultations"
-              className="group flex items-center gap-4 rounded-2xl border border-(--color-border)/70 p-4 transition-all hover:-translate-y-0.5 hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-all hover:border-(--color-brand)/40 hover:shadow-soft"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-(--color-brand-subtle) text-(--color-brand)">
+              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-brand-subtle) text-(--color-brand)">
                 <Inbox className="h-5 w-5" />
               </span>
               <span className="flex-1">
                 <span className="block text-2xl font-semibold text-(--color-ink)">{newConsultCount ?? 0}</span>
                 <span className="text-sm text-(--color-ink-muted)">new consultation requests</span>
               </span>
-              <ArrowRight className="h-4 w-4 text-(--color-ink-muted) transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 text-(--color-ink-muted) transition-transform" />
             </Link>
             <Link
               href="/admin/feedback"
-              className="group flex items-center gap-4 rounded-2xl border border-(--color-border)/70 p-4 transition-all hover:-translate-y-0.5 hover:border-(--color-brand)/40 hover:shadow-soft"
+              className="group flex items-center gap-4 rounded-lg border border-(--color-border) p-4 transition-all hover:border-(--color-brand)/40 hover:shadow-soft"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-(--color-warning-subtle) text-(--color-warning)">
+              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--color-warning-subtle) text-(--color-warning)">
                 <MessageSquareWarning className="h-5 w-5" />
               </span>
               <span className="flex-1">
                 <span className="block text-2xl font-semibold text-(--color-ink)">{openFeedbackCount ?? 0}</span>
                 <span className="text-sm text-(--color-ink-muted)">open feedback items</span>
               </span>
-              <ArrowRight className="h-4 w-4 text-(--color-ink-muted) transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 text-(--color-ink-muted) transition-transform" />
             </Link>
           </div>
         </div>
@@ -213,10 +212,10 @@ export default async function AdminOverviewPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Top stores */}
-        <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-6 shadow-soft">
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <CardHeading title="Top stores" description="Ranked by total paid sales." />
           {topStores.length === 0 ? (
-            <p className="mt-6 rounded-2xl bg-(--color-surface-subtle) px-4 py-8 text-center text-sm text-(--color-ink-muted)">
+            <p className="mt-6 rounded-lg bg-(--color-surface-subtle) px-4 py-8 text-center text-sm text-(--color-ink-muted)">
               No paid orders yet. The first sale will show up here.
             </p>
           ) : (
@@ -224,11 +223,11 @@ export default async function AdminOverviewPage() {
               {topStores.map(({ store, total }, i) => (
                 <li key={store!.id}>
                   <div className="flex items-center gap-3">
-                    <span className="w-5 font-mono text-sm text-(--color-ink-muted)">{i + 1}</span>
+                    <span className="w-5 tabular-nums text-sm text-(--color-ink-muted)">{i + 1}</span>
                     <Link href={`/store/${store!.slug}`} className="flex-1 truncate text-sm font-medium text-(--color-ink) hover:text-(--color-brand)">
                       {store!.name}
                     </Link>
-                    <span className="font-mono text-sm font-semibold text-(--color-ink) tabular-nums">
+                    <span className="tabular-nums text-sm font-semibold text-(--color-ink) tabular-nums">
                       {formatCurrency(total, currency)}
                     </span>
                   </div>
@@ -242,13 +241,13 @@ export default async function AdminOverviewPage() {
         </div>
 
         {/* Recent signups */}
-        <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-6 shadow-soft">
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <CardHeading title="Recent signups" description="The newest people on the platform." />
           <ul className="mt-5 space-y-2">
             {(recentProfiles ?? []).map((p) => {
               const store = (p.stores as unknown as { slug: string; name: string }[] | null)?.[0];
               return (
-                <li key={p.id} className="flex items-center gap-3 rounded-2xl px-2 py-2 transition-colors hover:bg-(--color-surface-subtle)">
+                <li key={p.id} className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-(--color-surface-subtle)">
                   <InitialsAvatar name={p.full_name ?? p.email} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-(--color-ink)">{p.full_name ?? "—"}</p>
@@ -258,12 +257,12 @@ export default async function AdminOverviewPage() {
                     {store ? (
                       <Link
                         href={`/store/${store.slug}`}
-                        className="inline-block max-w-32 truncate rounded-full bg-(--color-brand-subtle) px-2.5 py-0.5 text-xs font-medium text-(--color-brand)"
+                        className="inline-block max-w-32 truncate rounded-md bg-(--color-brand-subtle) px-2.5 py-0.5 text-xs font-medium text-(--color-brand)"
                       >
                         {store.name}
                       </Link>
                     ) : (
-                      <span className="rounded-full bg-(--color-surface-subtle) px-2.5 py-0.5 text-xs text-(--color-ink-muted)">
+                      <span className="rounded-md bg-(--color-surface-subtle) px-2.5 py-0.5 text-xs text-(--color-ink-muted)">
                         No store yet
                       </span>
                     )}

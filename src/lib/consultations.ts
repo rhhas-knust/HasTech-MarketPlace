@@ -28,6 +28,10 @@ export async function submitConsultationRequest(
     return { success: true };
   }
 
+  if (formData.get("acceptPrivacy") !== "on") {
+    return { error: "Please agree to the Privacy Policy so we can store your message and reply." };
+  }
+
   const parsed = consultationSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -46,6 +50,7 @@ export async function submitConsultationRequest(
     business_name: parsed.data.businessName || null,
     topic: parsed.data.topic,
     message: parsed.data.message,
+    privacy_accepted_at: new Date().toISOString(),
   });
   if (error) return { error: "Something went wrong sending your message. Please try again." };
 
@@ -58,7 +63,7 @@ export interface ConsultationRequestRow {
   email: string;
   phone: string | null;
   business_name: string | null;
-  topic: "how_it_works" | "pricing" | "other";
+  topic: "how_it_works" | "pricing" | "privacy" | "other";
   message: string;
   status: "new" | "contacted" | "closed";
   created_at: string;

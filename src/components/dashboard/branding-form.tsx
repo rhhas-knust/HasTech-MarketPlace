@@ -91,7 +91,7 @@ export function BrandingForm({
             <button
               key={preset}
               type="button"
-              className="h-8 w-8 rounded-full border-2"
+              className="h-8 w-8 rounded-md border-2"
               style={{
                 backgroundColor: preset,
                 borderColor: color.toLowerCase() === preset.toLowerCase() ? "var(--color-ink)" : "transparent",

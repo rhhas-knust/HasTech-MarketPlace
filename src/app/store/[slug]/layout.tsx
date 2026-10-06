@@ -43,7 +43,7 @@ export default async function StoreLayout({
       style={accent ? ({ "--store-accent": accent, "--store-accent-hover": accent } as React.CSSProperties) : undefined}
     >
       <StoreHeader store={store} categories={categories} cartCount={cartCount} />
-      <main className="flex-1">{children}</main>
+      <main id="main" className="flex-1">{children}</main>
       <StoreFooter store={store} />
     </div>
   );

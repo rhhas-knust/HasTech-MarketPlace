@@ -87,10 +87,10 @@ export default function SellPage() {
         </div>
       </header>
 
-      <main className="flex-1">
-        <div className="bg-hero-glow">
+      <main id="main" className="flex-1">
+        <div className="">
           <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-            <span className="inline-flex items-center rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-1 text-xs font-medium text-(--color-ink-muted)">
+            <span className="inline-flex items-center rounded-md border border-(--color-border) bg-(--color-surface) px-3 py-1 text-xs font-medium text-(--color-ink-muted)">
               For first-time sellers
             </span>
             <h1 className="mt-5 text-4xl font-semibold tracking-tight text-(--color-ink) sm:text-5xl">
@@ -141,7 +141,7 @@ export default function SellPage() {
               {BUSINESS_TYPE_OPTIONS.filter((o) => o.value !== "other").map((option) => (
                 <span
                   key={option.value}
-                  className="rounded-full border border-(--color-border) bg-(--color-surface-subtle) px-3.5 py-1.5 text-sm text-(--color-ink) transition-colors duration-150 hover:border-(--color-brand) hover:text-(--color-brand)"
+                  className="rounded-md border border-(--color-border) bg-(--color-surface-subtle) px-3.5 py-1.5 text-sm text-(--color-ink) transition-colors duration-150 hover:border-(--color-brand) hover:text-(--color-brand)"
                 >
                   {option.label}
                 </span>
@@ -176,7 +176,7 @@ export default function SellPage() {
                 ))}
               </ul>
             </div>
-            <div className="rounded-3xl border border-(--color-border)/70 bg-(--color-surface-subtle) p-6">
+            <div className="rounded-xl border border-(--color-border) bg-(--color-surface-subtle) p-6">
               <p className="text-sm font-medium text-(--color-ink)">See it live: Amara Books</p>
               <p className="mt-1.5 text-sm text-(--color-ink-muted)">
                 A real bookshop selling books and graduation sashes, running on the exact same
@@ -194,7 +194,7 @@ export default function SellPage() {
             <h2 className="text-center text-2xl font-semibold text-(--color-ink)">
               Questions from new sellers
             </h2>
-            <div className="mt-8 divide-y divide-(--color-border) rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
+            <div className="mt-8 divide-y divide-(--color-border) rounded-xl border border-(--color-border) bg-(--color-surface)">
               {FAQS.map((faq) => (
                 <details key={faq.q} className="group px-5 py-4 open:pb-4">
                   <summary className="cursor-pointer list-none text-sm font-medium text-(--color-ink) marker:content-none">
@@ -207,7 +207,7 @@ export default function SellPage() {
           </div>
         </div>
 
-        <div className="bg-hero-glow border-t border-(--color-border) px-4 py-16 text-center">
+        <div className="border-t border-(--color-border) px-4 py-16 text-center">
           <h2 className="text-2xl font-semibold text-(--color-ink)">Ready to start selling?</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-(--color-ink-muted)">
             It takes a few minutes to set up your store and start adding products or services.

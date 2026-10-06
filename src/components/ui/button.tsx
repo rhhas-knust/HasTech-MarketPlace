@@ -6,25 +6,23 @@ type Variant = "primary" | "secondary" | "outline" | "ghost" | "danger" | "store
 type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
-  primary:
-    "bg-brand-gradient text-white shadow-glow hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lift",
-  secondary: "bg-(--color-ink) text-(--color-surface) shadow-soft hover:-translate-y-0.5 hover:opacity-90",
+  primary: "bg-(--color-brand) text-(--color-on-brand) hover:bg-(--color-brand-hover)",
+  secondary: "bg-(--color-ink) text-(--color-surface) hover:opacity-90",
   outline:
-    "border border-(--color-border) bg-(--color-surface) text-(--color-ink) shadow-soft hover:-translate-y-0.5 hover:border-(--color-brand)/40",
+    "border border-(--color-border-strong)/60 bg-(--color-surface) text-(--color-ink) hover:bg-(--color-surface-subtle)",
   ghost: "text-(--color-ink) hover:bg-(--color-surface-subtle)",
-  danger: "bg-(--color-danger) text-white shadow-soft hover:-translate-y-0.5 hover:opacity-90",
-  store:
-    "bg-(--store-accent) text-white shadow-soft hover:-translate-y-0.5 hover:bg-(--store-accent-hover) hover:shadow-lift",
+  danger: "bg-(--color-danger) text-white hover:opacity-90",
+  store: "bg-(--store-accent) text-white hover:bg-(--store-accent-hover)",
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: "h-9 px-4 text-sm gap-1.5",
-  md: "h-11 px-5 text-sm gap-2",
-  lg: "h-13 px-7 text-base gap-2",
+  sm: "h-9 px-3 text-sm gap-1.5",
+  md: "h-10 px-4 text-sm gap-2",
+  lg: "h-11 px-5 text-base gap-2",
 };
 
 const base =
-  "inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-brand)";
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-[background-color,opacity,transform] duration-150 ease-out active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;

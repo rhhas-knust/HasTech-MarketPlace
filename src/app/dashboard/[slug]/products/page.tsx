@@ -67,7 +67,7 @@ export default async function ProductsPage({
         <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           <form action={`/dashboard/${slug}/products`} className="flex-1 sm:w-64 sm:flex-none">
             {tab !== "all" && <input type="hidden" name="status" value={tab} />}
-            <label className="flex items-center gap-2 rounded-full border border-(--color-border) bg-(--color-surface) px-4 py-2.5 shadow-soft transition focus-within:border-(--color-brand) focus-within:ring-4 focus-within:ring-(--color-brand)/15">
+            <label className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-surface) px-4 py-2.5 transition focus-within:border-(--color-brand) focus-within:ring-4 focus-within:ring-(--color-brand)/15">
               <Search className="h-4 w-4 text-(--color-ink-muted)" aria-hidden />
               <input
                 type="search"
@@ -102,11 +102,11 @@ export default async function ProductsPage({
           action={<LinkButton href={`/dashboard/${slug}/products/new`}>Add a product</LinkButton>}
         />
       ) : visible.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-(--color-border) bg-(--color-surface)/60 px-6 py-14 text-center text-sm text-(--color-ink-muted)">
+        <div className="rounded-xl border border-dashed border-(--color-border) bg-(--color-surface)/60 px-6 py-14 text-center text-sm text-(--color-ink-muted)">
           {tab === "low_stock" && !q ? "✅ Everything is well stocked." : "No products match this view."}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-3xl border border-(--color-border)/70 bg-(--color-surface) shadow-soft">
+        <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface)">
           <table className="w-full min-w-[720px] text-sm">
             <thead className="bg-(--color-surface-subtle)/70 text-left text-xs uppercase tracking-wider text-(--color-ink-muted)">
               <tr>
@@ -127,7 +127,7 @@ export default async function ProductsPage({
                   <tr key={product.id} className="transition-colors hover:bg-(--color-surface-subtle)/60">
                     <td className="max-w-[280px] px-5 py-3">
                       <Link href={`/dashboard/${slug}/products/${product.id}`} className="flex items-center gap-3">
-                        <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-(--color-surface-subtle) text-(--color-ink-muted) ring-1 ring-(--color-border)/70">
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-(--color-surface-subtle) text-(--color-ink-muted) ring-1 ring-(--color-border)">
                           {image ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={image} alt="" className="h-full w-full object-cover" loading="lazy" />
@@ -145,7 +145,7 @@ export default async function ProductsPage({
                         </span>
                       </Link>
                     </td>
-                    <td className="px-5 py-3 font-mono font-semibold text-(--color-ink) tabular-nums">
+                    <td className="px-5 py-3 tabular-nums font-semibold text-(--color-ink) tabular-nums">
                       {formatCurrency(product.price, product.currency)}
                     </td>
                     <td className="px-5 py-3">
@@ -154,7 +154,7 @@ export default async function ProductsPage({
                       ) : (
                         <span
                           className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
+                            "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium",
                             out
                               ? "bg-(--color-danger-subtle) text-(--color-danger)"
                               : low
@@ -171,14 +171,14 @@ export default async function ProductsPage({
                         {product.status === "published" ? "Published" : product.status === "draft" ? "Draft" : "Archived"}
                       </Badge>
                     </td>
-                    <td className="px-5 py-3 font-mono text-(--color-ink-muted) tabular-nums">
+                    <td className="px-5 py-3 tabular-nums text-(--color-ink-muted) tabular-nums">
                       {product.view_count} · {product.purchase_count}
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/dashboard/${slug}/products/${product.id}`}
-                          className="flex h-9 w-9 items-center justify-center rounded-full border border-(--color-border) bg-(--color-surface) text-(--color-ink-muted) shadow-soft transition-transform hover:-translate-y-0.5 hover:text-(--color-ink)"
+                          className="flex h-9 w-9 items-center justify-center rounded-md border border-(--color-border) bg-(--color-surface) text-(--color-ink-muted) transition-transform hover:text-(--color-ink)"
                           aria-label={`Edit ${product.name}`}
                         >
                           <Pencil className="h-4 w-4" />

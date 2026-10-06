@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
-import { VISITOR_ID_COOKIE } from "@/lib/constants";
+import { CONSENT_COOKIE, VISITOR_ID_COOKIE } from "@/lib/constants";
 
 // Next.js 16 renamed the `middleware` file convention to `proxy` (it always
 // runs on the nodejs runtime now, not edge). This refreshes the Supabase
@@ -31,18 +31,22 @@ export async function proxy(request: NextRequest) {
   // access token is stale; getSession() alone would not.
   await supabase.auth.getUser();
 
-  // A random, anonymous visitor id (no PII) used only for view-count
-  // deduplication and coarse analytics -- see record_product_view in
-  // 0009_functions_triggers.sql. Server Components can't set cookies
-  // themselves, so it's minted here on first visit.
-  if (!request.cookies.get(VISITOR_ID_COOKIE)) {
+  // A random, anonymous visitor id (no PII) used only to de-duplicate
+  // product view counts for sellers. It is not strictly necessary, so it is
+  // only set after the visitor allows analytics in the cookie banner, and
+  // removed again if they later choose essential cookies only.
+  const consent = request.cookies.get(CONSENT_COOKIE)?.value;
+  const hasVisitorId = Boolean(request.cookies.get(VISITOR_ID_COOKIE));
+  if (consent === "all" && !hasVisitorId) {
     response.cookies.set(VISITOR_ID_COOKIE, crypto.randomUUID(), {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 365,
+      maxAge: 60 * 60 * 24 * 180,
       path: "/",
     });
+  } else if (consent !== "all" && hasVisitorId) {
+    response.cookies.delete(VISITOR_ID_COOKIE);
   }
 
   return response;

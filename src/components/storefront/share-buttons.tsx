@@ -12,7 +12,7 @@ export function ShareButtons({ url, title }: { url: string; title: string }) {
         href={`https://wa.me/?text=${encodeURIComponent(`${title} — ${url}`)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-(--color-border) text-(--color-ink-muted) hover:text-(--color-ink)"
+        className="flex h-9 w-9 items-center justify-center rounded-md border border-(--color-border) text-(--color-ink-muted) hover:text-(--color-ink)"
         aria-label="Share on WhatsApp"
       >
         <MessageCircle className="h-4 w-4" />
@@ -21,7 +21,7 @@ export function ShareButtons({ url, title }: { url: string; title: string }) {
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-(--color-border) text-(--color-ink-muted) hover:text-(--color-ink)"
+        className="flex h-9 w-9 items-center justify-center rounded-md border border-(--color-border) text-(--color-ink-muted) hover:text-(--color-ink)"
         aria-label="Share on Facebook"
       >
         <Share2 className="h-4 w-4" />
@@ -37,7 +37,7 @@ export function ShareButtons({ url, title }: { url: string; title: string }) {
             // clipboard API unavailable; nothing to fall back to safely
           }
         }}
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-(--color-border) text-(--color-ink-muted) hover:text-(--color-ink)"
+        className="flex h-9 w-9 items-center justify-center rounded-md border border-(--color-border) text-(--color-ink-muted) hover:text-(--color-ink)"
         aria-label="Copy link"
       >
         {copied ? <Check className="h-4 w-4 text-(--color-success)" /> : <Link2 className="h-4 w-4" />}

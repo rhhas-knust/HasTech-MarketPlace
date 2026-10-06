@@ -5,6 +5,9 @@ export const DEFAULT_COUNTRY = "Ghana";
 export const DEFAULT_TIMEZONE = "Africa/Accra";
 
 export const PLATFORM_NAME = "HASTECH Commerce";
+// Bump when the Terms or Privacy Policy change materially.
+export const LEGAL_VERSION = "2026-10-06";
+export const LEGAL_UPDATED = "6 October 2026";
 
 // Must match the threshold in assign_platform_billing()
 // (0019_founding_member_limit_and_consultations.sql).
@@ -106,6 +109,8 @@ export const RESERVED_SLUGS = new Set([
   "blog",
   "cart",
   "checkout",
+  "contact",
+  "cookies",
   "dashboard",
   "docs",
   "favicon.ico",
@@ -119,10 +124,13 @@ export const RESERVED_SLUGS = new Set([
   "pricing",
   "privacy",
   "product",
+  "refunds",
   "robots.txt",
+  "sell",
   "settings",
   "signup",
   "sitemap.xml",
+  "start",
   "static",
   "store",
   "support",
@@ -137,3 +145,7 @@ export function cartCookieName(storeSlug: string) {
 }
 
 export const VISITOR_ID_COOKIE = "hastech_visitor_id";
+
+// "all" = essential + the analytics visitor cookie; "essential" = essential only.
+export const CONSENT_COOKIE = "hastech_consent";
+export type ConsentChoice = "all" | "essential";
