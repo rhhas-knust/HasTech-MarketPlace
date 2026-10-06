@@ -59,8 +59,8 @@ export function KpiTile({
   const body = (
     <div
       className={cn(
-        "h-full rounded-xl border border-(--color-border) bg-(--color-surface) p-5 transition-colors duration-300",
-        href && "hover:-translate-y-1",
+        "h-full rounded-xl border border-(--color-border) bg-(--color-surface) p-5",
+        href && "lift",
       )}
     >
       <div className="flex items-center justify-between">

@@ -47,7 +47,11 @@ export function ThemeToggle({ className }: { className?: string }) {
         "flex h-9 w-9 items-center justify-center rounded-md border border-(--color-border) bg-(--color-surface) text-(--color-ink-muted) transition-colors hover:text-(--color-ink)"
       }
     >
-      {isDark ? <Sun className="h-4 w-4" aria-hidden /> : <Moon className="h-4 w-4" aria-hidden />}
+      {isDark ? (
+        <Sun key="sun" className="icon-swap h-4 w-4" aria-hidden />
+      ) : (
+        <Moon key="moon" className="icon-swap h-4 w-4" aria-hidden />
+      )}
     </button>
   );
 }

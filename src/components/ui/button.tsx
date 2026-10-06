@@ -22,7 +22,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const base =
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-[background-color,opacity,transform] duration-150 ease-out active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-[background-color,border-color,opacity,transform] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;

@@ -33,6 +33,7 @@ export const metadata: Metadata = {
 
 const THEME_INIT_SCRIPT = `
 (function () {
+  document.documentElement.classList.add("js");
   try {
     var stored = localStorage.getItem("hastech-theme");
     if (stored === "light" || stored === "dark") {

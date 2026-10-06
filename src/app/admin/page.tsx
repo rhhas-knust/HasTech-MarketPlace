@@ -86,7 +86,7 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">
+      <header style={{ "--i": 0, animationDuration: "400ms" } as React.CSSProperties} className="enter flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">
             {greetingFor(now)}, {firstName}
@@ -105,7 +105,7 @@ export default async function AdminOverviewPage() {
       </header>
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div style={{ "--i": 1, animationDuration: "400ms" } as React.CSSProperties} className="enter grid grid-cols-2 gap-4 lg:grid-cols-4">
         <KpiTile
           label="Stores"
           value={String(allStores.length)}

@@ -113,7 +113,7 @@ export default async function StoreOverviewPage({
         />
       )}
 
-      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">
+      <header style={{ "--i": 0, animationDuration: "400ms" } as React.CSSProperties} className="enter flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">
             {greetingFor(now)}, {firstName}
@@ -170,7 +170,7 @@ export default async function StoreOverviewPage({
 
       {/* Setup progress: only until everything is done */}
       {doneCount < checklist.length && (
-        <section className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
+        <section style={{ "--i": 1, animationDuration: "400ms" } as React.CSSProperties} className="enter rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <CardHeading title="Finish setting up your store" description={`${doneCount} of ${checklist.length} steps done`} />
           </div>
@@ -214,7 +214,7 @@ export default async function StoreOverviewPage({
       )}
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div style={{ "--i": 2, animationDuration: "400ms" } as React.CSSProperties} className="enter grid grid-cols-2 gap-4 lg:grid-cols-4">
         <KpiTile
           label="Orders"
           value={String(stats.totalOrdersCount)}
@@ -246,7 +246,7 @@ export default async function StoreOverviewPage({
 
       {/* Charts, best sellers and live activity live on the Analytics page,
           so the overview only shows what needs doing next. */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div style={{ "--i": 3, animationDuration: "400ms" } as React.CSSProperties} className="enter grid gap-4 lg:grid-cols-3">
         <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-6">
           <CardHeading title="Needs your attention" />
           <div className="mt-4 space-y-3">

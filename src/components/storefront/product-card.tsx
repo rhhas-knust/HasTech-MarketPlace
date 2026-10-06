@@ -12,7 +12,7 @@ export function ProductCard({ storeSlug, product }: { storeSlug: string; product
   return (
     <Link
       href={`/store/${storeSlug}/product/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) p-2 transition-colors duration-300"
+      className="lift group flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) p-2"
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-(--color-surface-subtle)">
         {image ? (
@@ -20,7 +20,7 @@ export function ProductCard({ storeSlug, product }: { storeSlug: string; product
           <img
             src={image.url}
             alt={image.alt_text ?? product.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 ease-(--ease-out) group-hover:scale-[1.04]"
             loading="lazy"
           />
         ) : (

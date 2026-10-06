@@ -13,10 +13,17 @@ export function SignupProgress({ current }: { current: number }) {
       <ol className="mt-2 grid grid-cols-4 gap-1.5">
         {STEPS.map((label, i) => (
           <li key={label} aria-current={i === current ? "step" : undefined}>
-            <span
-              aria-hidden
-              className={cn("block h-1 rounded-full", i <= current ? "bg-(--color-brand)" : "bg-(--color-border)")}
-            />
+            <span aria-hidden className="block h-1 overflow-hidden rounded-full bg-(--color-border)">
+              {i <= current && (
+                <span
+                  className={cn(
+                    "block h-full origin-left rounded-full bg-(--color-brand)",
+                    // Only the step just reached fills in; earlier ones are already full.
+                    i === current && "progress-fill",
+                  )}
+                />
+              )}
+            </span>
             <span className="sr-only">
               {label}
               {i < current ? ", done" : i === current ? ", current step" : ""}

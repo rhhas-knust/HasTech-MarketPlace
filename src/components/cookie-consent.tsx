@@ -44,7 +44,7 @@ export function CookieConsent() {
     <section
       role="region"
       aria-label="Cookie choices"
-      className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-2xl rounded-xl border border-(--color-border) bg-(--color-surface) p-4 shadow-raised sm:p-5"
+      className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-2xl rounded-xl border border-(--color-border) bg-(--color-surface) p-4 shadow-raised transition-[opacity,transform] duration-500 ease-(--ease-drawer) starting:translate-y-6 starting:opacity-0 sm:p-5"
     >
       <p className="text-sm text-(--color-ink)">
         We use essential cookies to keep you signed in and remember your cart. With your permission we also set
