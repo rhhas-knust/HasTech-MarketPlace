@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroDemo } from "@/components/landing/hero-demo";
 import { BusinessMarquee } from "@/components/landing/business-marquee";
+import { HowItWorksVideo } from "@/components/landing/how-it-works-video";
 import { Reveal } from "@/components/motion/reveal";
 import { getFoundingSpotsLeft } from "@/lib/founding";
 import {
@@ -39,12 +40,6 @@ const FEATURES = [
     body: "Sell services and bookings, food orders, pre-orders and digital downloads like e-books or design files.",
     Icon: LayoutTemplate,
   },
-];
-
-const STEPS = [
-  { title: "Design your store", body: "Pick a name, a colour and your first product. No account needed for this part." },
-  { title: "Connect Paystack", body: "Link your Paystack account in Settings so customers can pay you directly." },
-  { title: "Share your link", body: "Publish the store and send the link to your customers on WhatsApp." },
 ];
 
 export default async function Home() {
@@ -115,7 +110,10 @@ export default async function Home() {
                   Start selling
                   <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
                 </LinkButton>
-                <Link href="/store/amara-books" className="link-grow text-sm font-medium text-(--color-ink)">
+                <Link href="#how-it-works" className="link-grow text-sm font-medium text-(--color-ink)">
+                  Watch how it works
+                </Link>
+                <Link href="/store/amara-books" className="link-grow text-sm font-medium text-(--color-ink-muted)">
                   See a live store
                 </Link>
               </div>
@@ -155,30 +153,23 @@ export default async function Home() {
         </section>
 
         {/* How it works */}
-        <section aria-labelledby="steps-heading" className="border-t border-(--color-border) bg-(--color-surface)">
+        <section
+          id="how-it-works"
+          aria-labelledby="steps-heading"
+          className="scroll-mt-20 border-t border-(--color-border) bg-(--color-surface)"
+        >
           <div className="mx-auto max-w-6xl px-4 py-20">
             <Reveal>
               <h2 id="steps-heading" className="text-3xl font-semibold tracking-tight text-(--color-ink)">
                 Live in three steps
               </h2>
+              <p className="mt-3 max-w-prose text-(--color-ink-muted)">
+                A 44-second walkthrough. Pick a step to jump to it.
+              </p>
             </Reveal>
-            <ol className="mt-12 grid gap-10 sm:grid-cols-3 sm:gap-8">
-              {STEPS.map((step, i) => (
-                <Reveal as="li" key={step.title} index={i} className="relative">
-                  {i < STEPS.length - 1 && (
-                    <span
-                      aria-hidden
-                      className="absolute top-5 left-14 hidden h-px w-[calc(100%-3rem)] bg-(--color-border) sm:block"
-                    />
-                  )}
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-(--color-brand) text-sm font-semibold tabular-nums text-(--color-on-brand)">
-                    {i + 1}
-                  </span>
-                  <h3 className="mt-5 font-semibold text-(--color-ink)">{step.title}</h3>
-                  <p className="mt-1.5 text-(--color-ink-muted)">{step.body}</p>
-                </Reveal>
-              ))}
-            </ol>
+            <Reveal className="mt-10">
+              <HowItWorksVideo />
+            </Reveal>
           </div>
         </section>
 
