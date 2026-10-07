@@ -7,9 +7,24 @@ import { loginAction } from "@/app/(auth)/actions";
 
 export const metadata: Metadata = { title: "Sign in" };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ signedOut?: string }>;
+}) {
+  const { signedOut } = await searchParams;
+
   return (
     <div>
+      {signedOut && (
+        <p
+          role="status"
+          className="enter mb-6 rounded-md border border-(--color-border) bg-(--color-surface-subtle) px-3 py-2 text-sm text-(--color-ink)"
+          style={{ animationDuration: "300ms" }}
+        >
+          You&apos;ve signed out.
+        </p>
+      )}
       <h1 className="mb-6 text-2xl font-semibold tracking-tight text-(--color-ink)">Sign in</h1>
       <GoogleButton />
       <OrDivider />
