@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireStoreAccess } from "@/lib/auth/session";
+import { encryptSecret } from "@/lib/secret-box";
 import {
   storeBusinessInfoSchema,
   storeContactSchema,
@@ -138,6 +139,8 @@ export async function updatePaymentCredentialsAction(
 ): Promise<SettingsFormState> {
   const membership = await requireStoreAccess(storeSlug);
   if (!membership) return { error: "Not authorized" };
+  // Whoever holds the secret key receives the store's money: owners only.
+  if (membership.role !== "owner") return { error: "Only the store owner can change payment settings." };
 
   const parsed = paystackCredentialsSchema.safeParse({
     publicKey: formData.get("publicKey"),
@@ -154,7 +157,7 @@ export async function updatePaymentCredentialsAction(
     store_id: membership.store.id,
     provider: "paystack",
     public_key: parsed.data.publicKey,
-    secret_key: parsed.data.secretKey,
+    secret_key: encryptSecret(parsed.data.secretKey),
   });
   if (error) return { error: "Could not save payment settings." };
 

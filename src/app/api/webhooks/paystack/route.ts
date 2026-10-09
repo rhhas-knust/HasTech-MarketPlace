@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PaystackProvider } from "@/lib/payments/paystack";
+import { decryptSecret } from "@/lib/secret-box";
 import { verifyAndProcessPayment } from "@/lib/payments/process";
 
 interface PaystackWebhookBody {
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unknown store" }, { status: 404 });
   }
 
-  const provider = new PaystackProvider(credentials.secret_key);
+  const provider = new PaystackProvider(decryptSecret(credentials.secret_key));
   if (!provider.verifyWebhookSignature(rawBody, signature)) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }

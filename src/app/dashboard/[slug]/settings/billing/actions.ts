@@ -20,6 +20,7 @@ export async function updateBillingPlanAction(
 ): Promise<BillingFormState> {
   const membership = await requireStoreAccess(storeSlug);
   if (!membership) return { error: "Not authorized" };
+  if (membership.role !== "owner") return { error: "Only the store owner can change the plan." };
 
   const plan = formData.get("billingPlan");
   if (plan !== "commission" && plan !== "subscription") return { error: "Choose a plan." };

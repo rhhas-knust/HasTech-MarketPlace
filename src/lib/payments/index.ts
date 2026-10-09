@@ -1,6 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PaystackProvider } from "@/lib/payments/paystack";
+import { decryptSecret, encryptionEnabled, encryptSecret, isEncrypted } from "@/lib/secret-box";
 import { PaymentProviderNotConfiguredError, type PaymentProvider } from "@/lib/payments/types";
 
 export type { PaymentProvider } from "@/lib/payments/types";
@@ -22,9 +23,23 @@ export async function getPaymentProviderForStore(storeId: string): Promise<Payme
   if (error) throw error;
   if (!data?.secret_key) throw new PaymentProviderNotConfiguredError(storeId);
 
+  // Keys saved before encryption existed: encrypt them now, in passing.
+  // Never allowed to block a checkout.
+  if (encryptionEnabled() && !isEncrypted(data.secret_key)) {
+    try {
+      await admin
+        .from("store_payment_credentials")
+        .update({ secret_key: encryptSecret(data.secret_key) })
+        .eq("store_id", storeId)
+        .eq("secret_key", data.secret_key);
+    } catch (err) {
+      console.error("[payments] could not encrypt stored key", err);
+    }
+  }
+
   switch (data.provider) {
     case "paystack":
-      return new PaystackProvider(data.secret_key);
+      return new PaystackProvider(decryptSecret(data.secret_key));
     default:
       throw new Error(`Unsupported payment provider: ${data.provider}`);
   }
