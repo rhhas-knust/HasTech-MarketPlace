@@ -104,7 +104,11 @@ export default function PrivacyPage() {
 
       <h2 id="retention">How long we keep it</h2>
       <ul>
-        <li>Seller accounts: until you close your account, then deleted within 30 days.</li>
+        <li>
+          Seller accounts: until you delete your account from Account settings. Your store goes offline at once and your
+          personal data is erased 30 days later; you can cancel by signing in before then. Order amounts and dates stay,
+          without customer details, for the tax period below.
+        </li>
         <li>Orders and payment records: six years, as Ghanaian tax law requires business records to be kept.</li>
         <li>Contact form messages: 12 months after we close the conversation.</li>
         <li>Analytics events: 24 months. The visitor cookie expires after 180 days.</li>
@@ -121,9 +125,15 @@ export default function PrivacyPage() {
       <h2 id="rights">Your rights</h2>
       <p>Under Act 843 you can:</p>
       <ul>
-        <li>ask for a copy of the personal data we hold about you;</li>
+        <li>
+          ask for a copy of the personal data we hold about you (sellers can download it themselves from Account
+          settings);
+        </li>
         <li>ask us to correct data that is wrong or out of date;</li>
-        <li>ask us to delete data we no longer need or have no right to keep;</li>
+        <li>
+          ask us to delete data we no longer need or have no right to keep (sellers can delete their account themselves
+          from Account settings);
+        </li>
         <li>object to processing, and stop any direct marketing at any time;</li>
         <li>withdraw consent, which is as easy as giving it. For cookies, use the <Link href="/cookies">Cookie Policy</Link> page.</li>
       </ul>

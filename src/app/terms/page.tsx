@@ -110,7 +110,8 @@ export default function TermsPage() {
 
       <h2 id="suspension">9. Suspension and closing an account</h2>
       <p>
-        You can close your account at any time by contacting us. We may suspend a store that breaks these terms, puts
+        You can delete your account at any time from Account settings; your store goes offline at once and your data is
+        erased after 30 days. We may suspend a store that breaks these terms, puts
         buyers at risk, or is required by law to be taken down. Where possible we tell you why first and give you a chance
         to fix it.
       </p>

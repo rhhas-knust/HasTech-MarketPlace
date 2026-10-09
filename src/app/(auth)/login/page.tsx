@@ -10,13 +10,26 @@ export const metadata: Metadata = { title: "Sign in" };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ signedOut?: string }>;
+  searchParams: Promise<{ signedOut?: string; deletion?: string }>;
 }) {
-  const { signedOut } = await searchParams;
+  const { signedOut, deletion } = await searchParams;
+  const deletionDate =
+    deletion && /^\d{4}-\d{2}-\d{2}$/.test(deletion)
+      ? new Date(deletion).toLocaleDateString("en-GH", { day: "numeric", month: "long", year: "numeric" })
+      : null;
 
   return (
     <div>
-      {signedOut && (
+      {deletionDate && (
+        <p
+          role="status"
+          className="enter mb-6 rounded-md border border-(--color-border) bg-(--color-surface-subtle) px-3 py-2 text-sm text-(--color-ink)"
+          style={{ animationDuration: "300ms" }}
+        >
+          Your account will be deleted on {deletionDate}. Sign in before then to cancel.
+        </p>
+      )}
+      {signedOut && !deletionDate && (
         <p
           role="status"
           className="enter mb-6 rounded-md border border-(--color-border) bg-(--color-surface-subtle) px-3 py-2 text-sm text-(--color-ink)"

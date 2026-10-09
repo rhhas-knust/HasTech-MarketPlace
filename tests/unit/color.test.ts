@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { contrastRatio, readableTextOn } from "./color";
+import { contrastRatio, readableTextOn } from "@/lib/color";
 
 describe("contrastRatio", () => {
   it("matches the WCAG reference values", () => {

@@ -14,6 +14,7 @@ import {
   ExternalLink,
   MessageSquare,
   Megaphone,
+  UserRound,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -41,6 +42,7 @@ export function DashboardSidebar({
     { href: `${base}/promote`, label: "Promote", icon: Megaphone },
     { href: `${base}/settings`, label: "Settings", icon: Settings },
     { href: `${base}/feedback`, label: "Feedback", icon: MessageSquare },
+    { href: `${base}/account`, label: "Account", icon: UserRound },
   ];
 
   return (

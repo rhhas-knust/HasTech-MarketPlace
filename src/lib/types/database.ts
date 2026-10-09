@@ -44,6 +44,8 @@ export interface Profile {
   email: string;
   full_name: string | null;
   phone: string | null;
+  deletion_requested_at: string | null;
+  deletion_scheduled_for: string | null;
   created_at: string;
   updated_at: string;
 }
