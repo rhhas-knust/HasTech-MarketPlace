@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { requirePlatformAdmin } from "@/lib/auth/session";
 import { consultationSchema } from "@/lib/validation/consultation";
+import { allowRequest, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 
 export interface ConsultationFormState {
   error?: string;
@@ -41,6 +42,7 @@ export async function submitConsultationRequest(
     message: formData.get("message"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Please check your details." };
+  if (!(await allowRequest("contact"))) return { error: RATE_LIMITED_MESSAGE };
 
   const admin = createAdminClient();
   const { error } = await admin.from("consultation_requests").insert({

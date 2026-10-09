@@ -9,6 +9,7 @@ import { initializeOrderPayment } from "@/lib/payments/process";
 import { PaymentProviderNotConfiguredError } from "@/lib/payments";
 import { trackEvent } from "@/lib/analytics/track";
 import { getAppUrl } from "@/lib/app-url";
+import { allowRequest, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 
 export interface CheckoutFormState {
   error?: string;
@@ -34,6 +35,9 @@ export async function submitCheckoutAction(
     notes: formData.get("notes"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Please check your details." };
+
+  // Each attempt creates an order and a Paystack transaction.
+  if (!(await allowRequest("checkout"))) return { error: RATE_LIMITED_MESSAGE };
 
   const cart = await getCart(store.id, store.slug);
 

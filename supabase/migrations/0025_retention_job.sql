@@ -18,6 +18,7 @@ declare
   n_views int;
   n_carts int;
   n_sponsor_events int;
+  n_rate_limit int;
 begin
   -- Contact messages: 12 months after the conversation was closed.
   delete from consultation_requests
@@ -39,12 +40,17 @@ begin
   delete from carts where status <> 'converted' and updated_at < now() - interval '60 days';
   get diagnostics n_carts = row_count;
 
+  -- Rate-limit attempts (0027_rate_limits.sql): only needed for an hour.
+  delete from rate_limit_hits where created_at < now() - interval '1 day';
+  get diagnostics n_rate_limit = row_count;
+
   return jsonb_build_object(
     'consultations', n_consultations,
     'analytics_events', n_events,
     'product_views', n_views,
     'sponsor_events', n_sponsor_events,
-    'carts', n_carts
+    'carts', n_carts,
+    'rate_limit_hits', n_rate_limit
   );
 end;
 $$;

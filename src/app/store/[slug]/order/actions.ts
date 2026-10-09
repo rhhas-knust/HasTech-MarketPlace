@@ -6,6 +6,7 @@ import { getOrderForTracking } from "@/lib/orders";
 import { getDigitalDownloadsForOrder } from "@/lib/digital-downloads";
 import { FULFILMENT_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/lib/constants";
 import { formatCurrency } from "@/lib/money";
+import { allowRequest, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 
 export interface OrderLookupState {
   error?: string;
@@ -35,6 +36,9 @@ export async function lookupOrderAction(
     email: formData.get("email"),
   });
   if (!parsed.success) return { error: "Enter your order number and the email you used at checkout." };
+
+  // Order number + email is the only secret here, so cap guessing.
+  if (!(await allowRequest("orderLookup"))) return { error: RATE_LIMITED_MESSAGE };
 
   const store = await getStoreBySlug(storeSlug);
   if (!store) return { error: "Store not found." };

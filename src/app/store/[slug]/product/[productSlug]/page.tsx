@@ -87,7 +87,8 @@ export default async function ProductPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {/* "<" escaped so a product name containing </script> cannot end the tag. */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="enter-scale aspect-square overflow-hidden rounded-xl bg-(--color-surface-subtle)">
