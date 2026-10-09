@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies, headers } from "next/headers";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { VISITOR_ID_COOKIE } from "@/lib/constants";
 import type { AnalyticsEventType } from "@/lib/types/database";
 
@@ -27,18 +27,18 @@ function guessDeviceType(userAgent: string | null): string {
 }
 
 /**
- * Records a (deduplicated) product view. Safe to call from a public product
- * page server component -- it goes through the record_product_view RPC,
- * which anon is explicitly granted execute on (see
- * 0009_functions_triggers.sql), rather than inserting into product_views
- * directly (which RLS blocks for every client role).
+ * Records a (deduplicated) product view through the record_product_view RPC.
+ * Only the service role may call it (0023_backend_hardening.sql), so a
+ * visitor can't inflate counts by calling the API with the public anon key;
+ * this server-only module is the single way in, and it only runs once the
+ * visitor has allowed analytics (no visitor cookie, no record).
  */
 export async function trackProductView(storeId: string, productId: string) {
   const visitorId = await getVisitorId();
   if (!visitorId) return;
 
   const headerList = await headers();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   await supabase.rpc("record_product_view", {
     p_store_id: storeId,
@@ -58,7 +58,7 @@ export async function trackEvent(
 ) {
   const visitorId = await getVisitorId();
   const headerList = await headers();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   await supabase.rpc("record_analytics_event", {
     p_store_id: storeId,

@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireStoreAccess, getCurrentUser } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAppUrl } from "@/lib/app-url";
@@ -9,6 +10,7 @@ import { logAudit } from "@/lib/audit";
 
 export interface BillingFormState {
   error?: string;
+  success?: boolean;
 }
 
 export async function updateBillingPlanAction(
@@ -42,7 +44,8 @@ export async function updateBillingPlanAction(
     membership.store.id,
     { plan },
   );
-  return {};
+  revalidatePath(`/dashboard/${storeSlug}/settings/billing`);
+  return { success: true };
 }
 
 export async function payPlatformFeeAction(

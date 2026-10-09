@@ -9,6 +9,7 @@ import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BillingPlanForm } from "@/components/dashboard/billing-plan-form";
 import { updateBillingPlanAction, payPlatformFeeAction } from "./actions";
+import { FOUNDING_MEMBER_LIMIT } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Billing" };
 
@@ -39,7 +40,7 @@ export default async function BillingSettingsPage({ params }: { params: Promise<
           <CardBody>
             <p className="text-sm font-semibold text-(--color-ink)">You&apos;re a founding member</p>
             <p className="mt-1 text-sm text-(--color-ink-muted)">
-              As one of our first five sellers, every platform fee is waived until{" "}
+              As one of our first {FOUNDING_MEMBER_LIMIT} sellers, every platform fee is waived until{" "}
               {new Date(billing.foundingMemberUntil!).toLocaleDateString("en-GH", {
                 day: "numeric",
                 month: "long",

@@ -143,8 +143,15 @@ body {
   font-feature-settings: "cv11", "ss01";
 }
 
-* {
-  border-color: var(--color-border);
+/* Default border colour. Inside the base layer so Tailwind's border-colour
+   utilities (selected states, focus, errors) can override it; unlayered, it
+   silently beat every one of them. */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border);
+  }
 }
 
 ::selection {
