@@ -71,7 +71,8 @@ export default function PrivacyPage() {
         </tbody>
       </table>
       <p>
-        We never see or store card numbers or MoMo PINs. Payments are entered on Paystack&rsquo;s own pages. We do not store
+        Sponsored store links are counted as plain totals (shown, clicked, on which store), with no cookie or
+        visitor ID. We never see or store card numbers or MoMo PINs. Payments are entered on Paystack&rsquo;s own pages. We do not store
         IP addresses alongside orders or analytics, and we do not collect data about children knowingly. Sellers must be
         at least 18.
       </p>

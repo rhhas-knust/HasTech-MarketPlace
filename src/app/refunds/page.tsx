@@ -53,6 +53,11 @@ export default function RefundsPage() {
         <li>
           <strong>Charged in error:</strong> any duplicate or incorrect charge is refunded in full.
         </li>
+        <li id="sponsored">
+          <strong>Sponsored placements:</strong> weeks that haven&apos;t started yet are refunded in full on request.
+          Once a week has started it isn&apos;t refundable, unless we suspend or remove the promotion ourselves, in which
+          case unused days are refunded.
+        </li>
       </ul>
       <p>
         Fee refunds go back to the payment method you used through Paystack, usually within 5 to 10 working days.

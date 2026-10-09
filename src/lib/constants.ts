@@ -6,8 +6,8 @@ export const DEFAULT_TIMEZONE = "Africa/Accra";
 
 export const PLATFORM_NAME = "HASTECH Commerce";
 // Bump when the Terms or Privacy Policy change materially.
-export const LEGAL_VERSION = "2026-10-06";
-export const LEGAL_UPDATED = "6 October 2026";
+export const LEGAL_VERSION = "2026-10-09";
+export const LEGAL_UPDATED = "9 October 2026";
 
 // Must match the threshold in assign_platform_billing()
 // (0019_founding_member_limit_and_consultations.sql).
@@ -16,6 +16,12 @@ export const FOUNDING_MEMBER_LIMIT = 10;
 export const FOUNDING_FREE_MONTHS = 2;
 export const COMMISSION_RATE_PERCENT = 5;
 export const SUBSCRIPTION_PRICE_GHS = 100;
+
+// Sponsored placements on other stores (see src/lib/sponsorships.ts).
+export const SPONSOR_WEEKLY_PRICE_GHS = 25;
+export const SPONSOR_WEEK_OPTIONS = [1, 2, 4] as const;
+/** At most this many sponsored stores in the one row a storefront shows. */
+export const SPONSORED_ROW_LIMIT = 3;
 
 export const BUSINESS_TYPE_OPTIONS: {
   value: BusinessType;

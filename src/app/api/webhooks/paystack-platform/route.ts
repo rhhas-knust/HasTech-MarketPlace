@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getPlatformPaymentProvider, verifyAndProcessPlatformPayment } from "@/lib/payments/platform";
+import { isSponsorshipReference, verifyAndProcessSponsorshipPayment } from "@/lib/sponsorships";
 
 interface PaystackWebhookBody {
   event: string;
@@ -10,8 +11,8 @@ interface PaystackWebhookBody {
 }
 
 /**
- * Webhook for HASTECH's OWN Paystack account (subscription renewals and
- * commission settlements) -- separate from /api/webhooks/paystack, which
+ * Webhook for HASTECH's OWN Paystack account (subscription renewals,
+ * commission settlements and sponsored placements) -- separate from /api/webhooks/paystack, which
  * verifies against each SELLER's own secret key. This one always verifies
  * against the single platform secret key, so no per-request lookup is
  * needed before checking the signature.
@@ -40,7 +41,11 @@ export async function POST(request: Request) {
 
   if (body.event === "charge.success") {
     try {
-      await verifyAndProcessPlatformPayment(storeId, reference);
+      if (isSponsorshipReference(reference)) {
+        await verifyAndProcessSponsorshipPayment(storeId, reference);
+      } else {
+        await verifyAndProcessPlatformPayment(storeId, reference);
+      }
     } catch (err) {
       console.error("Platform Paystack webhook processing failed", err);
       // Still 200: Paystack retries on non-2xx, and this resolves itself on

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal/legal-page";
 import {
+  SPONSOR_WEEKLY_PRICE_GHS,
   COMMISSION_RATE_PERCENT,
   FOUNDING_FREE_MONTHS,
   FOUNDING_MEMBER_LIMIT,
@@ -53,6 +54,14 @@ export default function TermsPage() {
         The first {FOUNDING_MEMBER_LIMIT} stores to join pay no platform fees for {FOUNDING_FREE_MONTHS} months from the
         day their store is created. Paystack charges its own processing fees, which are separate from ours. Fees may
         change with at least 30 days&rsquo; notice by email.
+      </p>
+
+      <h3 id="sponsored">Sponsored placements</h3>
+      <p>
+        Sellers can pay GHS {SPONSOR_WEEKLY_PRICE_GHS} a week to have their store shown on other stores, in one row
+        labelled &ldquo;Sponsored&rdquo; and on order confirmation pages. A store is never shown on stores of the same
+        business type. Placements rotate, so we don&apos;t promise a number of views or sales. Every seller can turn the
+        sponsored row off on their own store.
       </p>
 
       <h2 id="payments">4. Payments</h2>

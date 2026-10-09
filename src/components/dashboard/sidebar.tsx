@@ -13,6 +13,7 @@ import {
   Store,
   ExternalLink,
   MessageSquare,
+  Megaphone,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -37,6 +38,7 @@ export function DashboardSidebar({
     { href: `${base}/orders`, label: "Orders", icon: ShoppingBag, count: ordersToFulfil, countTone: "danger" as const },
     { href: `${base}/customers`, label: "Customers", icon: Users },
     { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
+    { href: `${base}/promote`, label: "Promote", icon: Megaphone },
     { href: `${base}/settings`, label: "Settings", icon: Settings },
     { href: `${base}/feedback`, label: "Feedback", icon: MessageSquare },
   ];

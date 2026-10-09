@@ -5,6 +5,7 @@ import { getStoreBySlug } from "@/lib/store-data";
 import { verifyAndProcessPayment } from "@/lib/payments/process";
 import { getDigitalDownloadsForOrder } from "@/lib/digital-downloads";
 import { LinkButton } from "@/components/ui/button";
+import { SponsoredCategoryStrip } from "@/components/storefront/sponsored-stores";
 
 export const metadata: Metadata = { title: "Order confirmation" };
 
@@ -103,6 +104,10 @@ export default async function CheckoutSuccessPage({
           </LinkButton>
         )}
       </div>
+
+      {isPaid && store.show_sponsored !== false && (
+        <SponsoredCategoryStrip hostStoreId={store.id} hostBusinessType={store.business_type} />
+      )}
     </div>
   );
 }

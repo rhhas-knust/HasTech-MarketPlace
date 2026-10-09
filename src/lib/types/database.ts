@@ -65,6 +65,7 @@ export interface Store {
   city: string | null;
   region: string | null;
   refund_policy: string | null;
+  show_sponsored: boolean;
   country: string;
   currency: string;
   timezone: string;

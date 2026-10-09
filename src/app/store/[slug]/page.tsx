@@ -3,6 +3,7 @@ import { getPublishedProducts, getStoreBySlug } from "@/lib/store-data";
 import { ProductCard } from "@/components/storefront/product-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Package } from "lucide-react";
+import { SponsoredStoresRow } from "@/components/storefront/sponsored-stores";
 
 const PAGE_SIZE = 12;
 
@@ -107,6 +108,10 @@ export default async function StoreHomePage({
             </nav>
           )}
         </section>
+
+        {store.show_sponsored !== false && !q && (
+          <SponsoredStoresRow hostStoreId={store.id} hostBusinessType={store.business_type} />
+        )}
       </div>
     </div>
   );
