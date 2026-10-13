@@ -8,7 +8,13 @@ import { fromMinorUnits, toMinorUnits } from "@/lib/money";
 export interface PaymentVerificationResult {
   orderId: string;
   orderNumber: string | null;
-  status: "paid" | "failed" | "already_processed";
+  /**
+   * "paid": this call confirmed the payment. "already_paid": the order was
+   * already paid (by an earlier call or the webhook). Both mean the order's
+   * payment_status really is "paid"; nothing else does. "pending": Paystack
+   * hasn't finished (e.g. an unapproved Mobile Money prompt), check again.
+   */
+  status: "paid" | "already_paid" | "pending" | "failed";
 }
 
 /**
@@ -61,15 +67,18 @@ export async function initializeOrderPayment(
 
 /**
  * The single authoritative place where a Paystack reference turns into an
- * order state change. Called from both the webhook handler and the
- * checkout success page, so whichever arrives first "wins" and the other is
- * a safe no-op -- idempotency is enforced by the unique
- * (provider, reference, event_type) constraint on payment_events, not by
- * which caller happens to run first.
+ * order state change. Called from both the webhook handler and the checkout
+ * success page, in any order and any number of times.
  *
  * Never trusts the browser: it re-fetches the transaction from Paystack's
- * API and re-derives amount/currency from there, then checks them against
- * the amount we stored when the order was created.
+ * API, checks the reference, amount and currency against what we stored when
+ * the order was created, and only then moves the order to paid.
+ *
+ * Idempotency comes from the order row itself: the move to "paid" is a
+ * conditional update (only from pending/failed), so exactly one caller wins
+ * and runs the side effects. Everything before that point can be retried
+ * safely, so a crash part-way leaves the order recoverable rather than stuck.
+ * payment_events is an audit trail of what Paystack told us, not a gate.
  */
 export async function verifyAndProcessPayment(
   storeId: string,
@@ -90,42 +99,54 @@ export async function verifyAndProcessPayment(
     .from("orders")
     .select("id, order_number, payment_status")
     .eq("id", payment.order_id)
+    .eq("store_id", storeId)
     .single();
+  if (!order) throw new Error(`No order for payment reference ${reference}`);
 
-  if (order?.payment_status === "paid") {
-    return { orderId: payment.order_id, orderNumber: order.order_number, status: "already_processed" };
+  const result = (status: PaymentVerificationResult["status"]): PaymentVerificationResult => ({
+    orderId: order.id,
+    orderNumber: order.order_number,
+    status,
+  });
+
+  if (order.payment_status === "paid") {
+    // A previous call may have stopped right after marking the order paid;
+    // the ledger's unique order_id makes this a no-op when it already exists.
+    if (payment.status === "success") await recordCommissionForOrder(storeId, order.id, payment.amount);
+    return result("already_paid");
   }
 
   const provider = await getPaymentProviderForStore(storeId);
   const verification = await provider.verifyTransaction(reference);
 
-  const eventType = `payment.${verification.status}`;
-  const { error: idempotencyError } = await admin
-    .from("payment_events")
-    .insert({
-      payment_id: payment.id,
-      provider: provider.name,
-      event_type: eventType,
-      reference,
-      payload: verification.raw,
-    });
-
-  if (idempotencyError) {
-    // Unique violation => this exact (provider, reference, event_type) was
-    // already recorded and processed by a previous call. No-op.
-    return { orderId: payment.order_id, orderNumber: order?.order_number ?? null, status: "already_processed" };
+  if (verification.reference !== reference) {
+    throw new Error(`Paystack returned reference ${verification.reference} for ${reference}`);
   }
 
+  // Not finished yet: record nothing, so the next check starts clean.
+  if (verification.status === "pending") return result("pending");
+
+  // Audit trail only. A duplicate (same reference + outcome seen before) is
+  // expected on retries and deliberately ignored.
+  await admin.from("payment_events").insert({
+    payment_id: payment.id,
+    provider: provider.name,
+    event_type: `payment.${verification.status}`,
+    reference,
+    payload: verification.raw,
+  });
+
   const verifiedAmount = fromMinorUnits(verification.amountMinorUnits);
-  const amountMatches = Math.abs(verifiedAmount - payment.amount) < 0.01;
+  const amountMatches = Math.abs(verifiedAmount - Number(payment.amount)) < 0.01;
   const currencyMatches = verification.currency === payment.currency;
 
   if (verification.status !== "success" || !amountMatches || !currencyMatches) {
     await admin
       .from("payments")
       .update({ status: "failed", raw_response: verification.raw, channel: verification.channel })
-      .eq("id", payment.id);
-    return { orderId: payment.order_id, orderNumber: order?.order_number ?? null, status: "failed" };
+      .eq("id", payment.id)
+      .neq("status", "success");
+    return result("failed");
   }
 
   await admin
@@ -133,20 +154,34 @@ export async function verifyAndProcessPayment(
     .update({ status: "success", raw_response: verification.raw, channel: verification.channel })
     .eq("id", payment.id);
 
+  // The gate: only one caller can move this order out of pending/failed.
+  // (Not from "refunded": a seller's manual decision isn't overridden.)
+  const { data: won, error: orderError } = await admin
+    .from("orders")
+    .update({ payment_status: "paid", payment_reference: reference })
+    .eq("id", order.id)
+    .in("payment_status", ["pending", "failed"])
+    .select("id");
+  if (orderError) throw orderError;
+
+  if (!won || won.length === 0) {
+    const { data: current } = await admin.from("orders").select("payment_status").eq("id", order.id).single();
+    return result(current?.payment_status === "paid" ? "already_paid" : "failed");
+  }
+
+  // Confirm fulfilment only if nobody has moved it on (e.g. cancelled it).
   await admin
     .from("orders")
-    .update({ payment_status: "paid", payment_reference: reference, fulfilment_status: "confirmed" })
-    .eq("id", payment.order_id);
+    .update({ fulfilment_status: "confirmed" })
+    .eq("id", order.id)
+    .eq("fulfilment_status", "pending");
 
-  await recordCommissionForOrder(storeId, payment.order_id, payment.amount);
+  await recordCommissionForOrder(storeId, order.id, payment.amount);
 
-  // Recorded here (not on the success page) so it fires exactly once no
-  // matter whether the webhook or the customer's browser redirect wins the
-  // race to call this function first.
   await admin.from("analytics_events").insert({
     store_id: storeId,
     event_type: "purchase",
-    order_id: payment.order_id,
+    order_id: order.id,
     metadata: { amount: payment.amount, currency: payment.currency },
   });
 
@@ -154,10 +189,10 @@ export async function verifyAndProcessPayment(
   // catch here means even an unexpected bug in the email path can't turn
   // into a failed payment verification for something that already succeeded.
   try {
-    await sendOrderPaidEmails(storeId, payment.order_id);
+    await sendOrderPaidEmails(storeId, order.id);
   } catch (err) {
     console.error("[email] sendOrderPaidEmails failed", err);
   }
 
-  return { orderId: payment.order_id, orderNumber: order?.order_number ?? null, status: "paid" };
+  return result("paid");
 }

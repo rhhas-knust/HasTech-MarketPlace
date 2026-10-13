@@ -10,6 +10,7 @@ import {
   PackageX,
   Percent,
   ShoppingBag,
+  TriangleAlert,
   Truck,
   Users,
 } from "lucide-react";
@@ -30,6 +31,7 @@ import { FoundingPartnerBanner } from "@/components/dashboard/founding-partner-b
 import { getPlatformBilling } from "@/lib/payments/platform";
 import { getAppUrl } from "@/lib/app-url";
 import { cn } from "@/lib/cn";
+import { LinkButton } from "@/components/ui/button";
 import { publishStoreAction, unpublishStoreAction } from "./actions";
 
 function greetingFor(date: Date) {
@@ -111,6 +113,26 @@ export default async function StoreOverviewPage({
           foundingUntil={billing.foundingMemberUntil}
           signInKey={user?.last_sign_in_at ?? "session"}
         />
+      )}
+
+      {isPublished && !paymentConfigured && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-warning)/40 bg-(--color-warning-subtle) p-4"
+        >
+          <div className="flex min-w-0 items-start gap-3">
+            <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-(--color-warning)" aria-hidden />
+            <div>
+              <p className="text-sm font-medium text-(--color-ink)">Your store is live but can&apos;t take payments</p>
+              <p className="mt-0.5 text-sm text-(--color-ink-muted)">
+                Customers can browse, but checkout stays closed until you connect Paystack.
+              </p>
+            </div>
+          </div>
+          <LinkButton href={`/dashboard/${slug}/settings/payments`} size="sm">
+            Connect Paystack
+          </LinkButton>
+        </div>
       )}
 
       <header style={{ "--i": 0, animationDuration: "400ms" } as React.CSSProperties} className="enter flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">

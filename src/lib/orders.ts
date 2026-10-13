@@ -140,14 +140,21 @@ export async function createOrderFromCart(
   };
 }
 
+/**
+ * Order lookup for shoppers: the order number AND the exact email used at
+ * checkout must both match. Exact equality, never LIKE/ILIKE -- with a
+ * pattern match, "_" in the email is a wildcard, so "____@gmail.com" would
+ * match any 4-letter Gmail address. Checkout stores emails lowercased (see
+ * createOrderFromCart), so lowercasing the input is all that's needed.
+ */
 export async function getOrderForTracking(storeId: string, orderNumber: string, email: string) {
   const admin = createAdminClient();
   const { data: order } = await admin
     .from("orders")
     .select("*, order_items(*), customers!inner(email)")
     .eq("store_id", storeId)
-    .eq("order_number", orderNumber)
-    .ilike("customers.email", email.trim())
+    .eq("order_number", orderNumber.trim())
+    .eq("customers.email", email.trim().toLowerCase())
     .maybeSingle();
   return order;
 }

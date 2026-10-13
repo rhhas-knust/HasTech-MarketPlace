@@ -144,7 +144,8 @@ export async function initializePlatformPayment(
 }
 
 export interface PlatformPaymentVerificationResult {
-  status: "success" | "failed" | "already_processed";
+  /** "already_processed" only ever means an earlier call recorded a success. */
+  status: "success" | "failed" | "pending" | "already_processed";
   kind: "subscription" | "commission_settlement" | null;
 }
 
@@ -167,12 +168,18 @@ export async function verifyAndProcessPlatformPayment(
     .maybeSingle();
   if (!payment) throw new Error(`No local platform payment record for reference ${reference}`);
 
-  if (payment.status !== "pending") {
+  if (payment.status === "success") {
     return { status: "already_processed", kind: payment.kind };
   }
 
+  // Pending AND failed rows are (re)checked: a Mobile Money approval that
+  // came in after an earlier check said "not yet" must still be credited.
   const provider = getPlatformPaymentProvider();
   const verification = await provider.verifyTransaction(reference);
+  if (verification.reference !== reference) {
+    throw new Error(`Paystack returned reference ${verification.reference} for ${reference}`);
+  }
+  if (verification.status === "pending") return { status: "pending", kind: payment.kind };
 
   const verifiedAmount = fromMinorUnits(verification.amountMinorUnits);
   const amountMatches = Math.abs(verifiedAmount - Number(payment.amount)) < 0.01;
@@ -193,7 +200,7 @@ export async function verifyAndProcessPlatformPayment(
     .from("platform_billing_payments")
     .update({ status: "success", raw_response: verification.raw })
     .eq("id", payment.id)
-    .eq("status", "pending")
+    .in("status", ["pending", "failed"])
     .select("id");
   if (updateError) throw updateError;
 

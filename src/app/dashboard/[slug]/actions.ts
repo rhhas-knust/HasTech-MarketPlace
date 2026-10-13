@@ -3,13 +3,31 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireStoreAccess } from "@/lib/auth/session";
+import { isPaymentProviderConfigured } from "@/lib/payments";
 import { logAudit } from "@/lib/audit";
 
 export async function publishStoreAction(storeSlug: string): Promise<{ error?: string }> {
   const membership = await requireStoreAccess(storeSlug);
   if (!membership) return { error: "Not authorized" };
 
+  // Real readiness, read from the database: a live store must be able to
+  // take payment and have something to sell. Unpublishing is never blocked.
   const supabase = await createClient();
+  const [paymentsReady, { count: publishedProducts }] = await Promise.all([
+    isPaymentProviderConfigured(membership.store.id),
+    supabase
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("store_id", membership.store.id)
+      .eq("status", "published"),
+  ]);
+  if (!paymentsReady) {
+    return { error: "Connect your Paystack account first, so customers can pay you. Go to Settings → Payments." };
+  }
+  if (!publishedProducts) {
+    return { error: "Publish at least one product first, so customers have something to buy." };
+  }
+
   const { error } = await supabase
     .from("stores")
     .update({ published_at: new Date().toISOString() })

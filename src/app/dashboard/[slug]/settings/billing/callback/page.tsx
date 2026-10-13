@@ -4,6 +4,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { requireStoreAccess } from "@/lib/auth/session";
 import { verifyAndProcessPlatformPayment } from "@/lib/payments/platform";
 import { LinkButton } from "@/components/ui/button";
+import { PaymentPending } from "@/components/payment-pending";
 
 export const metadata: Metadata = { title: "Payment confirmation" };
 
@@ -30,6 +31,7 @@ export default async function BillingCallbackPage({
   }
 
   const isSuccess = result?.status === "success" || result?.status === "already_processed";
+  const isPending = result?.status === "pending";
 
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center">
@@ -43,6 +45,8 @@ export default async function BillingCallbackPage({
               : "Payment received. Your platform fees are settled."}
           </p>
         </>
+      ) : isPending ? (
+        <PaymentPending />
       ) : (
         <>
           <XCircle className="mx-auto h-14 w-14 text-(--color-danger)" />

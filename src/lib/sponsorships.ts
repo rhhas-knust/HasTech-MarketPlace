@@ -199,14 +199,14 @@ export async function startSponsorshipPayment(
 
 /**
  * Turns a paid reference into a running sponsorship. Safe to call twice
- * (Paystack webhook and the callback page both do): only a still-pending row
- * changes. A new purchase starts when the store's current one ends, so
- * buying again extends rather than overlaps.
+ * (Paystack webhook and the callback page both do): only a pending or failed
+ * row can become active, and only once. A new purchase starts when the
+ * store's current one ends, so buying again extends rather than overlaps.
  */
 export async function verifyAndProcessSponsorshipPayment(
   storeId: string,
   reference: string,
-): Promise<{ status: "success" | "failed" | "already_processed"; endsAt: string | null }> {
+): Promise<{ status: "success" | "failed" | "pending" | "already_processed"; endsAt: string | null }> {
   const admin = createAdminClient();
   const { data: row } = await admin
     .from("sponsorships")
@@ -215,9 +215,16 @@ export async function verifyAndProcessSponsorshipPayment(
     .eq("reference", reference)
     .maybeSingle();
   if (!row) throw new Error(`No sponsorship for reference ${reference}`);
-  if (row.status !== "pending") return { status: "already_processed", endsAt: row.ends_at };
+  if (row.status === "active") return { status: "already_processed", endsAt: row.ends_at };
+  if (row.status === "cancelled") return { status: "failed", endsAt: null };
 
+  // Pending AND failed rows are (re)checked, so a late Mobile Money approval
+  // still starts the promotion instead of being lost.
   const verification = await getPlatformPaymentProvider().verifyTransaction(reference);
+  if (verification.reference !== reference) {
+    throw new Error(`Paystack returned reference ${verification.reference} for ${reference}`);
+  }
+  if (verification.status === "pending") return { status: "pending", endsAt: null };
   const paid =
     verification.status === "success" &&
     Math.abs(fromMinorUnits(verification.amountMinorUnits) - Number(row.amount)) < 0.01 &&
@@ -253,7 +260,7 @@ export async function verifyAndProcessSponsorshipPayment(
       raw_response: verification.raw,
     })
     .eq("id", row.id)
-    .eq("status", "pending")
+    .in("status", ["pending", "failed"])
     .select("id");
   if (!updated || updated.length === 0) return { status: "already_processed", endsAt: null };
 

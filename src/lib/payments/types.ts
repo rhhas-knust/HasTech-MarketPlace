@@ -13,7 +13,12 @@ export interface InitializeTransactionResult {
   reference: string;
 }
 
-export type VerifiedTransactionStatus = "success" | "failed" | "abandoned";
+/**
+ * "pending" covers transactions that haven't finished yet (e.g. a Mobile
+ * Money prompt the customer hasn't approved). It must never be recorded as
+ * a failure: the same reference can still succeed a minute later.
+ */
+export type VerifiedTransactionStatus = "success" | "failed" | "abandoned" | "pending";
 
 export interface VerifyTransactionResult {
   status: VerifiedTransactionStatus;

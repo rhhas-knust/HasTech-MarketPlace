@@ -31,3 +31,20 @@ describe("PaystackProvider.verifyWebhookSignature", () => {
     expect(provider.verifyWebhookSignature(body, "not-a-real-signature")).toBe(false);
   });
 });
+
+describe("mapStatus", () => {
+  it("treats in-flight Paystack statuses as pending, never failed", async () => {
+    const { mapStatus } = await import("@/lib/payments/paystack");
+    for (const status of ["ongoing", "pending", "processing", "queued", "something_new"]) {
+      expect(mapStatus(status)).toBe("pending");
+    }
+  });
+
+  it("maps final statuses", async () => {
+    const { mapStatus } = await import("@/lib/payments/paystack");
+    expect(mapStatus("success")).toBe("success");
+    expect(mapStatus("abandoned")).toBe("abandoned");
+    expect(mapStatus("failed")).toBe("failed");
+    expect(mapStatus("reversed")).toBe("failed");
+  });
+});

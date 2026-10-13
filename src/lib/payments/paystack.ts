@@ -30,10 +30,17 @@ interface PaystackVerifyResponse {
   };
 }
 
-function mapStatus(paystackStatus: string): VerifiedTransactionStatus {
+/**
+ * Paystack transaction statuses -> ours. Only statuses Paystack documents as
+ * final count as failed; anything still in flight (ongoing, pending,
+ * processing, queued) or unrecognised is "pending", so a slow Mobile Money
+ * approval is re-checked rather than written off.
+ */
+export function mapStatus(paystackStatus: string): VerifiedTransactionStatus {
   if (paystackStatus === "success") return "success";
   if (paystackStatus === "abandoned") return "abandoned";
-  return "failed";
+  if (paystackStatus === "failed" || paystackStatus === "reversed") return "failed";
+  return "pending";
 }
 
 export class PaystackProvider implements PaymentProvider {

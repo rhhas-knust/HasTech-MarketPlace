@@ -4,6 +4,7 @@ import { XCircle } from "lucide-react";
 import { requireStoreAccess } from "@/lib/auth/session";
 import { verifyAndProcessSponsorshipPayment } from "@/lib/sponsorships";
 import { LinkButton } from "@/components/ui/button";
+import { PaymentPending } from "@/components/payment-pending";
 
 export const metadata: Metadata = { title: "Promotion payment" };
 
@@ -29,6 +30,7 @@ export default async function PromoteCallbackPage({
     result = null;
   }
   const ok = result?.status === "success" || result?.status === "already_processed";
+  const isPending = result?.status === "pending";
 
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center">
@@ -55,6 +57,8 @@ export default async function PromoteCallbackPage({
               : "It now appears on other stores."}
           </p>
         </>
+      ) : isPending ? (
+        <PaymentPending />
       ) : (
         <>
           <XCircle className="mx-auto h-14 w-14 text-(--color-danger)" aria-hidden />

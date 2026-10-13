@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getStoreBySlug } from "@/lib/store-data";
 import { getCart } from "@/lib/cart";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isPaymentProviderConfigured } from "@/lib/payments";
 import { formatCurrency } from "@/lib/money";
 import { CheckoutForm } from "@/components/storefront/checkout-form";
 import { submitCheckoutAction } from "./actions";
@@ -18,11 +19,14 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
   if (cart.items.length === 0) redirect(`/store/${store.slug}/cart`);
 
   const admin = createAdminClient();
-  const { data: settings } = await admin
-    .from("store_settings")
-    .select("delivery_enabled, pickup_enabled, delivery_fee, free_delivery_threshold")
-    .eq("store_id", store.id)
-    .single();
+  const [{ data: settings }, acceptingPayments] = await Promise.all([
+    admin
+      .from("store_settings")
+      .select("delivery_enabled, pickup_enabled, delivery_fee, free_delivery_threshold")
+      .eq("store_id", store.id)
+      .single(),
+    isPaymentProviderConfigured(store.id),
+  ]);
 
   const boundAction = submitCheckoutAction.bind(null, store.slug);
 
@@ -36,12 +40,22 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
       <h1 className="mb-6 text-xl font-semibold text-(--color-ink)">Checkout</h1>
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <CheckoutForm
-            action={boundAction}
-            deliveryEnabled={cartNeedsDelivery ? (settings?.delivery_enabled ?? true) : false}
-            pickupEnabled={cartNeedsDelivery ? (settings?.pickup_enabled ?? true) : true}
-            storeSlug={slug}
-          />
+          {acceptingPayments ? (
+            <CheckoutForm
+              action={boundAction}
+              deliveryEnabled={cartNeedsDelivery ? (settings?.delivery_enabled ?? true) : false}
+              pickupEnabled={cartNeedsDelivery ? (settings?.pickup_enabled ?? true) : true}
+              storeSlug={slug}
+            />
+          ) : (
+            <div role="status" className="rounded-xl border border-(--color-border) bg-(--color-surface-subtle) p-5">
+              <p className="font-medium text-(--color-ink)">{store.name} isn&apos;t taking online payments yet</p>
+              <p className="mt-1 text-sm text-(--color-ink-muted)">
+                Your cart is saved. Please contact the store directly to order
+                {store.whatsapp_number || store.contact_phone ? ` on ${store.whatsapp_number || store.contact_phone}` : ""}.
+              </p>
+            </div>
+          )}
         </div>
         <aside className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
           <h2 className="mb-3 font-medium text-(--color-ink)">Order summary</h2>

@@ -4,20 +4,28 @@ import { XCircle, Download } from "lucide-react";
 import { getStoreBySlug } from "@/lib/store-data";
 import { verifyAndProcessPayment } from "@/lib/payments/process";
 import { getDigitalDownloadsForOrder } from "@/lib/digital-downloads";
-import { LinkButton } from "@/components/ui/button";
+import { Button, LinkButton } from "@/components/ui/button";
+import { PaymentPending } from "@/components/payment-pending";
+import { retryPaymentAction } from "../actions";
 import { SponsoredCategoryStrip } from "@/components/storefront/sponsored-stores";
 
 export const metadata: Metadata = { title: "Order confirmation" };
+
+const RETRY_MESSAGES: Record<string, string> = {
+  stock: "Sorry, an item in this order has sold out since you ordered it, so it can't be paid for now.",
+  limited: "Too many attempts. Please wait a few minutes and try again.",
+  unavailable: "This order can't be paid online right now. Please contact the store.",
+};
 
 export default async function CheckoutSuccessPage({
   params,
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ reference?: string; trxref?: string }>;
+  searchParams: Promise<{ reference?: string; trxref?: string; retry?: string }>;
 }) {
   const { slug } = await params;
-  const { reference, trxref } = await searchParams;
+  const { reference, trxref, retry } = await searchParams;
   const store = await getStoreBySlug(slug);
   if (!store) notFound();
 
@@ -31,7 +39,10 @@ export default async function CheckoutSuccessPage({
     result = null;
   }
 
-  const isPaid = result?.status === "paid" || result?.status === "already_processed";
+  // Only these two statuses mean the order is "paid" in the database;
+  // reaching this page proves nothing on its own.
+  const isPaid = result?.status === "paid" || result?.status === "already_paid";
+  const isPending = result?.status === "pending";
   const downloads = isPaid && result ? await getDigitalDownloadsForOrder(result.orderId) : [];
 
   return (
@@ -58,14 +69,31 @@ export default async function CheckoutSuccessPage({
             been confirmed. A confirmation has been recorded with {store.name}.
           </p>
         </>
+      ) : isPending ? (
+        <PaymentPending />
       ) : (
         <>
           <XCircle className="enter-scale mx-auto h-14 w-14 text-(--color-danger)" aria-hidden />
-          <h1 className="mt-4 text-2xl font-semibold text-(--color-ink)">We couldn&apos;t confirm your payment</h1>
+          <h1 className="mt-4 text-2xl font-semibold text-(--color-ink)">Payment not completed</h1>
           <p className="mt-2 text-(--color-ink-muted)">
-            Your payment could not be verified. If you were charged, please contact {store.name} with your
-            reference: <code className="rounded bg-(--color-surface-subtle) px-1 py-0.5">{paymentReference}</code>.
+            {result
+              ? "This payment didn't go through, so your order hasn't been paid. You can try again below."
+              : "We couldn't check this payment right now. Please try again in a moment."}{" "}
+            If you were charged, contact {store.name} with your reference:{" "}
+            <code className="rounded bg-(--color-surface-subtle) px-1 py-0.5">{paymentReference}</code>.
           </p>
+          {retry && (
+            <p role="alert" className="mt-4 rounded-md bg-(--color-danger-subtle) px-3 py-2 text-sm text-(--color-danger)">
+              {RETRY_MESSAGES[retry] ?? RETRY_MESSAGES.unavailable}
+            </p>
+          )}
+          {result?.status === "failed" && (
+            <form action={retryPaymentAction.bind(null, store.slug, paymentReference)} className="mt-6">
+              <Button type="submit" variant="store">
+                Try paying again
+              </Button>
+            </form>
+          )}
         </>
       )}
 

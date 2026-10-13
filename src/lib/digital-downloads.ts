@@ -16,14 +16,14 @@ const DOWNLOAD_LINK_TTL_SECONDS = 60 * 10;
  * never exposes the underlying storage path, and a fresh call always
  * re-signs a new link rather than the browser caching a stale one.
  *
- * Deliberately takes no "is this order actually paid" flag: callers are
- * expected to only call this once they've confirmed payment_status is
- * "paid" themselves (see checkout/success/page.tsx and
- * store/[slug]/order/actions.ts), since generating a link is meaningless
- * otherwise.
+ * Checks payment itself rather than trusting callers to: an order that
+ * isn't "paid" in the database gets no links, whatever the caller thinks.
  */
 export async function getDigitalDownloadsForOrder(orderId: string): Promise<DigitalDownload[]> {
   const admin = createAdminClient();
+  const { data: order } = await admin.from("orders").select("payment_status").eq("id", orderId).maybeSingle();
+  if (order?.payment_status !== "paid") return [];
+
   const { data: items } = await admin
     .from("order_items")
     .select("id, product_name, digital_file_path, digital_file_name")

@@ -6,7 +6,8 @@ import { getCart } from "@/lib/cart";
 import { checkoutSchema } from "@/lib/validation/checkout";
 import { createOrderFromCart, EmptyCartError, StockUnavailableError } from "@/lib/orders";
 import { initializeOrderPayment } from "@/lib/payments/process";
-import { PaymentProviderNotConfiguredError } from "@/lib/payments";
+import { isPaymentProviderConfigured, PaymentProviderNotConfiguredError } from "@/lib/payments";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { trackEvent } from "@/lib/analytics/track";
 import { getAppUrl } from "@/lib/app-url";
 import { allowRequest, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
@@ -14,6 +15,9 @@ import { allowRequest, RATE_LIMITED_MESSAGE } from "@/lib/rate-limit";
 export interface CheckoutFormState {
   error?: string;
 }
+
+const NOT_ACCEPTING_PAYMENTS =
+  "This store hasn't finished setting up payments yet. Please contact the seller directly.";
 
 export async function submitCheckoutAction(
   storeSlug: string,
@@ -38,6 +42,10 @@ export async function submitCheckoutAction(
 
   // Each attempt creates an order and a Paystack transaction.
   if (!(await allowRequest("checkout"))) return { error: RATE_LIMITED_MESSAGE };
+
+  // Check before creating anything: an order the shopper can't pay for is
+  // just noise for the seller, and creating it would empty their cart.
+  if (!(await isPaymentProviderConfigured(store.id))) return { error: NOT_ACCEPTING_PAYMENTS };
 
   const cart = await getCart(store.id, store.slug);
 
@@ -66,10 +74,75 @@ export async function submitCheckoutAction(
     redirect(authorizationUrl);
   } catch (err) {
     if (err instanceof PaymentProviderNotConfiguredError) {
-      return {
-        error: "This store hasn't finished setting up payments yet. Please contact the seller directly.",
-      };
+      return { error: NOT_ACCEPTING_PAYMENTS };
     }
     throw err;
   }
+}
+
+/**
+ * "Try again" after a failed or abandoned payment: starts a new Paystack
+ * transaction for the SAME unpaid order (its cart was already converted, so
+ * sending the shopper back to the cart would show it empty). Holding the
+ * payment reference is the authorisation -- the same thing that lets them
+ * see the confirmation page -- and the order must still be unpaid.
+ */
+export async function retryPaymentAction(storeSlug: string, reference: string): Promise<void> {
+  const back: (reason: string) => never = (reason) =>
+    redirect(`/store/${storeSlug}/checkout/success?reference=${encodeURIComponent(reference)}&retry=${reason}`);
+
+  if (!(await allowRequest("checkout"))) back("limited");
+
+  const store = await getStoreBySlug(storeSlug);
+  if (!store) back("unavailable");
+
+  const admin = createAdminClient();
+  const { data: payment } = await admin
+    .from("payments")
+    .select("order_id")
+    .eq("store_id", store.id)
+    .eq("reference", reference)
+    .maybeSingle();
+  if (!payment) back("unavailable");
+
+  const { data: order } = await admin
+    .from("orders")
+    .select("id, payment_status, fulfilment_status, customers(email), order_items(quantity, products(name, track_inventory, is_preorder, stock_quantity))")
+    .eq("id", payment.order_id)
+    .eq("store_id", store.id)
+    .maybeSingle();
+  if (!order) back("unavailable");
+  if (order.payment_status === "paid") redirect(`/store/${storeSlug}/checkout/success?reference=${encodeURIComponent(reference)}`);
+  if (order.payment_status !== "pending" && order.payment_status !== "failed") back("unavailable");
+  // The seller may have cancelled an unpaid order in the meantime.
+  if (order.fulfilment_status === "cancelled" || order.fulfilment_status === "refunded") back("unavailable");
+
+  // Stock is only taken when an order is paid, so it may have sold out since.
+  const items = (order.order_items ?? []) as unknown as {
+    quantity: number;
+    products: { track_inventory: boolean; is_preorder: boolean; stock_quantity: number } | null;
+  }[];
+  const soldOut = items.some(
+    (item) => item.products?.track_inventory && !item.products.is_preorder && item.products.stock_quantity < item.quantity,
+  );
+  if (soldOut) back("stock");
+
+  const email = (order.customers as unknown as { email: string | null } | null)?.email;
+  if (!email || !(await isPaymentProviderConfigured(store.id))) back("unavailable");
+
+  const appUrl = await getAppUrl();
+  let authorizationUrl: string | null = null;
+  try {
+    ({ authorizationUrl } = await initializeOrderPayment(
+      store.id,
+      order.id,
+      email,
+      `${appUrl}/store/${store.slug}/checkout/success?order=${order.id}`,
+    ));
+  } catch (err) {
+    console.error("[checkout] retry payment failed", err);
+  }
+  if (!authorizationUrl) back("unavailable");
+  await trackEvent(store.id, "payment_started", { orderId: order.id });
+  redirect(authorizationUrl);
 }

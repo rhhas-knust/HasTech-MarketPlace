@@ -21,8 +21,8 @@ interface StoreForEmail {
 /**
  * Fires the order-confirmation (customer) and new-order-alert (seller)
  * emails. Called once from verifyAndProcessPayment right after an order is
- * marked paid -- that call site is already guarded by the payment_events
- * idempotency check, so this only ever runs once per order regardless of
+ * marked paid -- only the caller whose conditional update actually moved the
+ * order to "paid" gets there, so this only ever runs once per order regardless of
  * whether the webhook or the checkout success page wins the race to get
  * there first.
  *
