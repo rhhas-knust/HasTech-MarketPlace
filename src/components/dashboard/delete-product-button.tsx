@@ -1,29 +1,30 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-export function DeleteProductButton({ onDelete }: { onDelete: () => Promise<void> }) {
-  const [confirming, setConfirming] = useState(false);
-  const [pending, startTransition] = useTransition();
-
-  if (!confirming) {
-    return (
-      <Button type="button" variant="danger" size="sm" onClick={() => setConfirming(true)}>
-        Delete product
-      </Button>
-    );
-  }
-
+export function DeleteProductButton({
+  name,
+  onDelete,
+  children,
+}: {
+  name: string;
+  onDelete: () => Promise<void>;
+  children: ReactNode;
+}) {
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-(--color-ink-muted)">Delete permanently?</span>
-      <Button type="button" variant="danger" size="sm" disabled={pending} onClick={() => startTransition(onDelete)}>
-        {pending ? "Deleting…" : "Confirm"}
-      </Button>
-      <Button type="button" variant="outline" size="sm" onClick={() => setConfirming(false)}>
-        Cancel
-      </Button>
-    </div>
+    <ConfirmDialog
+      title={`Delete "${name}"?`}
+      description="This removes the product from your store. Past orders keep their details. This can't be undone."
+      confirmLabel="Delete product"
+      pendingLabel="Deleting…"
+      onConfirm={onDelete}
+      trigger={(open) => (
+        <Button type="button" variant="outline" size="sm" onClick={open} className="text-(--color-danger)">
+          {children}
+        </Button>
+      )}
+    />
   );
 }

@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowLeft } from "lucide-react";
+import { SettingsNav } from "@/components/dashboard/settings-nav";
 import { requireStoreAccess } from "@/lib/auth/session";
 import { isPaymentProviderConfigured } from "@/lib/payments";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,9 +18,7 @@ export default async function PaymentsSettingsPage({ params }: { params: Promise
 
   return (
     <div className="max-w-xl space-y-6">
-      <Link href={`/dashboard/${slug}/settings`} className="inline-flex items-center gap-1 text-sm text-(--color-ink-muted) hover:text-(--color-ink)">
-        <ArrowLeft className="h-4 w-4" /> Back to settings
-      </Link>
+      <SettingsNav storeSlug={slug} active="payments" />
       <Card>
         <CardHeader>
           <CardTitle>Paystack</CardTitle>

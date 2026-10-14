@@ -2,17 +2,20 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
+  BarChart3,
   CircleCheck,
   Circle,
   ExternalLink,
-  Eye,
   MessageCircle,
+  Package,
   PackageX,
-  Percent,
+  Palette,
+  Plus,
   ShoppingBag,
   TriangleAlert,
   Truck,
   Users,
+  Wallet,
 } from "lucide-react";
 import { getCurrentProfile, getCurrentUser, requireStoreAccess } from "@/lib/auth/session";
 import {
@@ -32,6 +35,8 @@ import { getPlatformBilling } from "@/lib/payments/platform";
 import { getAppUrl } from "@/lib/app-url";
 import { cn } from "@/lib/cn";
 import { LinkButton } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CopyLink } from "@/components/dashboard/copy-link";
 import { publishStoreAction, unpublishStoreAction } from "./actions";
 
 function greetingFor(date: Date) {
@@ -84,7 +89,7 @@ export default async function StoreOverviewPage({
   const now = currentTime();
   const nowMs = now.getTime();
   const firstName = profile?.full_name?.split(" ")[0] ?? "there";
-  const conversionRate = stats.totalViews > 0 ? (stats.purchaseCount / stats.totalViews) * 100 : 0;
+  const stockAlerts = attention.lowStock + attention.outOfStock;
   const isPublished = Boolean(store.published_at);
   const storeUrl = `${appUrl}/store/${store.slug}`;
   const shareText = `${store.name} is online. Order and pay with MoMo or card: ${storeUrl}`;
@@ -95,6 +100,18 @@ export default async function StoreOverviewPage({
     { done: isPublished, label: "Publish your store", href: undefined },
   ];
   const doneCount = checklist.filter((c) => c.done).length;
+
+  const shortcuts = [
+    { href: `/dashboard/${slug}/products/new`, label: "Add product", hint: "Photos, price, stock", icon: Plus, primary: true },
+    {
+      href: `/dashboard/${slug}/orders${attention.ordersToFulfil > 0 ? "?view=todo" : ""}`,
+      label: "Orders",
+      hint: attention.ordersToFulfil > 0 ? `${attention.ordersToFulfil} to fulfil` : "Nothing waiting",
+      icon: ShoppingBag,
+    },
+    { href: `/dashboard/${slug}/settings`, label: "Storefront", hint: "Logo, colour, delivery", icon: Palette },
+    { href: `/dashboard/${slug}/analytics`, label: "Analytics", hint: "Views and sales", icon: BarChart3 },
+  ];
 
   return (
     <div className="space-y-6">
@@ -135,21 +152,21 @@ export default async function StoreOverviewPage({
         </div>
       )}
 
-      <header style={{ "--i": 0, animationDuration: "400ms" } as React.CSSProperties} className="enter flex flex-wrap items-end justify-between gap-6 border-b border-(--color-border) pb-6">
-        <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight text-(--color-ink)">
-            {greetingFor(now)}, {firstName}
-          </h1>
-          <p className="mt-1 flex items-center gap-2 text-sm text-(--color-ink-muted)">
-            <span
-              aria-hidden
-              className={cn("h-2 w-2 rounded-full", isPublished ? "bg-(--color-success)" : "bg-(--color-warning)")}
-            />
-            <span className="truncate">
-              {store.name} is {isPublished ? "live" : "not published yet"}
-            </span>
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
+      <header style={{ "--i": 0, animationDuration: "400ms" } as React.CSSProperties} className="enter space-y-4 border-b border-(--color-border) pb-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-sm text-(--color-ink-muted)">
+              {greetingFor(now)}, {firstName}
+            </p>
+            <h1 className="mt-1 truncate text-2xl font-semibold tracking-tight text-(--color-ink)">{store.name}</h1>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <Badge tone={isPublished ? "success" : "warning"}>{isPublished ? "Live" : "Not published"}</Badge>
+              <Badge tone={paymentConfigured ? "success" : "warning"}>
+                {paymentConfigured ? "Payments connected" : "Payments not connected"}
+              </Badge>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
             <PublishToggle
               published={isPublished}
               onPublish={publishStoreAction.bind(null, slug)}
@@ -159,36 +176,55 @@ export default async function StoreOverviewPage({
               href={`/store/${store.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--color-border-strong) px-3 text-sm font-medium text-(--color-ink) hover:bg-(--color-surface-subtle)"
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--color-border-strong)/60 px-3 text-sm font-medium text-(--color-ink) hover:bg-(--color-surface-subtle)"
             >
               <ExternalLink className="h-4 w-4" aria-hidden /> View store
               <span className="sr-only">(opens in a new tab)</span>
             </a>
-            {isPublished && (
-              <a
-                href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-(--color-border-strong) px-3 text-sm font-medium text-(--color-ink) hover:bg-(--color-surface-subtle)"
-              >
-                <MessageCircle className="h-4 w-4" aria-hidden /> Share on WhatsApp
-                <span className="sr-only">(opens in a new tab)</span>
-              </a>
-            )}
           </div>
         </div>
-        <div className="text-left sm:text-right">
-          <p className="text-sm text-(--color-ink-muted)">Total sales</p>
-          <p className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-(--color-ink)">
-            {formatCurrency(stats.totalRevenue, store.currency)}
-          </p>
-          <p className="mt-1 text-sm text-(--color-ink-muted)">
-            {weekly.revenueThisWeek > 0
-              ? `+${formatCurrency(weekly.revenueThisWeek, store.currency)} this week`
-              : "No sales yet this week"}
-          </p>
-        </div>
+        {isPublished && (
+          <div className="flex flex-wrap items-center gap-2">
+            <CopyLink url={storeUrl} />
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-(--color-border-strong)/60 px-3 text-sm font-medium text-(--color-ink) hover:bg-(--color-surface-subtle)"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden /> Share on WhatsApp
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+          </div>
+        )}
       </header>
+
+      {/* Shortcuts to the jobs sellers do most */}
+      <nav aria-label="Shortcuts" style={{ "--i": 1, animationDuration: "400ms" } as React.CSSProperties} className="enter">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {shortcuts.map(({ href, label, hint, icon: Icon, primary }) => (
+            <li key={href}>
+              <Link
+                href={href}
+                className={cn(
+                  "flex h-full items-center gap-3 rounded-xl border p-3.5 transition-colors duration-150 active:scale-[0.98]",
+                  primary
+                    ? "border-transparent bg-(--color-brand) text-(--color-on-brand) hover:bg-(--color-brand-hover)"
+                    : "border-(--color-border) bg-(--color-surface) text-(--color-ink) hover:border-(--color-border-strong)",
+                )}
+              >
+                <Icon className="h-5 w-5 shrink-0" aria-hidden />
+                <span className="min-w-0">
+                  <span className="block text-sm font-medium">{label}</span>
+                  {hint && (
+                    <span className={cn("block truncate text-xs", primary ? "opacity-80" : "text-(--color-ink-muted)")}>{hint}</span>
+                  )}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       {/* Setup progress: only until everything is done */}
       {doneCount < checklist.length && (
@@ -235,8 +271,20 @@ export default async function StoreOverviewPage({
         </section>
       )}
 
-      {/* KPI row */}
-      <div style={{ "--i": 2, animationDuration: "400ms" } as React.CSSProperties} className="enter grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {/* Summary: every figure is a live query (see getOverviewStats) */}
+      <div style={{ "--i": 2, animationDuration: "400ms" } as React.CSSProperties} className="enter grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <KpiTile
+          label="Sales"
+          value={formatCurrency(stats.totalRevenue, store.currency)}
+          delta={{
+            value: weekly.revenueThisWeek,
+            period: "this week",
+            text: weekly.revenueThisWeek > 0 ? `+${formatCurrency(weekly.revenueThisWeek, store.currency)}` : undefined,
+          }}
+          icon={<Wallet className="h-5 w-5" />}
+          href={`/dashboard/${slug}/analytics`}
+          className="col-span-2 sm:col-span-1"
+        />
         <KpiTile
           label="Orders"
           value={String(stats.totalOrdersCount)}
@@ -245,24 +293,19 @@ export default async function StoreOverviewPage({
           href={`/dashboard/${slug}/orders`}
         />
         <KpiTile
+          label="Products"
+          value={String(stats.productsCount)}
+          note={stockAlerts > 0 ? `${stockAlerts} low or out of stock` : undefined}
+          icon={<Package className="h-5 w-5" />}
+          href={`/dashboard/${slug}/products`}
+        />
+        <KpiTile
           label="Customers"
           value={String(stats.customersCount)}
           delta={{ value: weekly.customersThisWeek, period: "this week" }}
           icon={<Users className="h-5 w-5" />}
           href={`/dashboard/${slug}/customers`}
-        />
-        <KpiTile
-          label="Store views"
-          value={String(stats.viewsThisWeek)}
-          delta={{ value: stats.viewsToday, period: "today" }}
-          icon={<Eye className="h-5 w-5" />}
-          href={`/dashboard/${slug}/analytics`}
-        />
-        <KpiTile
-          label="View → purchase"
-          value={`${conversionRate.toFixed(1)}%`}
-          icon={<Percent className="h-5 w-5" />}
-          href={`/dashboard/${slug}/analytics`}
+          className="col-span-2 sm:col-span-1"
         />
       </div>
 
@@ -293,7 +336,7 @@ export default async function StoreOverviewPage({
                 <PackageX className="h-5 w-5" aria-hidden />
               </span>
               <span className="flex-1">
-                <span className="block text-2xl font-semibold text-(--color-ink)">{attention.lowStock + attention.outOfStock}</span>
+                <span className="block text-2xl font-semibold text-(--color-ink)">{stockAlerts}</span>
                 <span className="text-sm text-(--color-ink-muted)">
                   products low or out of stock
                 </span>

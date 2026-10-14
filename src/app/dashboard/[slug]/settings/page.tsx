@@ -4,6 +4,9 @@ import type { Metadata } from "next";
 import { requireStoreAccess } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { SettingsNav } from "@/components/dashboard/settings-nav";
+import { isPaymentProviderConfigured } from "@/lib/payments";
 import { StoreInfoForm } from "@/components/dashboard/store-info-form";
 import { DeliverySettingsForm } from "@/components/dashboard/delivery-settings-form";
 import { BrandingForm } from "@/components/dashboard/branding-form";
@@ -18,23 +21,35 @@ export default async function SettingsPage({ params }: { params: Promise<{ slug:
   if (!membership) redirect("/dashboard");
 
   const supabase = await createClient();
-  const { data: settings } = await supabase
-    .from("store_settings")
-    .select("*")
-    .eq("store_id", membership.store.id)
-    .single();
+  const [{ data: settings }, paymentsReady] = await Promise.all([
+    supabase.from("store_settings").select("*").eq("store_id", membership.store.id).single(),
+    isPaymentProviderConfigured(membership.store.id),
+  ]);
+  const isPublished = Boolean(membership.store.published_at) && membership.store.status === "active";
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-(--color-ink) sm:text-3xl">Settings</h1>
-        <div className="flex gap-4 text-sm">
-          <Link href={`/dashboard/${slug}/settings/billing`} className="text-(--color-brand) hover:underline">
-            Billing →
-          </Link>
-          <Link href={`/dashboard/${slug}/settings/payments`} className="text-(--color-brand) hover:underline">
-            Payment settings →
-          </Link>
+    <div className="max-w-2xl space-y-5">
+      <SettingsNav storeSlug={slug} active="store" />
+
+      {/* Where the store stands, with the fix one tap away */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
+          <p className="text-sm text-(--color-ink-muted)">Store</p>
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <Badge tone={isPublished ? "success" : "warning"}>{isPublished ? "Live" : "Not published"}</Badge>
+            <Link href={`/dashboard/${slug}`} className="text-sm font-medium text-(--color-brand) hover:underline">
+              {isPublished ? "Overview" : "Publish from Overview"}
+            </Link>
+          </div>
+        </div>
+        <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
+          <p className="text-sm text-(--color-ink-muted)">Online payments</p>
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <Badge tone={paymentsReady ? "success" : "warning"}>{paymentsReady ? "Paystack connected" : "Not connected"}</Badge>
+            <Link href={`/dashboard/${slug}/settings/payments`} className="text-sm font-medium text-(--color-brand) hover:underline">
+              {paymentsReady ? "Manage" : "Connect Paystack"}
+            </Link>
+          </div>
         </div>
       </div>
 

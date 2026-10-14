@@ -27,6 +27,7 @@ export default async function DashboardLayout({
     <DashboardShell
       storeSlug={slug}
       storeName={membership.store.name}
+      isPublished={Boolean(membership.store.published_at) && membership.store.status === "active"}
       userEmail={user.email ?? ""}
       ordersToFulfil={attention.ordersToFulfil}
       stockAlerts={attention.lowStock + attention.outOfStock}

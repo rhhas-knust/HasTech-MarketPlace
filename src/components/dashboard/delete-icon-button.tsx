@@ -1,19 +1,35 @@
 "use client";
 
-import { useTransition } from "react";
 import { Trash2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-export function DeleteIconButton({ onDelete }: { onDelete: () => Promise<void> }) {
-  const [pending, startTransition] = useTransition();
+/** A small delete icon that asks before deleting `itemName`. */
+export function DeleteIconButton({
+  itemName,
+  description,
+  onDelete,
+}: {
+  itemName: string;
+  description?: string;
+  onDelete: () => Promise<void>;
+}) {
   return (
-    <button
-      type="button"
-      disabled={pending}
-      onClick={() => startTransition(onDelete)}
-      className="flex h-8 w-8 items-center justify-center rounded-md text-(--color-ink-muted) hover:text-(--color-danger)"
-      aria-label="Delete"
-    >
-      <Trash2 className="h-4 w-4" />
-    </button>
+    <ConfirmDialog
+      title={`Delete "${itemName}"?`}
+      description={description}
+      confirmLabel="Delete"
+      pendingLabel="Deleting…"
+      onConfirm={onDelete}
+      trigger={(open) => (
+        <button
+          type="button"
+          onClick={open}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-subtle) hover:text-(--color-danger)"
+          aria-label={`Delete ${itemName}`}
+        >
+          <Trash2 className="h-4 w-4" aria-hidden />
+        </button>
+      )}
+    />
   );
 }

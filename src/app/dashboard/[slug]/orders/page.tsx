@@ -76,7 +76,7 @@ export default async function OrdersPage({
         <EmptyState
           icon={<ShoppingBag className="h-7 w-7" />}
           title="No orders yet"
-          description="Orders will show up here as soon as customers start buying."
+          description="Orders appear here the moment a customer checks out. Share your store link on WhatsApp to get your first one."
         />
       </div>
     );
@@ -135,55 +135,96 @@ export default async function OrdersPage({
           {view === "todo" && !needle ? "No orders waiting to be fulfilled." : "No orders match this view."}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface)">
-          <table className="w-full min-w-[680px] text-sm">
-            <thead className="bg-(--color-surface-subtle)/70 text-left text-xs font-medium text-(--color-ink-muted)">
-              <tr>
-                <th className="px-5 py-3.5 font-semibold">Customer</th>
-                <th className="px-5 py-3.5 font-semibold">Order</th>
-                <th className="px-5 py-3.5 font-semibold">Total</th>
-                <th className="px-5 py-3.5 font-semibold">Status</th>
-                <th className="px-5 py-3.5 font-semibold">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-(--color-border)/70">
-              {visible.map(({ order, customer, name }) => {
-                const pill = statusPill(order);
-                return (
-                  <tr key={order.id} className="transition-colors hover:bg-(--color-surface-subtle)/60">
-                    <td className="px-5 py-4">
-                      <Link href={`/dashboard/${slug}/orders/${order.id}`} className="flex items-center gap-3">
-                        <InitialsAvatar name={name} />
-                        <div className="min-w-0">
-                          <p className="truncate font-semibold text-(--color-ink)">{name}</p>
-                          {customer?.email && <p className="truncate text-xs text-(--color-ink-muted)">{customer.email}</p>}
-                        </div>
-                      </Link>
-                    </td>
-                    <td className="px-5 py-4">
-                      <Link
-                        href={`/dashboard/${slug}/orders/${order.id}`}
-                        className="tabular-nums text-sm font-medium text-(--color-brand) hover:underline"
-                      >
-                        {order.order_number}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-4 tabular-nums font-semibold text-(--color-ink) tabular-nums">
-                      {formatCurrency(order.total, order.currency)}
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium", pill.tone)}>
-                        <span className={cn("h-1.5 w-1.5 rounded-full", pill.dot)} />
+        <>
+          {/* Phones: one card per order, no sideways scrolling */}
+          <ul className="space-y-3 md:hidden">
+            {visible.map(({ order, name }) => {
+              const pill = statusPill(order);
+              return (
+                <li key={order.id}>
+                  <Link
+                    href={`/dashboard/${slug}/orders/${order.id}`}
+                    className="block rounded-xl border border-(--color-border) bg-(--color-surface) p-4 transition-colors active:bg-(--color-surface-subtle)"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-(--color-ink)">{name}</p>
+                        <p className="mt-0.5 text-xs text-(--color-ink-muted)">
+                          <span className="tabular-nums">{order.order_number}</span> · {formatShortDate(order.created_at)}
+                        </p>
+                      </div>
+                      <p className="shrink-0 font-semibold tabular-nums text-(--color-ink)">
+                        {formatCurrency(order.total, order.currency)}
+                      </p>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium", pill.tone)}>
+                        <span className={cn("h-1.5 w-1.5 rounded-full", pill.dot)} aria-hidden />
                         {pill.label}
                       </span>
-                    </td>
-                    <td className="px-5 py-4 text-(--color-ink-muted)">{formatShortDate(order.created_at)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      <span className="text-xs text-(--color-ink-muted)">
+                        {order.delivery_method === "pickup" ? "Pickup" : "Delivery"}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Tablets and up: a scannable table */}
+          <div className="hidden overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) md:block">
+            <table className="w-full text-sm">
+              <thead className="bg-(--color-surface-subtle) text-left text-xs font-medium text-(--color-ink-muted)">
+                <tr>
+                  <th scope="col" className="px-4 py-3 font-semibold">Customer</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Order</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Total</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Status</th>
+                  <th scope="col" className="hidden px-4 py-3 font-semibold lg:table-cell">Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-(--color-border)">
+                {visible.map(({ order, customer, name }) => {
+                  const pill = statusPill(order);
+                  return (
+                    <tr key={order.id} className="hover:bg-(--color-surface-subtle)/60">
+                      <td className="max-w-[16rem] px-4 py-3">
+                        <Link href={`/dashboard/${slug}/orders/${order.id}`} className="flex items-center gap-3">
+                          <InitialsAvatar name={name} />
+                          <div className="min-w-0">
+                            <p className="truncate font-medium text-(--color-ink)">{name}</p>
+                            {customer?.email && <p className="truncate text-xs text-(--color-ink-muted)">{customer.email}</p>}
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3">
+                        <Link
+                          href={`/dashboard/${slug}/orders/${order.id}`}
+                          className="text-sm font-medium tabular-nums text-(--color-brand) hover:underline"
+                        >
+                          {order.order_number}
+                        </Link>
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 font-semibold tabular-nums text-(--color-ink)">
+                        {formatCurrency(order.total, order.currency)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={cn("inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium", pill.tone)}>
+                          <span className={cn("h-1.5 w-1.5 rounded-full", pill.dot)} aria-hidden />
+                          {pill.label}
+                        </span>
+                      </td>
+                      <td className="hidden whitespace-nowrap px-4 py-3 text-(--color-ink-muted) lg:table-cell">
+                        {formatShortDate(order.created_at)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

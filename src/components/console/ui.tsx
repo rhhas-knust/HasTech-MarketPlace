@@ -47,51 +47,62 @@ export function KpiTile({
   label,
   value,
   delta,
+  note,
   icon,
   href,
+  className,
 }: {
   label: string;
   value: string;
-  delta?: { value: number; period: string };
+  /** Change over a period. `text` overrides the default "+N" (e.g. for money). */
+  delta?: { value: number; period: string; text?: string };
+  /** A short status line instead of a delta, e.g. "3 low on stock". */
+  note?: string;
   icon: ReactNode;
   href?: string;
+  className?: string;
 }) {
   const body = (
     <div
       className={cn(
-        "h-full rounded-xl border border-(--color-border) bg-(--color-surface) p-5",
+        "h-full rounded-xl border border-(--color-border) bg-(--color-surface) p-4 sm:p-5",
         href && "lift",
       )}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium text-(--color-ink-muted)">{label}</p>
-        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-(--color-brand) text-(--color-on-brand)">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-(--color-brand-subtle) text-(--color-brand)">
           {icon}
         </span>
       </div>
-      <p className="mt-4 text-3xl font-semibold tracking-tight text-(--color-ink)">
+      <p className="mt-3 break-words text-2xl font-semibold tabular-nums tracking-tight text-(--color-ink) xl:text-3xl">
         {value}
       </p>
       {delta && (
         <p
           className={cn(
-            "mt-2 inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-medium",
+            "mt-2 inline-flex max-w-full items-center gap-1 truncate rounded-md px-2 py-0.5 text-xs font-medium",
             delta.value > 0
               ? "bg-(--color-success-subtle) text-(--color-success)"
               : "bg-(--color-surface-subtle) text-(--color-ink-muted)",
           )}
         >
-          {delta.value > 0 ? `▲ +${delta.value}` : "No change"} {delta.period}
+          {delta.value > 0 ? (delta.text ?? `+${delta.value}`) : "None"} {delta.period}
+        </p>
+      )}
+      {note && (
+        <p className="mt-2 inline-flex max-w-full truncate rounded-md bg-(--color-warning-subtle) px-2 py-0.5 text-xs font-medium text-(--color-warning)">
+          {note}
         </p>
       )}
     </div>
   );
   return href ? (
-    <Link href={href} className="block h-full">
+    <Link href={href} className={cn("block h-full", className)}>
       {body}
     </Link>
   ) : (
-    body
+    <div className={className}>{body}</div>
   );
 }
 

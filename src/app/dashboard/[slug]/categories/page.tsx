@@ -36,7 +36,11 @@ export default async function CategoriesPage({ params }: { params: Promise<{ slu
                 <p className="font-medium text-(--color-ink)">{category.name}</p>
                 {category.description && <p className="text-sm text-(--color-ink-muted)">{category.description}</p>}
               </div>
-              <DeleteIconButton onDelete={deleteCategoryAction.bind(null, slug, category.id)} />
+              <DeleteIconButton
+                itemName={category.name}
+                description="Products in this category stay in your store, just without a category."
+                onDelete={deleteCategoryAction.bind(null, slug, category.id)}
+              />
             </li>
           ))}
         </ul>

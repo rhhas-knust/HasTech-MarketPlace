@@ -10,6 +10,8 @@ import { logAudit } from "@/lib/audit";
 
 export interface ProductFormState {
   error?: string;
+  /** Set after a successful update so the form can say "Saved". */
+  savedAt?: number;
 }
 
 function parseProductForm(formData: FormData) {
@@ -144,7 +146,39 @@ export async function updateProductAction(
   await logAudit(membership.store.id, membership.store.owner_id, "product.updated", "product", productId);
   revalidatePath(`/dashboard/${storeSlug}/products`);
   revalidatePath(`/dashboard/${storeSlug}/products/${productId}`);
-  return {};
+  return { savedAt: Date.now() };
+}
+
+/** Quick publish/unpublish from the product list; the full form is not needed for this. */
+export async function setProductStatusAction(
+  storeSlug: string,
+  productId: string,
+  status: "published" | "draft",
+): Promise<void> {
+  const membership = await requireStoreAccess(storeSlug);
+  if (!membership) return;
+  if (status !== "published" && status !== "draft") return;
+
+  const supabase = await createClient();
+  const { data: current } = await supabase
+    .from("products")
+    .select("status, published_at")
+    .eq("id", productId)
+    .eq("store_id", membership.store.id)
+    .maybeSingle();
+  if (!current || current.status === status) return;
+
+  await supabase
+    .from("products")
+    .update({
+      status,
+      published_at: status === "published" ? new Date().toISOString() : current.published_at,
+    })
+    .eq("id", productId)
+    .eq("store_id", membership.store.id);
+
+  await logAudit(membership.store.id, membership.store.owner_id, "product.updated", "product", productId, { status });
+  revalidatePath(`/dashboard/${storeSlug}/products`);
 }
 
 export async function deleteProductAction(storeSlug: string, productId: string): Promise<void> {

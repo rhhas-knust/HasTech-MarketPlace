@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowLeft } from "lucide-react";
+import { SettingsNav } from "@/components/dashboard/settings-nav";
 import { requireStoreAccess } from "@/lib/auth/session";
 import { getPlatformBilling, getUnsettledCommissionTotal } from "@/lib/payments/platform";
 import { formatCurrency } from "@/lib/money";
@@ -31,9 +30,7 @@ export default async function BillingSettingsPage({ params }: { params: Promise<
 
   return (
     <div className="max-w-xl space-y-6">
-      <Link href={`/dashboard/${slug}/settings`} className="inline-flex items-center gap-1 text-sm text-(--color-ink-muted) hover:text-(--color-ink)">
-        <ArrowLeft className="h-4 w-4" /> Back to settings
-      </Link>
+      <SettingsNav storeSlug={slug} active="billing" />
 
       {billing.isFoundingMember && (
         <Card className="border-(--color-brand) bg-(--color-brand-subtle)">
